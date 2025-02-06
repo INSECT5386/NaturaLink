@@ -1,19 +1,22 @@
 export async function handler(event, context) {
     const API_KEY = process.env.HUGGINGFACE_API_KEY;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/microsoft/DialoGPT-small", {
+    const user_input = JSON.parse(event.body).text;
+    const prompt = `User: ${user_input}\nAI:`;
+
+    const response = await fetch("https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            inputs: JSON.parse(event.body).text,
+            inputs: prompt,
             parameters: {
-                max_length: 30,  // 응답 길이 축소
-                temperature: 0.5, // 랜덤성 낮춤 (헛소리 방지)
-                top_p: 0.7, // 더 정제된 샘플링
-                repetition_penalty: 1.3 // 같은 말 반복 방지
+                max_length: 50,
+                temperature: 0.5,
+                top_p: 0.7,
+                repetition_penalty: 1.3
             }
         })
     });
