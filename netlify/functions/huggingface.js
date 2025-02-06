@@ -1,7 +1,7 @@
 export async function handler(event, context) {
     const API_KEY = process.env.HUGGINGFACE_API_KEY;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/distilbert-base-uncased", {
+    const response = await fetch("https://api-inference.huggingface.co/models/distilgpt2", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
@@ -11,6 +11,7 @@ export async function handler(event, context) {
     });
 
     const data = await response.json();
+    
     return {
         statusCode: 200,
         body: JSON.stringify(data)
