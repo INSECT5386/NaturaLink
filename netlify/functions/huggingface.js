@@ -1,7 +1,7 @@
 export async function handler(event, context) {
     const API_KEY = process.env.HUGGINGFACE_API_KEY;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-2.7B", {
+    const response = await fetch("https://api-inference.huggingface.co/models/distilgpt2", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
