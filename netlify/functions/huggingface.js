@@ -10,10 +10,10 @@ export async function handler(event, context) {
         body: JSON.stringify({
             inputs: JSON.parse(event.body).text,
             parameters: {
-                max_length: 50,
-                temperature: 0.7,
-                top_p: 0.9,
-                repetition_penalty: 1.2
+                max_length: 30,  // 응답 길이 축소
+                temperature: 0.5, // 랜덤성 낮춤 (헛소리 방지)
+                top_p: 0.7, // 더 정제된 샘플링
+                repetition_penalty: 1.3 // 같은 말 반복 방지
             }
         })
     });
