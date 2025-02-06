@@ -1,7 +1,7 @@
 export async function handler(event, context) {
     const API_KEY = process.env.HUGGINGFACE_API_KEY;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/distilgpt2", {
+    const response = await fetch("https://api-inference.huggingface.co/models/microsoft/DialoGPT-small", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
@@ -10,10 +10,10 @@ export async function handler(event, context) {
         body: JSON.stringify({
             inputs: JSON.parse(event.body).text,
             parameters: {
-                max_length: 50,  // 응답 길이 제한 (헛소리 방지)
-                temperature: 0.5, // 랜덤성 줄이기 (낮을수록 논리적인 문장)
-                top_p: 0.9, // 샘플링 방식 최적화
-                repetition_penalty: 1.2 // 같은 단어 반복 방지
+                max_length: 50,
+                temperature: 0.7,
+                top_p: 0.9,
+                repetition_penalty: 1.2
             }
         })
     });
