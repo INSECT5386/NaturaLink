@@ -1,28 +1,25 @@
 export async function handler(event, context) {
     const API_KEY = process.env.HUGGINGFACE_API_KEY;
-
     const user_input = JSON.parse(event.body).text;
-    const prompt = `User: ${user_input}\nAI:`;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill", {
+    const response = await fetch("https://api-inference.huggingface.co/models/beomi/kogpt2", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            inputs: prompt,
+            inputs: user_input,
             parameters: {
                 max_length: 50,
-                temperature: 0.5,
-                top_p: 0.7,
-                repetition_penalty: 1.3
+                temperature: 0.6,
+                top_p: 0.8,
+                repetition_penalty: 1.2
             }
         })
     });
 
     const data = await response.json();
-
     return {
         statusCode: 200,
         body: JSON.stringify(data)
