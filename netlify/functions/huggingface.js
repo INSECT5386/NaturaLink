@@ -13,8 +13,8 @@ export async function handler(event, context) {
             body: JSON.stringify({
                 inputs: user_input,
                 parameters: {
-                    max_tokens: 45,
-                    temperature: 0.7,
+                    max_tokens: 100,
+                    temperature: 0.3,
                     top_p: 0.9,
                     repetition_penalty: 1.2
                 }
