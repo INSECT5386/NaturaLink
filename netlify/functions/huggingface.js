@@ -13,7 +13,7 @@ export async function handler(event, context) {
             body: JSON.stringify({
                 inputs: user_input,
                 parameters: {
-                    max_tokens: 45,
+                    max_length: 45,  // max_tokens 대신 max_length 사용
                     temperature: 0.7,
                     top_p: 0.9,
                     repetition_penalty: 1.2
@@ -26,9 +26,10 @@ export async function handler(event, context) {
         }
 
         const data = await response.json();
+
         return {
             statusCode: 200,
-            body: JSON.stringify(data)
+            body: JSON.stringify({ text: data[0]?.generated_text || "응답을 가져오지 못했습니다." })
         };
     } catch (error) {
         return {
