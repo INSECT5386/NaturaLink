@@ -4,7 +4,7 @@ export async function handler(event, context) {
     const user_input = JSON.parse(event.body).text;
     const prompt = `User: ${user_input}\nAI:`;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1", {
+    const response = await fetch("https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
@@ -13,9 +13,9 @@ export async function handler(event, context) {
         body: JSON.stringify({
             inputs: prompt,
             parameters: {
-                max_length: 100,
+                max_length: 50,
                 temperature: 0.5,
-                top_p: 0.8,
+                top_p: 0.7,
                 repetition_penalty: 1.3
             }
         })
