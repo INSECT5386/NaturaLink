@@ -4,7 +4,7 @@ export async function handler(event, context) {
     const user_input = JSON.parse(event.body).text;
     const prompt = `User: ${user_input}\nAI:`;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium", {
+    const response = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
@@ -13,10 +13,10 @@ export async function handler(event, context) {
         body: JSON.stringify({
             inputs: prompt,
             parameters: {
-                max_length: 50,
-                temperature: 0.7,
-                top_p: 0.9,
-                repetition_penalty: 1.2
+                max_length: 100,
+                temperature: 0.5,
+                top_p: 0.8,
+                repetition_penalty: 1.3
             }
         })
     });
