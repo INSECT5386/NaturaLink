@@ -12,7 +12,7 @@ export async function handler(event, context) {
         body: JSON.stringify({
             inputs: user_input,
             parameters: {
-                max_tokens: 20,  // 응답 길이 조정
+                max_tokens: 16,  // 응답 길이 조정
                 temperature: 0.7,  // 창의적인 답변을 위해 적절한 값
                 top_p: 0.9,
                 repetition_penalty: 1.2
