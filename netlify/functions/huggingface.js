@@ -1,14 +1,9 @@
-let conversationHistory = {};
-
 export async function handler(event, context) {
     const API_KEY = process.env.HUGGINGFACE_API_KEY;
-    const sessionId = JSON.parse(event.body).sessionId;  // 세션 ID 받기
-    const user_input = JSON.parse(event.body).text;
-
-    // 이전 대화 이력 가져오기
-    const previousHistory = conversationHistory[sessionId] || "";
 
     try {
+        const user_input = JSON.parse(event.body).text;
+
         const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct", {
             method: "POST",
             headers: {
@@ -16,9 +11,9 @@ export async function handler(event, context) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                inputs: previousHistory + "\nUser: " + user_input + "\nAI:",
+                inputs: user_input,
                 parameters: {
-                    max_tokens: 30,
+                    max_tokens: 16,
                     temperature: 0.7,
                     top_p: 0.9,
                     repetition_penalty: 1.2
@@ -31,10 +26,6 @@ export async function handler(event, context) {
         }
 
         const data = await response.json();
-
-        // 새로 받은 응답을 대화 이력에 추가
-        conversationHistory[sessionId] = previousHistory + "\nUser: " + user_input + "\nAI: " + data.choices[0].text;
-
         return {
             statusCode: 200,
             body: JSON.stringify(data)
