@@ -2,7 +2,7 @@ export async function handler(event, context) {
     const API_KEY = process.env.HUGGINGFACE_API_KEY;
 
     const user_input = JSON.parse(event.body).text;
-    const prompt = `User: ${user_input}\nAI:`;
+    const prompt = `AI: ${user_input}`;
 
     const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct", {
         method: "POST",
@@ -13,10 +13,10 @@ export async function handler(event, context) {
         body: JSON.stringify({
             inputs: prompt,
             parameters: {
-                max_length: 100,
+                max_length: 150,
                 temperature: 0.7,
                 top_p: 0.9,
-                repetition_penalty: 1.2
+                repetition_penalty: 1.1
             }
         })
     });
