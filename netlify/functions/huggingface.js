@@ -13,7 +13,7 @@ export async function handler(event, context) {
         body: JSON.stringify({
             inputs: prompt,
             parameters: {
-                max_length: 30, // 응답 길이를 30으로 제한
+                max_length: 20, // 응답 길이를 20으로 제한
                 temperature: 0.5,
                 top_p: 0.7,
                 repetition_penalty: 1.3
