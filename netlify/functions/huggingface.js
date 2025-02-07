@@ -2,9 +2,9 @@ export async function handler(event, context) {
     const API_KEY = process.env.HUGGINGFACE_API_KEY;
 
     const user_input = JSON.parse(event.body).text;
-    const prompt = `사용자: ${user_input}\nAI:`;
+    const prompt = `User: ${user_input}\nAI:`;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-2-7b-chat-hf", {
+    const response = await fetch("https://api-inference.huggingface.co/models/cohere/command-r-plus", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
@@ -24,7 +24,7 @@ export async function handler(event, context) {
     const data = await response.json();
 
     let aiResponse = data[0]?.generated_text || "오류가 발생했습니다.";
-    aiResponse = aiResponse.replace(/^AI:\s*/, "").trim(); // 불필요한 "AI:" 부분 제거
+    aiResponse = aiResponse.replace(/^AI:\s*/, "").trim(); 
 
     return {
         statusCode: 200,
