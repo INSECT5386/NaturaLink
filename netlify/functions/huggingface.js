@@ -4,7 +4,7 @@ export async function handler(event, context) {
     const user_input = JSON.parse(event.body).text;
     const prompt = `User: ${user_input}\nAI:`;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/cohere/command-r-plus", {
+    const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
@@ -13,7 +13,7 @@ export async function handler(event, context) {
         body: JSON.stringify({
             inputs: prompt,
             parameters: {
-                max_length: 150,
+                max_length: 50,
                 temperature: 0.7,
                 top_p: 0.9,
                 repetition_penalty: 1.2
@@ -23,11 +23,8 @@ export async function handler(event, context) {
 
     const data = await response.json();
 
-    let aiResponse = data[0]?.generated_text || "오류가 발생했습니다.";
-    aiResponse = aiResponse.replace(/^AI:\s*/, "").trim(); 
-
     return {
         statusCode: 200,
-        body: JSON.stringify({ response: aiResponse })
+        body: JSON.stringify(data)
     };
 }
