@@ -14,7 +14,7 @@ export async function handler(event, context) {
             inputs: prompt,
             parameters: {
                 max_tokens: 25,
-                temperature: 0.3,  // 예측 가능한 응답
+                temperature: 0.1,  // 예측 가능한 응답
                 top_p: 0.7,
                 repetition_penalty: 1.3
             }
