@@ -4,7 +4,7 @@ export async function handler(event, context) {
     const user_input = JSON.parse(event.body).text;
     const prompt = `User: ${user_input}\nAI:`;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/microsoft/Phi-3.5-mini-instruct", {
+    const response = await fetch("https://api-inference.huggingface.co/models/kakaobrain/kogpt", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
