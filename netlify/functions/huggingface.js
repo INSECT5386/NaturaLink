@@ -4,7 +4,8 @@ export async function handler(event, context) {
     const user_input = JSON.parse(event.body).text;
     const prompt = `User: ${user_input}\nAI:`;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill", {
+    // Hugging Face 한국어 모델 (예: KoElectra 모델)
+    const response = await fetch("https://api-inference.huggingface.co/models/kykim/koelectra-base", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
