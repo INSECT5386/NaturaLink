@@ -2,9 +2,9 @@ export async function handler(event, context) {
     const API_KEY = process.env.HUGGINGFACE_API_KEY;
 
     const user_input = JSON.parse(event.body).text;
-    const prompt = `이 대화는 한국어로만 진행됩니다. 사용자: ${user_input}\nAI:`;
+    const prompt = `User: ${user_input}\nAI:`;
 
-    const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct", {
+    const response = await fetch("https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${API_KEY}`,
@@ -13,8 +13,8 @@ export async function handler(event, context) {
         body: JSON.stringify({
             inputs: prompt,
             parameters: {
-                max_tokens: 25,
-                temperature: 0.1,  // 예측 가능한 응답
+                max_length: 50,
+                temperature: 0.5,
                 top_p: 0.7,
                 repetition_penalty: 1.3
             }
