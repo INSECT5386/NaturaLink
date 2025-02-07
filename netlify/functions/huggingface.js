@@ -13,7 +13,7 @@ export async function handler(event, context) {
         body: JSON.stringify({
             inputs: prompt,
             parameters: {
-                max_tokens: 50,
+                max_tokens: 25,
                 temperature: 0.3,  // 예측 가능한 응답
                 top_p: 0.7,
                 repetition_penalty: 1.3
