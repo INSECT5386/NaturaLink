@@ -2,7 +2,7 @@ export async function handler(event, context) {
     const API_KEY = process.env.HUGGINGFACE_API_KEY;
 
     const user_input = JSON.parse(event.body).text;
-    const prompt = `User: ${user_input}\nAI:`;
+    const prompt = `이 대화는 한국어로만 진행됩니다. 사용자: ${user_input}\nAI:`;
 
     const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct", {
         method: "POST",
