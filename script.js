@@ -31,6 +31,13 @@ if ("serviceWorker" in navigator) {
         .catch(error => console.error("서비스 워커 등록 실패:", error));
 }
 
+// PWA가 standalone 모드에서 실행될 경우 전체 화면 요청
+if (window.matchMedia('(display-mode: standalone)').matches) {
+    setTimeout(() => {
+        document.documentElement.requestFullscreen();
+    }, 1000);
+}
+
 // 탭 클릭 시 해당 콘텐츠 표시
 document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", function () {
@@ -90,3 +97,4 @@ function hideTypingIndicator() {
     const typingIndicator = document.getElementById("typingIndicator");
     if (typingIndicator) typingIndicator.style.display = "none";
 }
+
