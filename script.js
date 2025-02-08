@@ -2,13 +2,15 @@ let deferredPrompt;
 
 window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault(); // 기본 동작 방지
-    deferredPrompt = event; // 이벤트 저장
+    deferredPrompt = event;
+
+    console.log("beforeinstallprompt 이벤트 발생!");
 
     const installButton = document.getElementById("install-button");
     if (installButton) {
-        installButton.style.display = "block"; // 설치 버튼 표시
+        installButton.style.display = "block"; // 버튼 표시
         installButton.addEventListener("click", () => {
-            deferredPrompt.prompt(); // 설치 프롬프트 표시
+            deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === "accepted") {
                     console.log("사용자가 PWA를 설치함");
@@ -16,6 +18,7 @@ window.addEventListener("beforeinstallprompt", (event) => {
                     console.log("사용자가 설치를 취소함");
                 }
                 deferredPrompt = null;
+                installButton.style.display = "none"; // 설치 후 버튼 숨김
             });
         });
     }
