@@ -57,7 +57,8 @@ if (copyBtn) {
     });
 }
 
-// 메시지 전송 버튼 클릭 시 처리
+// AI API 요청 처리
+const API_URL = "https://naturalink.netlify.app/.netlify/functions/huggingface";
 const sendMessageBtn = document.getElementById("sendMessageBtn");
 if (sendMessageBtn) {
     sendMessageBtn.addEventListener("click", async () => {
@@ -70,7 +71,7 @@ if (sendMessageBtn) {
 
             showTypingIndicator();
             try {
-                const response = await fetch("/.netlify/functions/huggingface", {
+                const response = await fetch(API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ text: userInput })
@@ -97,4 +98,3 @@ function hideTypingIndicator() {
     const typingIndicator = document.getElementById("typingIndicator");
     if (typingIndicator) typingIndicator.style.display = "none";
 }
-
