@@ -175,6 +175,18 @@
         </div>
     </div>
     <button id="install-button">앱 설치</button>
+    
+    <!-- 기존 script.js 포함 -->
     <script src="script.js"></script>
+
+    <!-- Service Worker 등록 추가 -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/service-worker.js")
+                .then(() => console.log("서비스 워커가 등록되었습니다."))
+                .catch(error => console.error("서비스 워커 등록 실패:", error));
+        }
+    </script>
 </body>
 </html>
+
