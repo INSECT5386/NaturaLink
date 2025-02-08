@@ -1,5 +1,5 @@
 document.querySelectorAll(".tab").forEach(tab => {
-    tab.addEventListener("click", function() {
+    tab.addEventListener("click", function () {
         document.querySelectorAll(".content").forEach(c => c.classList.remove("show"));
         document.getElementById(this.getAttribute("data-tab")).classList.add("show");
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
@@ -40,6 +40,7 @@ document.getElementById("sendMessageBtn").addEventListener("click", async () => 
 function showTypingIndicator() {
     document.getElementById("typingIndicator").style.display = "block";
 }
+
 function hideTypingIndicator() {
     document.getElementById("typingIndicator").style.display = "none";
 }
