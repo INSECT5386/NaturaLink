@@ -69,6 +69,69 @@
             opacity: 1;
             transform: translateY(0);
         }
+        button {
+            padding: 12px 24px;
+            font-size: 14px;
+            background: #444;
+            color: #f0f0f0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        #chatbox {
+            border: 1px solid #444;
+            padding: 10px;
+            border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            width: 100%;
+            background-color: #222;
+        }
+        #chatlogs {
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-bubble {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #444;
+            color: #fff;
+            align-self: flex-end;
+        }
+        .ai-message {
+            background-color: #333;
+            color: #80b3ff;
+        }
+        #userInputContainer {
+            display: flex;
+            align-items: center;
+        }
+        #userInput {
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #222;
+            color: #f0f0f0;
+        }
+        #chatbot button {
+            width: 15%;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #444;
+            color: #f0f0f0;
+            border: none;
+        }
+        .typing-indicator {
+            font-style: italic;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -97,22 +160,9 @@
                 <input type="text" id="userInput" placeholder="질문을 입력하세요..." />
                 <button id="sendMessageBtn">보내기</button>
             </div>
+            <div id="typingIndicator" class="typing-indicator" style="display: none;">AI가 입력 중...</div>
         </div>
     </div>
-    <script>
-        document.querySelectorAll(".tab").forEach(tab => {
-            tab.addEventListener("click", function() {
-                document.querySelectorAll(".content").forEach(c => c.classList.remove("show"));
-                document.getElementById(this.getAttribute("data-tab")).classList.add("show");
-                document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-                this.classList.add("active");
-            });
-        });
-
-        document.getElementById("copyBtn").addEventListener("click", () => {
-            const link = window.location.href;
-            navigator.clipboard.writeText(link).then(() => alert("링크가 복사되었습니다!"));
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
