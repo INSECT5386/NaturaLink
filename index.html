@@ -9,7 +9,67 @@
     <title>NaturaLink</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(45deg, #333, #111);
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            text-align: center;
+            padding: 4vh 0;
+            font-size: 4vw;
+            color: #f0f0f0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        h1 a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .tabs {
+            display: flex;
+            justify-content: space-evenly;
+            margin-top: 3vh;
+            width: 100%;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px 0;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #444;
+            color: #f0f0f0;
+            border-radius: 50px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tab:hover, .tab.active {
+            background-color: #666;
+            color: #80b3ff;
+            font-weight: bold;
+        }
+        .content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.3s ease;
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+        }
+        .content.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -37,9 +97,22 @@
                 <input type="text" id="userInput" placeholder="질문을 입력하세요..." />
                 <button id="sendMessageBtn">보내기</button>
             </div>
-            <div id="typingIndicator" class="typing-indicator" style="display: none;">AI가 입력 중...</div>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script>
+        document.querySelectorAll(".tab").forEach(tab => {
+            tab.addEventListener("click", function() {
+                document.querySelectorAll(".content").forEach(c => c.classList.remove("show"));
+                document.getElementById(this.getAttribute("data-tab")).classList.add("show");
+                document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+                this.classList.add("active");
+            });
+        });
+
+        document.getElementById("copyBtn").addEventListener("click", () => {
+            const link = window.location.href;
+            navigator.clipboard.writeText(link).then(() => alert("링크가 복사되었습니다!"));
+        });
+    </script>
 </body>
 </html>
