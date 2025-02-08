@@ -1,40 +1,33 @@
 let deferredPrompt;
 
+// PWA 설치 이벤트 감지
 window.addEventListener("beforeinstallprompt", (event) => {
-    event.preventDefault(); // 기본 동작 방지
+    event.preventDefault();
     deferredPrompt = event;
-
-    console.log("beforeinstallprompt 이벤트 발생!");
+    console.log("📲 PWA 설치 가능!");
 
     const installButton = document.getElementById("install-button");
     if (installButton) {
-        installButton.style.display = "block"; // 버튼 표시
+        installButton.style.display = "block";
         installButton.addEventListener("click", () => {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === "accepted") {
-                    console.log("사용자가 PWA를 설치함");
-                } else {
-                    console.log("사용자가 설치를 취소함");
-                }
+                console.log(choiceResult.outcome === "accepted" ? "✅ PWA 설치 완료" : "❌ PWA 설치 취소");
                 deferredPrompt = null;
-                installButton.style.display = "none"; // 설치 후 버튼 숨김
+                installButton.style.display = "none";
             });
         });
     }
 });
 
-// 서비스 워커 등록 및 업데이트 확인
+// 서비스 워커 등록 및 업데이트 감지
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/service-worker.js").then((registration) => {
-        console.log("✅ 서비스 워커가 등록되었습니다.");
-        
-        // 새로운 서비스 워커가 감지되면 업데이트 알림
+        console.log("✅ 서비스 워커 등록 완료");
         registration.onupdatefound = () => {
             const newWorker = registration.installing;
             newWorker.onstatechange = () => {
                 if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-                    console.log("🔄 새로운 버전이 감지되었습니다. 페이지를 새로고침하세요.");
                     showUpdateNotification();
                 }
             };
@@ -42,7 +35,7 @@ if ("serviceWorker" in navigator) {
     }).catch(error => console.error("❌ 서비스 워커 등록 실패:", error));
 }
 
-// 업데이트 알림 표시
+// 서비스 워커 업데이트 알림 표시
 function showUpdateNotification() {
     const updateBanner = document.createElement("div");
     updateBanner.innerHTML = `
@@ -53,7 +46,7 @@ function showUpdateNotification() {
     document.body.appendChild(updateBanner);
 }
 
-// 서비스 워커 업데이트 및 페이지 새로고침
+// 서비스 워커 업데이트 및 새로고침
 function updateServiceWorker() {
     if (navigator.serviceWorker.controller) {
         navigator.serviceWorker.controller.postMessage({ action: "skipWaiting" });
@@ -67,73 +60,104 @@ navigator.serviceWorker.addEventListener("message", (event) => {
     }
 });
 
-// PWA가 standalone 모드에서 실행될 경우 전체 화면 요청
+// PWA 전체 화면 모드 적용
 if (window.matchMedia('(display-mode: standalone)').matches) {
     setTimeout(() => {
         document.documentElement.requestFullscreen();
     }, 1000);
 }
 
-// 탭 클릭 시 해당 콘텐츠 표시
-document.querySelectorAll(".tab").forEach(tab => {
+// 탭 메뉴 기능
+const tabs = document.querySelectorAll(".tab");
+const contents = document.querySelectorAll(".content");
+
+tabs.forEach(tab => {
     tab.addEventListener("click", function () {
-        document.querySelectorAll(".content").forEach(c => c.classList.remove("show"));
-        document.getElementById(this.getAttribute("data-tab")).classList.add("show");
-        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tabs.forEach(t => t.classList.remove("active"));
+        contents.forEach(c => c.classList.remove("show"));
         this.classList.add("active");
+        document.getElementById(this.getAttribute("data-tab")).classList.add("show");
     });
 });
 
-// 링크 복사 버튼 클릭 시 링크 복사
+// 링크 복사 기능
 const copyBtn = document.getElementById("copyBtn");
 if (copyBtn) {
     copyBtn.addEventListener("click", () => {
-        const link = window.location.href;
-        navigator.clipboard.writeText(link).then(() => alert("링크가 복사되었습니다!"));
+        navigator.clipboard.writeText(window.location.href).then(() => alert("🔗 링크가 복사되었습니다!"));
     });
 }
 
-// AI API 요청 처리 (서드파티 쿠키 차단 방지)
+// 챗봇 API 요청 최적화
 const API_URL = "https://naturalink.netlify.app/.netlify/functions/huggingface";
 const sendMessageBtn = document.getElementById("sendMessageBtn");
+const chatlogs = document.getElementById("chatlogs");
+const userInput = document.getElementById("userInput");
+
 if (sendMessageBtn) {
     sendMessageBtn.addEventListener("click", async () => {
-        const userInput = document.getElementById("userInput").value.trim();
-        if (userInput) {
-            const chatlogs = document.getElementById("chatlogs");
-            chatlogs.innerHTML += `<div class="chat-bubble user-message">You: ${userInput}</div>`;
-            document.getElementById("userInput").value = "";
-            chatlogs.scrollTop = chatlogs.scrollHeight;
+        const message = userInput.value.trim();
+        if (!message) return;
 
-            showTypingIndicator();
-            try {
+        addUserMessage(message);
+        userInput.value = "";
+        chatlogs.scrollTop = chatlogs.scrollHeight;
+
+        showTypingIndicator();
+
+        try {
+            const cachedResponse = getCachedResponse(message);
+            if (cachedResponse) {
+                addAIMessage(cachedResponse);
+            } else {
                 const response = await fetch(API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ text: userInput }),
-                    credentials: "omit" // ✅ 서드파티 쿠키 차단 방지
+                    body: JSON.stringify({ text: message }),
+                    credentials: "omit"
                 });
                 const data = await response.json();
-                chatlogs.innerHTML += `<div class="chat-bubble ai-message">AI: ${data[0].generated_text}</div>`;
-            } catch (error) {
-                chatlogs.innerHTML += `<div class="chat-bubble ai-message">AI 응답을 불러오는 데 실패했습니다.</div>`;
+                addAIMessage(data[0].generated_text);
+                cacheResponse(message, data[0].generated_text);
             }
-            hideTypingIndicator();
-            chatlogs.scrollTop = chatlogs.scrollHeight;
+        } catch (error) {
+            addAIMessage("⚠️ 네트워크 오류 발생! 다시 시도해주세요.");
         }
+
+        hideTypingIndicator();
+        chatlogs.scrollTop = chatlogs.scrollHeight;
     });
+}
+
+// 사용자 메시지 추가
+function addUserMessage(message) {
+    chatlogs.innerHTML += `<div class="chat-bubble user-message">You: ${message}</div>`;
+}
+
+// AI 메시지 추가
+function addAIMessage(message) {
+    chatlogs.innerHTML += `<div class="chat-bubble ai-message">AI: ${message}</div>`;
 }
 
 // 타이핑 인디케이터 표시
 function showTypingIndicator() {
-    const typingIndicator = document.getElementById("typingIndicator");
-    if (typingIndicator) typingIndicator.style.display = "block";
+    document.getElementById("typingIndicator").style.display = "block";
 }
 
 // 타이핑 인디케이터 숨기기
 function hideTypingIndicator() {
-    const typingIndicator = document.getElementById("typingIndicator");
-    if (typingIndicator) typingIndicator.style.display = "none";
+    document.getElementById("typingIndicator").style.display = "none";
 }
 
+// 챗봇 응답 캐싱
+function cacheResponse(input, response) {
+    const cache = JSON.parse(localStorage.getItem("chatCache")) || {};
+    cache[input] = response;
+    localStorage.setItem("chatCache", JSON.stringify(cache));
+}
 
+// 캐싱된 응답 조회
+function getCachedResponse(input) {
+    const cache = JSON.parse(localStorage.getItem("chatCache")) || {};
+    return cache[input] || null;
+}
