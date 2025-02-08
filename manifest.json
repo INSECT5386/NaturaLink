@@ -1,12 +1,12 @@
 {
   "name": "NaturaLink",
   "short_name": "NaturaLink",
-  "description": "자연과 사람을 연결하는 링크 플랫폼",
-  "start_url": "https://naturalink.netlify.app/",
+  "start_url": "/",
+  "scope": "/",
+  "id": "https://naturalink.netlify.app/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "/assets/icons/android-chrome-192x192.png",
@@ -18,11 +18,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "scope": "https://naturalink.netlify.app/",
-  "id": "https://naturalink.netlify.app/",
-  "categories": ["social", "productivity", "communication"],
-  "lang": "ko-KR",
-  "related_applications": [],
-  "prefer_related_applications": false
+  ]
 }
