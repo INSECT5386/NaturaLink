@@ -47,11 +47,25 @@ function showUpdateNotification() {
     const updateBanner = document.createElement("div");
     updateBanner.innerHTML = `
         <div style="position: fixed; bottom: 0; width: 100%; background: #333; color: #fff; text-align: center; padding: 10px;">
-            새로운 버전이 있습니다! <button onclick="location.reload()">새로고침</button>
+            새로운 버전이 있습니다! <button onclick="updateServiceWorker()">새로고침</button>
         </div>
     `;
     document.body.appendChild(updateBanner);
 }
+
+// 서비스 워커 업데이트 및 페이지 새로고침
+function updateServiceWorker() {
+    if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ action: "skipWaiting" });
+    }
+}
+
+// 서비스 워커 메시지 리스너
+navigator.serviceWorker.addEventListener("message", (event) => {
+    if (event.data.action === "reload") {
+        window.location.reload();
+    }
+});
 
 // PWA가 standalone 모드에서 실행될 경우 전체 화면 요청
 if (window.matchMedia('(display-mode: standalone)').matches) {
@@ -120,4 +134,5 @@ function hideTypingIndicator() {
     const typingIndicator = document.getElementById("typingIndicator");
     if (typingIndicator) typingIndicator.style.display = "none";
 }
+
 
