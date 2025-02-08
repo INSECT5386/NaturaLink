@@ -4,8 +4,8 @@ const urlsToCache = [
     "/index.html", 
     "/favicon.ico", 
     "/manifest.json", 
-    "/assets/icons/icon-192.png", 
-    "/assets/icons/icon-512.png"
+    "/assets/icons/android-chrome-192x192.png", 
+    "/assets/icons/android-chrome-512x512.png"
 ];
 
 self.addEventListener("install", (event) => {
