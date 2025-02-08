@@ -1,25 +1,28 @@
 {
-    "name": "NaturaLink",
-    "short_name": "NaturaLink",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#111",
-    "theme_color": "#333",
-    "icons": [
-        {
-            "src": "/favicon.ico",
-            "sizes": "48x48",
-            "type": "image/x-icon"
-        },
-        {
-            "src": "/icon-192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
+  "name": "NaturaLink",
+  "short_name": "NaturaLink",
+  "description": "자연과 사람을 연결하는 링크 플랫폼",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#1E1E1E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "scope": "/",
+  "id": "/",
+  "categories": ["social", "productivity", "communication"],
+  "lang": "ko-KR",
+  "related_applications": [],
+  "prefer_related_applications": false
 }
