@@ -24,11 +24,33 @@ window.addEventListener("beforeinstallprompt", (event) => {
     }
 });
 
-// 서비스 워커 등록
+// 서비스 워커 등록 및 업데이트 확인
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/service-worker.js")
-        .then(() => console.log("서비스 워커가 등록되었습니다."))
-        .catch(error => console.error("서비스 워커 등록 실패:", error));
+    navigator.serviceWorker.register("/service-worker.js").then((registration) => {
+        console.log("✅ 서비스 워커가 등록되었습니다.");
+        
+        // 새로운 서비스 워커가 감지되면 업데이트 알림
+        registration.onupdatefound = () => {
+            const newWorker = registration.installing;
+            newWorker.onstatechange = () => {
+                if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                    console.log("🔄 새로운 버전이 감지되었습니다. 페이지를 새로고침하세요.");
+                    showUpdateNotification();
+                }
+            };
+        };
+    }).catch(error => console.error("❌ 서비스 워커 등록 실패:", error));
+}
+
+// 업데이트 알림 표시
+function showUpdateNotification() {
+    const updateBanner = document.createElement("div");
+    updateBanner.innerHTML = `
+        <div style="position: fixed; bottom: 0; width: 100%; background: #333; color: #fff; text-align: center; padding: 10px;">
+            새로운 버전이 있습니다! <button onclick="location.reload()">새로고침</button>
+        </div>
+    `;
+    document.body.appendChild(updateBanner);
 }
 
 // PWA가 standalone 모드에서 실행될 경우 전체 화면 요청
@@ -98,3 +120,4 @@ function hideTypingIndicator() {
     const typingIndicator = document.getElementById("typingIndicator");
     if (typingIndicator) typingIndicator.style.display = "none";
 }
+
