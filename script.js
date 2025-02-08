@@ -93,7 +93,7 @@ if (copyBtn) {
     });
 }
 
-// AI API 요청 처리
+// AI API 요청 처리 (서드파티 쿠키 차단 방지)
 const API_URL = "https://naturalink.netlify.app/.netlify/functions/huggingface";
 const sendMessageBtn = document.getElementById("sendMessageBtn");
 if (sendMessageBtn) {
@@ -110,7 +110,8 @@ if (sendMessageBtn) {
                 const response = await fetch(API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ text: userInput })
+                    body: JSON.stringify({ text: userInput }),
+                    credentials: "omit" // ✅ 서드파티 쿠키 차단 방지
                 });
                 const data = await response.json();
                 chatlogs.innerHTML += `<div class="chat-bubble ai-message">AI: ${data[0].generated_text}</div>`;
