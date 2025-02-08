@@ -1,6 +1,6 @@
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(45deg, #333, #111);
+    background: radial-gradient(circle at center, #222 0%, #111 100%);
     color: #f0f0f0;
     margin: 0;
     padding: 0;
@@ -18,6 +18,7 @@ header {
     letter-spacing: 3px;
     font-weight: 700;
     margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
 }
 
 h1 a {
@@ -41,13 +42,14 @@ h1 a {
     background-color: #444;
     color: #f0f0f0;
     border-radius: 50px;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
 }
 
 .tab:hover, .tab.active {
-    background-color: #666;
-    color: #80b3ff;
+    background-color: #80b3ff;
+    color: #fff;
     font-weight: bold;
+    box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
 }
 
 .content {
@@ -73,6 +75,13 @@ button {
     border: none;
     border-radius: 10px;
     cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+    background-color: #80b3ff;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
 }
 
 #chatbox {
@@ -100,14 +109,16 @@ button {
 }
 
 .user-message {
-    background-color: #444;
+    background: linear-gradient(135deg, #80b3ff, #1e90ff);
     color: #fff;
     align-self: flex-end;
+    box-shadow: 0 0 5px rgba(128, 179, 255, 0.8);
 }
 
 .ai-message {
-    background-color: #333;
+    background: linear-gradient(135deg, #333, #444);
     color: #80b3ff;
+    box-shadow: 0 0 5px rgba(128, 179, 255, 0.5);
 }
 
 #userInputContainer {
@@ -149,3 +160,4 @@ button {
     cursor: pointer;
     margin-top: 20px;
 }
+
