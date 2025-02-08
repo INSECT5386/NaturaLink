@@ -1,43 +1,43 @@
-const CACHE_NAME = "natura-link-cache-v1";
-const urlsToCache = [
-    "/", 
-    "/index.html", 
-    "/favicon.ico", 
-    "/manifest.json", 
-    "/assets/icons/android-chrome-192x192.png", 
-    "/assets/icons/android-chrome-512x512.png"
+const CACHE_NAME = "natura-cache-v1";
+const ASSETS = [
+    "/",  
+    "/index.html",
+    "/favicon.ico",
+    "/favicon-16x16.png",
+    "/favicon-32x32.png",
+    "/android-chrome-192x192.png",
+    "/android-chrome-512x512.png",
+    "/manifest.json",
+    "/service-worker.js",
+    "/script.js"  // JS 파일만 유지
 ];
 
+// 설치 이벤트에서 캐싱
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(urlsToCache);
+            console.log("캐싱 완료!");
+            return cache.addAll(ASSETS);
         })
     );
-    self.skipWaiting(); // 새로운 서비스 워커 즉시 활성화
 });
 
+// 요청 가로채서 캐시에서 제공
 self.addEventListener("fetch", (event) => {
     event.respondWith(
         caches.match(event.request).then((response) => {
-            return response || fetch(event.request).catch(() => {
-                return caches.match("/index.html"); // 네트워크 오류 시 기본 페이지 반환
-            });
+            return response || fetch(event.request);
         })
     );
 });
 
+// 오래된 캐시 삭제
 self.addEventListener("activate", (event) => {
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
+        caches.keys().then((keys) => {
             return Promise.all(
-                cacheNames.map((cache) => {
-                    if (cache !== CACHE_NAME) {
-                        return caches.delete(cache);
-                    }
-                })
+                keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
             );
         })
     );
-    self.clients.claim(); // 새로운 서비스 워커가 즉시 컨트롤하도록 설정
 });
