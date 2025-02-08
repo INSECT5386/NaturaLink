@@ -1,4 +1,3 @@
-// PWA 설치 이벤트 처리
 let deferredPrompt;
 
 window.addEventListener("beforeinstallprompt", (event) => {
@@ -21,6 +20,13 @@ window.addEventListener("beforeinstallprompt", (event) => {
         });
     }
 });
+
+// 서비스 워커 등록
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js")
+        .then(() => console.log("서비스 워커가 등록되었습니다."))
+        .catch(error => console.error("서비스 워커 등록 실패:", error));
+}
 
 // 탭 클릭 시 해당 콘텐츠 표시
 document.querySelectorAll(".tab").forEach(tab => {
