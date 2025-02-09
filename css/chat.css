@@ -46,8 +46,9 @@
 /* ✅ 입력창 컨테이너 */
 #userInputContainer {
     display: flex;
+    flex-direction: row; /* 👉 가로 정렬 */
     align-items: center;
-    justify-content: space-between; /* 버튼 정렬 */
+    justify-content: center;
     gap: 5px; /* 버튼 간격 */
     margin-top: 10px;
     width: 100%;
@@ -67,11 +68,11 @@
 /* ✅ 버튼 공통 스타일 */
 #sendMessageBtn,
 #clearChatBtn {
-    padding: 8px 14px;
+    padding: 8px 12px;
     border-radius: 5px;
     border: none;
     cursor: pointer;
-    transition: background 0.3s ease-in-out;
+    transition: background 0.3s ease-in-out, color 0.3s;
     font-size: 13px;
     width: fit-content;
 }
@@ -91,11 +92,18 @@
 /* ✅ 대화 지우기 버튼 (보내기 버튼 옆으로 배치) */
 #clearChatBtn {
     background: #555; /* 어두운 색상 */
-    color: #ddd;
+    color: #ddd; /* 부드러운 대비 */
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, color 0.3s;
+    width: fit-content;
 }
 
+/* ✅ 버튼 호버 효과 */
 #clearChatBtn:hover {
-    background: #777;
+    background: #777; /* 부드러운 hover 효과 */
     color: white;
 }
 
