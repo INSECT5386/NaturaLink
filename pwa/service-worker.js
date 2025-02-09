@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v7";
+const CACHE_NAME = "natura-link-cache-v9";  // ✅ 캐시 버전 업데이트!
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 확실한 경로 지정
 
 const STATIC_ASSETS = [
@@ -26,7 +26,7 @@ self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then(async (cache) => {
             try {
-                await cache.add(OFFLINE_PAGE);
+                await cache.addAll(STATIC_ASSETS);
                 console.log(`✅ 캐싱 성공: ${OFFLINE_PAGE}`);
             } catch (error) {
                 console.warn(`⚠️ 캐싱 실패: ${OFFLINE_PAGE}`, error);
@@ -41,7 +41,7 @@ self.addEventListener("fetch", (event) => {
 
     event.respondWith(
         fetch(event.request).catch(() => {
-            console.warn("🌐 오프라인 상태 - offline.html 반환");
+            console.warn("🌐 오프라인 상태 - 최신 offline.html 반환");
             return caches.match(OFFLINE_PAGE) || new Response("<h1>오프라인 상태입니다</h1>", {
                 headers: { "Content-Type": "text/html" }
             });
@@ -49,7 +49,7 @@ self.addEventListener("fetch", (event) => {
     );
 });
 
-// ✅ 오래된 캐시 정리 및 서비스 워커 활성화
+// ✅ 이전 캐시 삭제 및 서비스 워커 강제 업데이트
 self.addEventListener("activate", (event) => {
     console.log("🚀 새로운 서비스 워커 활성화!");
     event.waitUntil(
