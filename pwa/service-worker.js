@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v30";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v31";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -15,11 +15,7 @@ const STATIC_ASSETS = [
     "/css/chat.css",
     "/favicons/favicon-16x16.png",
     "/favicons/favicon-32x32.png",
-    "/favicons/favicon.ico"
-];
-
-// ✅ 아이콘 파일이 있는 올바른 경로 사용 (기존 "icons/" → "icon/")
-const ICONS = [
+    "/favicons/favicon.ico",
     "/assets/icon/android-chrome-192x192.png",
     "/assets/icon/android-chrome-512x512.png"
 ];
@@ -32,7 +28,7 @@ self.addEventListener("install", (event) => {
             const cache = await caches.open(CACHE_NAME);
 
             // ✅ 정적 파일 및 아이콘 캐싱
-            for (const asset of [...STATIC_ASSETS, ...ICONS]) {
+            for (const asset of STATIC_ASSETS) {
                 try {
                     const response = await fetch(asset);
                     if (!response.ok) throw new Error(`❌ ${asset} - ${response.status} 오류`);
@@ -46,7 +42,7 @@ self.addEventListener("install", (event) => {
     );
 });
 
-// ✅ 네트워크 요청 핸들링 (네트워크 우선, 실패 시 캐시 사용)
+// ✅ 네트워크 요청 핸들링 (오프라인 시 `offline.html` 강제 반환)
 self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return;
 
@@ -57,7 +53,7 @@ self.addEventListener("fetch", (event) => {
                 console.warn("🌐 네트워크 오류 발생, 캐시에서 로드 시도:", event.request.url);
                 const cache = await caches.open(CACHE_NAME);
                 
-                // ✅ 오프라인 페이지 요청이면 강제로 offline.html 반환
+                // ✅ 오프라인 상태에서 페이지 이동 시 `offline.html` 반환
                 if (event.request.mode === "navigate") {
                     return await cache.match(OFFLINE_PAGE) || new Response("<h1>오프라인 상태입니다</h1>", {
                         headers: { "Content-Type": "text/html" }
