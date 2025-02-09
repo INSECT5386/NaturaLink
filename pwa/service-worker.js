@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v26";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v27";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -25,11 +25,15 @@ self.addEventListener("install", (event) => {
     console.log("📦 서비스 워커 설치 중...");
     event.waitUntil(
         caches.open(CACHE_NAME).then(async (cache) => {
-            try {
-                await cache.addAll(STATIC_ASSETS);
-                console.log("✅ 모든 정적 파일 캐싱 완료");
-            } catch (error) {
-                console.warn("⚠️ 일부 파일 캐싱 실패:", error);
+            for (const asset of STATIC_ASSETS) {
+                try {
+                    const response = await fetch(asset, { cache: "reload" });
+                    if (!response.ok) throw new Error(`❌ ${asset} - ${response.status} 오류`);
+                    await cache.put(asset, response);
+                    console.log(`✅ 캐싱 성공: ${asset}`);
+                } catch (error) {
+                    console.warn(`⚠️ 캐싱 실패: ${asset}`, error);
+                }
             }
         }).then(() => self.skipWaiting())
     );
@@ -41,9 +45,7 @@ self.addEventListener("fetch", (event) => {
 
     event.respondWith(
         fetch(event.request)
-            .then((response) => {
-                return response;
-            })
+            .then((response) => response)
             .catch(async () => {
                 console.warn("🌐 네트워크 오류 발생, 캐시에서 로드 시도:", event.request.url);
                 const cache = await caches.open(CACHE_NAME);
