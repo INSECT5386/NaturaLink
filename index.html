@@ -8,27 +8,42 @@
     <meta property="og:description" content="NaturaLink">
     <title>NaturaLink</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <!-- 폰트 -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">  <!-- CSS 파일 연결 -->
+
+    <!-- 분리된 CSS 파일 -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/chat.css">
 </head>
 <body>
     <header>
         <h1><a href="/">NaturaLink</a></h1>
     </header>
+
+    <!-- 탭 메뉴 -->
     <div class="tabs">
         <div class="tab active" data-tab="search">검색</div>
         <div class="tab" data-tab="link">링크 복사</div>
         <div class="tab" data-tab="ai">AI</div>
     </div>
+
+    <!-- 검색 탭 -->
     <div class="content show" id="search">
         <script async src="https://cse.google.com/cse.js?cx=00d831986d20a4627"></script>
         <div class="gcse-search"></div>
     </div>
+
+    <!-- 링크 복사 탭 -->
     <div class="content" id="link">
         <h2>링크 복사</h2>
         <p>NaturaLink 링크를 복사하려면 아래 버튼을 클릭하세요.</p>
         <button id="copyBtn">링크 복사</button>
     </div>
+
+    <!-- AI 챗봇 탭 -->
     <div class="content" id="ai">
         <h2>AI 챗봇</h2>
         <div id="chatbox">
@@ -40,10 +55,14 @@
             <div id="typingIndicator" class="typing-indicator" style="display: none;">AI가 입력 중...</div>
         </div>
     </div>
+
+    <!-- PWA 설치 버튼 -->
     <button id="install-button">앱 설치</button>
     
+    <!-- JavaScript -->
     <script src="script.js"></script>
 
+    <!-- 서비스 워커 등록 -->
     <script>
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/service-worker.js")
