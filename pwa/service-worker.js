@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v54";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v55";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -19,55 +19,51 @@ const STATIC_ASSETS = [
     "/assets/icon/android-chrome-512x512.png"
 ];
 
-// ✅ IndexedDB에 `offline.html` 저장
+// ✅ IndexedDB에 `offline.html` 저장 (트랜잭션 오류 해결)
 async function saveToIndexedDB(key, response) {
-    return new Promise((resolve, reject) => {
+    try {
+        const blob = await response.blob();  // ✅ 비동기 작업 완료 후 트랜잭션 실행
         const dbRequest = indexedDB.open("OfflineCache", 1);
-        
+
         dbRequest.onupgradeneeded = () => {
             const db = dbRequest.result;
             db.createObjectStore("files");
         };
-        
-        dbRequest.onsuccess = async () => {
+
+        dbRequest.onsuccess = () => {
             const db = dbRequest.result;
-            const transaction = db.transaction("files", "readwrite");
+            const transaction = db.transaction("files", "readwrite");  // ✅ 트랜잭션 생성
             const store = transaction.objectStore("files");
-            const blob = await response.blob();
-            store.put(blob, key);
+            store.put(blob, key);  // ✅ 트랜잭션이 닫히기 전에 실행
             console.log(`✅ IndexedDB에 저장 완료: ${key}`);
-            resolve();
         };
-        
+
         dbRequest.onerror = (event) => {
             console.error("❌ IndexedDB 오류:", event.target.error);
-            reject(event.target.error);
         };
-    });
+    } catch (error) {
+        console.error("❌ IndexedDB 저장 실패:", error);
+    }
 }
 
 // ✅ IndexedDB에서 `offline.html` 불러오기
 async function getFromIndexedDB(key) {
     return new Promise((resolve, reject) => {
         const dbRequest = indexedDB.open("OfflineCache", 1);
-        
+
         dbRequest.onsuccess = () => {
             const db = dbRequest.result;
             const transaction = db.transaction("files", "readonly");
             const store = transaction.objectStore("files");
             const request = store.get(key);
-            
+
             request.onsuccess = () => {
-                if (request.result) {
-                    resolve(new Response(request.result));
-                } else {
-                    reject("❌ IndexedDB에 `offline.html` 없음");
-                }
+                resolve(request.result ? new Response(request.result) : null);
             };
-            
+
             request.onerror = () => reject(request.error);
         };
-        
+
         dbRequest.onerror = () => reject(dbRequest.error);
     });
 }
@@ -75,7 +71,7 @@ async function getFromIndexedDB(key) {
 // ✅ 서비스 워커 설치 및 `offline.html` 강제 캐싱
 self.addEventListener("install", (event) => {
     console.log("📦 서비스 워커 설치 중...");
-    
+
     event.waitUntil(
         (async () => {
             const cache = await caches.open(CACHE_NAME);
@@ -141,7 +137,7 @@ self.addEventListener("fetch", (event) => {
 // ✅ 기존 캐시 삭제하되, `offline.html`을 유지하도록 변경
 self.addEventListener("activate", (event) => {
     console.log("🚀 새로운 서비스 워커 활성화!");
-    
+
     event.waitUntil(
         (async () => {
             const cacheKeys = await caches.keys();
