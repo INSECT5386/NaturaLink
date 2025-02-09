@@ -91,3 +91,23 @@
     font-style: italic;
     color: #999;
 }
+
+/* ✅ 대화 지우기 버튼 스타일 */
+#clearChatBtn {
+    background: linear-gradient(135deg, #666, #444);
+    color: #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    width: auto;
+    padding: 8px 14px;
+}
+
+#clearChatBtn:hover {
+    background: linear-gradient(135deg, #777, #555);
+    color: white;
+}
+
+#clearChatBtn:active {
+    transform: scale(0.98);
+}
