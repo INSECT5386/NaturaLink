@@ -12,7 +12,7 @@
     <!-- 폰트 -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <!-- 분리된 CSS 파일 -->
+    <!-- CSS 파일 -->
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/layout.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -60,16 +60,9 @@
     <button id="install-button">앱 설치</button>
     
     <!-- JavaScript -->
-    <script src="/js/script.js"></script>
-
-    <!-- 서비스 워커 등록 -->
-    <script>
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/pwa/service-worker.js")
-                .then(() => console.log("서비스 워커가 등록되었습니다."))
-                .catch(error => console.error("서비스 워커 등록 실패:", error));
-        }
-    </script>
+    <script src="/js/chat.js"></script>  <!-- ✅ 챗봇 기능 -->
+    <script src="/js/pwa.js"></script>   <!-- ✅ PWA 기능 -->
+    <script src="/js/script.js"></script> <!-- ✅ UI 기능 (탭 전환, 버튼 등) -->
 </body>
 </html>
 
