@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v48";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v49";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -45,11 +45,9 @@ self.addEventListener("install", (event) => {
     );
 });
 
-// ✅ 오프라인 시 `offline.html` 강제 반환 (네트워크 차단 우회)
+// ✅ 오프라인 시 `offline.html` 강제 반환 (캐시 유지 적용)
 self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return;
-
-    console.log(`🔍 요청 감지: ${event.request.url}, Mode: ${event.request.mode}`);
 
     event.respondWith(
         (async () => {
@@ -60,19 +58,11 @@ self.addEventListener("fetch", (event) => {
                 console.warn(`🌐 네트워크 오류 발생! 요청 URL: ${event.request.url}`);
                 const cache = await caches.open(CACHE_NAME);
 
-                // ✅ 모든 `navigate` 요청은 `offline.html` 강제 반환
                 if (event.request.mode === "navigate") {
                     console.warn("🛑 `navigate` 요청 감지 - offline.html 강제 반환");
-                    const offlineResponse = await cache.match(OFFLINE_PAGE);
-                    if (offlineResponse) {
-                        console.log("✅ `offline.html` 반환 성공!");
-                        return offlineResponse;
-                    } else {
-                        console.error("❌ `offline.html`이 캐시에 없음!");
-                        return new Response("<h1>오프라인 상태입니다</h1>", {
-                            headers: { "Content-Type": "text/html" }
-                        });
-                    }
+                    return await cache.match(OFFLINE_PAGE) || new Response("<h1>오프라인 상태입니다</h1>", {
+                        headers: { "Content-Type": "text/html" }
+                    });
                 }
 
                 return await cache.match(event.request) || new Response("<h1>오프라인 상태입니다</h1>", {
