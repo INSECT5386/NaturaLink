@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v6";
+const CACHE_NAME = "natura-link-cache-v7";
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 확실한 경로 지정
 
 const STATIC_ASSETS = [
