@@ -26,7 +26,7 @@ self.addEventListener("install", (event) => {
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(STATIC_ASSETS);
         }).then(() => {
-            self.skipWaiting(); // ✅ 즉시 새로운 서비스 워커 활성화
+            self.skipWaiting();
         }).catch((error) => {
             console.error("❌ 캐싱 중 오류 발생:", error);
         })
@@ -43,14 +43,7 @@ self.addEventListener("fetch", (event) => {
     }
 
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
-            return cachedResponse || fetch(event.request).then((response) => {
-                return caches.open(CACHE_NAME).then((cache) => {
-                    cache.put(event.request, response.clone());
-                    return response;
-                });
-            });
-        }).catch(() => {
+        fetch(event.request).catch(() => {
             console.warn("🌐 오프라인 상태 - offline.html 로드");
             return caches.match("/pwa/offline.html"); // ✅ 오프라인 시 강제 반환
         })
@@ -71,13 +64,3 @@ self.addEventListener("activate", (event) => {
     );
 });
 
-// ✅ 서비스 워커 업데이트 자동 적용
-self.addEventListener("message", (event) => {
-    if (event.data.action === "skipWaiting") {
-        console.log("⚡ 새로운 서비스 워커가 활성화됩니다!");
-        self.skipWaiting();
-        self.clients.matchAll().then(clients => {
-            clients.forEach(client => client.postMessage({ action: "reload" }));
-        });
-    }
-});
