@@ -1,24 +1,5 @@
-const CACHE_NAME = "natura-link-cache-v72";
+const CACHE_NAME = "natura-link-cache-v73";
 const OFFLINE_PAGE = "/pwa/offline.html";
-
-// ✅ 캐싱할 정적 파일 목록
-const STATIC_ASSETS = [
-    "/index.html",
-    "/js/script.js",
-    "/js/chat.js",
-    "/js/pwa.js",
-    "/pwa/manifest.json",
-    "/pwa/service-worker.js",
-    "/css/base.css",
-    "/css/layout.css",
-    "/css/components.css",
-    "/css/chat.css",
-    "/favicons/favicon-16x16.png",
-    "/favicons/favicon-32x32.png",
-    "/favicons/favicon.ico",
-    "/assets/icon/android-chrome-192x192.png",
-    "/assets/icon/android-chrome-512x512.png"
-];
 
 // ✅ `offline.html`을 메모리에 저장하기 위한 변수
 let offlinePageBlob = null;
@@ -80,7 +61,23 @@ self.addEventListener("install", (event) => {
             }
 
             try {
-                await cache.addAll(STATIC_ASSETS);
+                await cache.addAll([
+                    "/index.html",
+                    "/js/script.js",
+                    "/js/chat.js",
+                    "/js/pwa.js",
+                    "/pwa/manifest.json",
+                    "/pwa/service-worker.js",
+                    "/css/base.css",
+                    "/css/layout.css",
+                    "/css/components.css",
+                    "/css/chat.css",
+                    "/favicons/favicon-16x16.png",
+                    "/favicons/favicon-32x32.png",
+                    "/favicons/favicon.ico",
+                    "/assets/icon/android-chrome-192x192.png",
+                    "/assets/icon/android-chrome-512x512.png"
+                ]);
                 console.log("✅ 정적 파일 캐싱 완료!");
             } catch (error) {
                 console.error("❌ 정적 파일 캐싱 실패:", error);
@@ -89,7 +86,7 @@ self.addEventListener("install", (event) => {
     );
 });
 
-// ✅ 네트워크 요청 실패 시 `offline.html` 반환 (자동 복구 기능 추가)
+// ✅ 네트워크 요청 실패 시 `offline.html` 반환 (강제 복구)
 self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return;
 
@@ -99,6 +96,11 @@ self.addEventListener("fetch", (event) => {
                 return await fetch(event.request);
             } catch (error) {
                 console.warn(`🚨 네트워크 연결 실패! 요청 URL: ${event.request.url}`);
+
+                if (event.request.url.includes(OFFLINE_PAGE)) {
+                    console.log("✅ `offline.html` 직접 반환!");
+                    return await restoreOfflinePage();
+                }
 
                 const cache = await caches.open(CACHE_NAME);
                 let response = await cache.match(event.request);
