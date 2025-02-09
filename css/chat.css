@@ -43,12 +43,12 @@
     border-radius: 15px 15px 15px 0;
 }
 
-/* ✅ 입력창 컨테이너 (수정됨) */
+/* ✅ 입력창 컨테이너 */
 #userInputContainer {
     display: flex;
     align-items: center;
     justify-content: space-between; /* 버튼 정렬 */
-    gap: 5px; /* 버튼 간 간격 */
+    gap: 5px; /* 버튼 간격 */
     margin-top: 10px;
     width: 100%;
 }
@@ -97,4 +97,10 @@
 #clearChatBtn:hover {
     background: #777;
     color: white;
+}
+
+/* ✅ 타이핑 인디케이터 */
+.typing-indicator {
+    font-style: italic;
+    color: #999;
 }
