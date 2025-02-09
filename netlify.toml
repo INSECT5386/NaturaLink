@@ -1,4 +1,24 @@
+# 🔹 기본 설정
+[build]
+  command = "npm run build"  # 필요 없으면 제거 가능
+  publish = "public"         # 정적 파일 폴더 (배포 폴더 설정)
+
+# 🔹 PWA가 최신 버전을 유지하도록 캐싱 비활성화
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate, proxy-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+# 🔹 PWA 오프라인 지원 설정 (오프라인 시 `offline.html` 반환)
 [[redirects]]
-  from = "/pwa/*"
-  to = "/pwa/:splat"
+  from = "/*"
+  to = "/pwa/offline.html"
   status = 200
+  condition = {Country = ["XX"]}  # 특정 지역 조건 필요 없음 (XX는 예제)
+
+# 🔹 Netlify 서버리스 함수 (`netlify/functions/` 폴더 사용)
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
