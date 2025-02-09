@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v70";
+const CACHE_NAME = "natura-link-cache-v71";
 const OFFLINE_PAGE = "/pwa/offline.html";
 
 // ✅ 캐싱할 정적 파일 목록
@@ -108,5 +108,5 @@ self.addEventListener("fetch", (event) => {
 // ✅ 기존 캐시 유지 (불필요한 `offline.html` 복구 제거)
 self.addEventListener("activate", (event) => {
     console.log("🚀 서비스 워커 활성화!");
-    event.waitUntil(getOfflinePage());
+    // ✅ `getOfflinePage()` 호출 제거 (이미 fetch 이벤트에서 `offline.html`을 복구)
 });
