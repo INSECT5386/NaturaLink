@@ -1,7 +1,7 @@
-const CACHE_NAME = "natura-link-cache-v65";
+const CACHE_NAME = "natura-link-cache-v67";
 const OFFLINE_PAGE = "/pwa/offline.html";
 
-// ✅ 캐싱할 정적 파일 목록 (STATIC_ASSETS 복원)
+// ✅ 캐싱할 정적 파일 목록 (정적 파일 캐싱 포함)
 const STATIC_ASSETS = [
     "/index.html",
     "/js/script.js",
@@ -28,42 +28,13 @@ async function requestPersistentStorage() {
     }
 }
 
-// ✅ localStorage에 `offline.html` 백업
-async function backupOfflinePageToLocalStorage(response) {
-    const reader = new FileReader();
-    reader.readAsDataURL(await response.blob());
-    reader.onloadend = () => {
-        localStorage.setItem("offlinePageBackup", reader.result);
-        console.log("✅ `offline.html`을 localStorage에 백업 완료!");
-    };
-}
-
-// ✅ localStorage에서 `offline.html` 복구
-async function restoreOfflinePageFromLocalStorage() {
-    const data = localStorage.getItem("offlinePageBackup");
-    if (data) {
-        console.log("✅ localStorage에서 `offline.html` 복구!");
-        return new Response(data, { headers: { "Content-Type": "text/html" } });
-    }
-    return null;
-}
-
-// ✅ IndexedDB 또는 Cache Storage에서 `offline.html` 복구
+// ✅ Cache Storage에서 `offline.html` 가져오기
 async function getOfflinePage() {
     const cache = await caches.open(CACHE_NAME);
     let response = await cache.match(OFFLINE_PAGE);
 
     if (!response) {
-        console.warn("⚠️ `offline.html`이 Cache Storage에서 사라짐! localStorage 복구 시도");
-        try {
-            response = await restoreOfflinePageFromLocalStorage();
-            if (response) {
-                await cache.put(OFFLINE_PAGE, response.clone());
-                console.log("✅ `offline.html` 복구 완료!");
-            }
-        } catch (err) {
-            console.error("❌ 모든 저장소에서 `offline.html`을 찾을 수 없음", err);
-        }
+        console.warn("⚠️ `offline.html`이 Cache Storage에서 사라짐! 복구 시도...");
     }
 
     return response || new Response("<h1>오프라인 상태입니다</h1>", {
@@ -84,9 +55,8 @@ self.addEventListener("install", (event) => {
                 const response = await fetch(OFFLINE_PAGE, { cache: "reload" });
                 if (!response.ok) throw new Error(`❌ ${OFFLINE_PAGE} - ${response.status} 오류`);
 
-                await cache.put(OFFLINE_PAGE, response.clone());  // ✅ Clone 사용
-                await backupOfflinePageToLocalStorage(response.clone());
-                console.log("✅ `offline.html` 강제 캐싱 및 localStorage 백업 완료!");
+                await cache.put(OFFLINE_PAGE, response.clone());
+                console.log("✅ `offline.html` 강제 캐싱 완료!");
             } catch (error) {
                 console.error("❌ `offline.html` 캐싱 실패:", error);
             }
@@ -117,9 +87,8 @@ self.addEventListener("fetch", (event) => {
     );
 });
 
-// ✅ 기존 캐시 유지 + localStorage에서 `offline.html` 복구
+// ✅ 기존 캐시 유지 + `offline.html` 복구
 self.addEventListener("activate", (event) => {
     console.log("🚀 서비스 워커 활성화!");
     event.waitUntil(getOfflinePage());
 });
-
