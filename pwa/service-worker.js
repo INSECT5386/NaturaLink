@@ -2,20 +2,21 @@ const CACHE_NAME = "natura-link-cache-v2";
 const STATIC_ASSETS = [
     "/",
     "/index.html",
-    "/script.js",
-    "/manifest.json",
+    "/js/script.js",
+    "/pwa/manifest.json",
+    "/pwa/service-worker.js",
+    "/pwa/offline.html",
+    "/css/base.css",
+    "/css/layout.css",
+    "/css/components.css",
+    "/css/chat.css",
     "/assets/icons/android-chrome-192x192.png",
     "/assets/icons/android-chrome-512x512.png",
-    "/favicon-32x32.png",
-    "/favicon-16x16.png",
-    "/favicon.ico",
-    "/service-worker.js",
-    "/offline.html",
-    "/base.css",
-    "/layout.css",
-    "/components.css",
-    "chat.css"
+    "/favicons/favicon-16x16.png",
+    "/favicons/favicon-32x32.png",
+    "/favicons/favicon.ico"
 ];
+
 
 // 서비스 워커 설치 및 정적 리소스 캐싱
 self.addEventListener("install", (event) => {
