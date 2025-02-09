@@ -50,7 +50,6 @@
     gap: 8px;
     margin-top: 10px;
     width: 100%;
-    flex-direction: row-reverse;
 }
 
 #userInput {
@@ -63,7 +62,7 @@
     outline: none;
 }
 
-#sendMessageBtn, #clearChatBtn {
+#sendMessageBtn {
     padding: 10px 14px;
     border-radius: 6px;
     background: linear-gradient(135deg, #444, #666);
@@ -73,14 +72,37 @@
     transition: background 0.3s ease-in-out, transform 0.2s ease;
 }
 
-#sendMessageBtn:hover, #clearChatBtn:hover {
+#sendMessageBtn:hover {
     background: linear-gradient(135deg, #4a90e2, #1e90ff);
     color: #fff;
     box-shadow: 0 0 10px rgba(74, 144, 226, 0.8);
     transform: scale(1.05);
 }
 
-#sendMessageBtn:active, #clearChatBtn:active {
+#sendMessageBtn:active {
+    transform: scale(0.98);
+}
+
+/* ✅ 대화 지우기 버튼 스타일 */
+#clearChatBtn {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #555, #777);
+    color: #f0f0f0;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s ease;
+    margin-left: 8px;
+}
+
+#clearChatBtn:hover {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.8);
+    transform: scale(1.05);
+}
+
+#clearChatBtn:active {
     transform: scale(0.98);
 }
 
@@ -89,4 +111,3 @@
     font-style: italic;
     color: #aaa;
 }
-
