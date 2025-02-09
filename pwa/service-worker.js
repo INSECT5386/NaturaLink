@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v19";  // ✅ 캐시 버전 업데이트!
+const CACHE_NAME = "natura-link-cache-v21";  // ✅ 캐시 버전 업데이트!
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -17,7 +17,7 @@ const STATIC_ASSETS = [
     "/favicons/favicon.ico"
 ];
 
-// ✅ PNG 아이콘이 실제 존재하는지 확인 후 추가 (404 방지)
+// ✅ PNG 아이콘이 존재하는 경우에만 추가 (404 방지)
 const ICONS = [
     "/assets/icons/android-chrome-192x192.png",
     "/assets/icons/android-chrome-512x512.png"
@@ -37,6 +37,7 @@ self.addEventListener("install", (event) => {
                 console.warn(`⚠️ 캐싱 실패: ${OFFLINE_PAGE}`, error);
             }
 
+            // ✅ 정적 파일 캐싱
             await Promise.all(STATIC_ASSETS.map(async (url) => {
                 try {
                     const response = await fetch(url);
@@ -67,16 +68,37 @@ self.addEventListener("install", (event) => {
     );
 });
 
-// ✅ 네트워크 요청이 실패할 경우에만 `offline.html` 반환
+// ✅ 네트워크 우선, 실패 시 캐시 사용
 self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return;
 
+    // ✅ API 요청 (예: Netlify 서버리스 함수) → 네트워크 우선
+    if (event.request.url.includes("/.netlify/functions/")) {
+        return event.respondWith(fetch(event.request));
+    }
+
+    // ✅ 정적 파일 요청 (CSS, JS, 이미지) → 캐시 우선
+    if (event.request.url.includes("/css/") || 
+        event.request.url.includes("/js/") || 
+        event.request.url.includes("/assets/") || 
+        event.request.url.includes("/favicons/")) {
+        event.respondWith(
+            caches.match(event.request).then((cachedResponse) => {
+                return cachedResponse || fetch(event.request).then((response) => {
+                    return caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(event.request, response.clone());
+                        return response;
+                    });
+                });
+            })
+        );
+        return;
+    }
+
+    // ✅ 기타 요청 → 네트워크 우선, 실패 시 `offline.html` 반환
     event.respondWith(
         fetch(event.request)
-            .then((response) => {
-                // ✅ 네트워크 요청이 성공하면 그대로 반환
-                return response;
-            })
+            .then((response) => response)
             .catch(async () => {
                 console.warn("🌐 네트워크 오류 발생! offline.html 반환");
                 const cache = await caches.open(CACHE_NAME);
@@ -99,5 +121,3 @@ self.addEventListener("activate", (event) => {
         }).then(() => self.clients.claim())
     );
 });
-
-
