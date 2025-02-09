@@ -50,6 +50,7 @@
     gap: 8px;
     margin-top: 10px;
     width: 100%;
+    flex-direction: row-reverse;
 }
 
 #userInput {
@@ -88,3 +89,4 @@
     font-style: italic;
     color: #aaa;
 }
+
