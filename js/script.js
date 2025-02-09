@@ -43,10 +43,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // 🔹 버튼 클릭으로 풀스크린 모드 활성화 (선택 사항)
+    // 🔹 설정 버튼 클릭 시 메뉴 표시/숨김
+    const settingsButton = document.getElementById("settings-btn");
+    const settingsMenu = document.getElementById("settings-menu");
+    
+    if (settingsButton && settingsMenu) {
+        settingsButton.addEventListener("click", () => {
+            settingsMenu.classList.toggle("hidden");
+        });
+    }
+
+    // 🔹 설정 메뉴에서 전체화면 모드 활성화 버튼
     const fullScreenButton = document.getElementById("fullscreen-btn");
     if (fullScreenButton) {
         fullScreenButton.addEventListener("click", enableFullScreen);
     }
 });
-
