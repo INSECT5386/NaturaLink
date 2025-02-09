@@ -18,12 +18,7 @@
   status = 404
   force = true
 
-# 🔹 정적 파일 보호 (Netlify가 삭제하지 않도록 설정)
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
+# 🔹 CSS, JS, 이미지 파일 보호 (삭제 방지)
 [[headers]]
   for = "/css/*"
   [headers.values]
@@ -35,11 +30,11 @@
     Cache-Control = "public, max-age=31536000"
 
 [[headers]]
-  for = "/favicons/*"
+  for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000"
 
 [[headers]]
-  for = "/pwa/*"
+  for = "/favicons/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000"
