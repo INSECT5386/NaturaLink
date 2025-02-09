@@ -1,9 +1,9 @@
 body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background: linear-gradient(135deg, #2e3b2f, #3f4d3b, #5a6b54);
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
     background-size: 400% 400%;
-    animation: gradientAnimation 12s ease infinite;
-    color: #e0e0e0;
+    animation: gradientAnimation 10s ease infinite;
+    color: #f0f0f0;
     margin: 0;
     padding: 0;
     display: flex;
@@ -11,28 +11,14 @@ body {
     align-items: center;
 }
 
+/* 배경 애니메이션 */
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 
-@keyframes floatingLeaves {
-    0% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
-    50% { transform: translateY(-10px) rotate(5deg); opacity: 0.8; }
-    100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
-}
-
-.leaf {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    background-image: url('https://www.transparenttextures.com/patterns/soft-circle.png');
-    background-size: cover;
-    opacity: 0.3;
-    animation: floatingLeaves 8s infinite ease-in-out;
-}
-
+/* 고급스러운 배경 패턴 */
 body::after {
     content: "";
     position: fixed;
@@ -40,23 +26,30 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png');
-    opacity: 0.05;
+    background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); /* 고급 패턴 */
+    opacity: 0.08;
     pointer-events: none;
 }
 
+/* 헤더 스타일 */
 header {
     text-align: center;
     padding: 4vh 0;
-    font-size: 3.5vw;
-    color: #cfd8dc;
+    font-size: 4vw;
+    color: #f0f0f0;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 600;
+    letter-spacing: 3px;
+    font-weight: 700;
     margin-bottom: 20px;
-    text-shadow: 0 0 8px rgba(96, 125, 139, 0.7);
+    text-shadow: 0 0 15px rgba(128, 179, 255, 0.9);
 }
 
+h1 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* 탭 메뉴 스타일 */
 .tabs {
     display: flex;
     justify-content: space-evenly;
@@ -70,69 +63,99 @@ header {
     font-size: 16px;
     text-align: center;
     cursor: pointer;
-    background: rgba(84, 110, 122, 0.7);
-    color: #e0e0e0;
-    border-radius: 25px;
+    background: rgba(68, 68, 68, 0.8);
+    color: #f0f0f0;
+    border-radius: 50px;
     transition: background 0.3s, color 0.3s, box-shadow 0.3s;
 }
 
 .tab:hover, .tab.active {
-    background: linear-gradient(135deg, #78909c, #546e7a);
+    background: linear-gradient(135deg, #80b3ff, #1e90ff);
     color: #fff;
     font-weight: bold;
-    box-shadow: 0 0 12px rgba(96, 125, 139, 0.8);
+    box-shadow: 0 0 15px rgba(128, 179, 255, 0.9);
 }
 
+/* 컨텐츠 스타일 */
+.content {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.3s ease;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+}
+
+.content.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 버튼 스타일 */
 button {
     padding: 12px 24px;
     font-size: 14px;
-    background: #37474f;
-    color: #eceff1;
+    background: #444;
+    color: #f0f0f0;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     transition: background 0.3s, box-shadow 0.3s;
 }
 
 button:hover {
-    background: linear-gradient(135deg, #607d8b, #455a64);
-    box-shadow: 0 0 8px rgba(96, 125, 139, 0.7);
+    background: linear-gradient(135deg, #80b3ff, #1e90ff);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
 }
 
+/* 채팅 박스 스타일 */
 #chatbox {
-    border: 1px solid #546e7a;
+    border: 1px solid #444;
     padding: 15px;
     border-radius: 12px;
     max-height: 400px;
     overflow-y: auto;
     width: 100%;
-    background-color: rgba(38, 50, 56, 0.9);
+    background-color: rgba(34, 34, 34, 0.9);
 }
 
+/* 채팅 로그 스타일 */
+#chatlogs {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 말풍선 스타일 */
 .chat-bubble {
     padding: 12px;
     margin: 6px 0;
-    border-radius: 12px;
+    border-radius: 10px;
     max-width: 80%;
     word-wrap: break-word;
     font-size: 14px;
 }
 
+/* 사용자 메시지 */
 .user-message {
-    background: linear-gradient(135deg, #90a4ae, #78909c);
+    background: linear-gradient(135deg, #80b3ff, #1e90ff);
     color: #fff;
     align-self: flex-end;
-    box-shadow: 0 0 8px rgba(96, 125, 139, 0.7);
-    border-radius: 12px 12px 0 12px;
+    box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
+    border-radius: 15px 15px 0 15px;
 }
 
+/* AI 메시지 */
 .ai-message {
-    background: linear-gradient(135deg, #455a64, #37474f);
-    color: #b0bec5;
-    box-shadow: 0 0 8px rgba(69, 90, 100, 0.6);
-    border-radius: 12px 12px 12px 0;
+    background: linear-gradient(135deg, #333, #444);
+    color: #80b3ff;
+    box-shadow: 0 0 10px rgba(128, 179, 255, 0.5);
+    border-radius: 15px 15px 15px 0;
 }
 
+/* 입력창 스타일 */
 #userInputContainer {
     display: flex;
     align-items: center;
@@ -143,31 +166,42 @@ button:hover {
 #userInput {
     flex: 1;
     padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #455a64;
-    background-color: rgba(38, 50, 56, 0.9);
-    color: #e0e0e0;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background-color: rgba(34, 34, 34, 0.9);
+    color: #f0f0f0;
     outline: none;
 }
 
-.typing-indicator {
-    font-style: italic;
-    color: #90a4ae;
+#chatbot button {
+    width: 15%;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #444;
+    color: #f0f0f0;
+    border: none;
 }
 
+/* 타이핑 인디케이터 */
+.typing-indicator {
+    font-style: italic;
+    color: #999;
+}
+
+/* PWA 설치 버튼 */
 #install-button {
     display: none;
     padding: 12px 24px;
     font-size: 14px;
-    background: linear-gradient(135deg, #78909c, #546e7a);
+    background: linear-gradient(135deg, #80b3ff, #1e90ff);
     color: #fff;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     margin-top: 20px;
     transition: box-shadow 0.3s;
 }
 
 #install-button:hover {
-    box-shadow: 0 0 8px rgba(96, 125, 139, 0.7);
+    box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
 }
