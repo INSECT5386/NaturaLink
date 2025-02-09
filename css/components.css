@@ -1,4 +1,4 @@
-/* 탭 메뉴 스타일 */
+/* ✅ 탭 메뉴 스타일 */
 .tabs {
     display: flex;
     justify-content: space-evenly;
@@ -25,7 +25,7 @@
     box-shadow: 0 0 15px rgba(128, 179, 255, 0.9);
 }
 
-/* 버튼 스타일 */
+/* ✅ 일반 버튼 스타일 */
 button {
     padding: 12px 24px;
     font-size: 14px;
@@ -43,7 +43,7 @@ button:hover {
     box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
 }
 
-/* PWA 설치 버튼 */
+/* ✅ PWA 설치 버튼 */
 #install-button {
     display: none;
     padding: 12px 24px;
@@ -59,4 +59,65 @@ button:hover {
 
 #install-button:hover {
     box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
+}
+
+/* ✅ 설정 버튼 스타일 */
+.settings-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#settings-btn {
+    padding: 10px;
+    background: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#settings-menu {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: #333;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+#settings-menu.hidden {
+    display: none;
+}
+
+#settings-menu button {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    color: white;
+    padding: 5px;
+    text-align: left;
+    cursor: pointer;
+}
+
+#settings-menu button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ✅ 전체화면 버튼 스타일 */
+#fullscreen-btn {
+    padding: 10px;
+    font-size: 14px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+#fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
