@@ -1,18 +1,10 @@
-const CACHE_NAME = "natura-link-cache-v74";
+const CACHE_NAME = "natura-link-cache-v75";
 const OFFLINE_PAGE = "/pwa/offline.html";
 
 // ✅ `offline.html`을 메모리에 저장하기 위한 변수
 let offlinePageBlob = null;
 
-// ✅ Persistent Storage 요청 (자동 삭제 방지)
-async function requestPersistentStorage() {
-    if (navigator.storage && navigator.storage.persist) {
-        const isPersistent = await navigator.storage.persist();
-        console.log(`📌 Persistent Storage 적용됨: ${isPersistent ? "✅ 성공" : "❌ 실패"}`);
-    }
-}
-
-// ✅ `offline.html`을 메모리에 저장 (Cache Storage 삭제 방지)
+// ✅ `offline.html`을 메모리에 저장 (캐시가 지워져도 사용 가능)
 async function saveOfflinePageToMemory(response) {
     offlinePageBlob = await response.blob();
     console.log("✅ `offline.html`을 메모리에 저장 완료!");
@@ -20,11 +12,9 @@ async function saveOfflinePageToMemory(response) {
 
 // ✅ `offline.html` 복구 (오프라인일 때 실행)
 async function restoreOfflinePage() {
-    if (!navigator.onLine) { 
-        if (offlinePageBlob) {
-            console.log("✅ 메모리에서 `offline.html` 복구!");
-            return new Response(offlinePageBlob, { headers: { "Content-Type": "text/html" } });
-        }
+    if (offlinePageBlob) {
+        console.log("✅ 메모리에서 `offline.html` 복구!");
+        return new Response(offlinePageBlob, { headers: { "Content-Type": "text/html" } });
     }
 
     // ✅ Cache Storage에서 복구 시도
@@ -46,8 +36,6 @@ self.addEventListener("install", (event) => {
 
     event.waitUntil(
         (async () => {
-            await requestPersistentStorage(); 
-
             const cache = await caches.open(CACHE_NAME);
             try {
                 const response = await fetch(OFFLINE_PAGE, { cache: "reload" });
@@ -100,8 +88,8 @@ self.addEventListener("fetch", (event) => {
             } catch (error) {
                 console.warn(`🚨 네트워크 연결 실패! 요청 URL: ${event.request.url}`);
 
-                if (event.request.url.includes(OFFLINE_PAGE)) {
-                    console.log("✅ `offline.html` 직접 반환!");
+                if (event.request.destination === "document") {
+                    console.log("✅ 문서 요청이므로 `offline.html` 반환!");
                     return await restoreOfflinePage();
                 }
 
