@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v38";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v39";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -8,7 +8,6 @@ const STATIC_ASSETS = [
     "/js/pwa.js",
     "/pwa/manifest.json",
     "/pwa/service-worker.js",
-    "/pwa/offline.html",  // ✅ 반드시 캐싱
     "/css/base.css",
     "/css/layout.css",
     "/css/components.css",
@@ -20,25 +19,30 @@ const STATIC_ASSETS = [
     "/assets/icon/android-chrome-512x512.png"
 ];
 
-// ✅ 서비스 워커 설치 및 `offline.html` 강제 캐싱
+// ✅ 서비스 워커 설치 시 `offline.html` 강제 캐싱 (제대로 저장되도록 개선)
 self.addEventListener("install", (event) => {
     console.log("📦 서비스 워커 설치 중...");
     event.waitUntil(
         (async () => {
             const cache = await caches.open(CACHE_NAME);
 
-            // ✅ offline.html을 반드시 캐싱
+            // ✅ offline.html을 개별적으로 캐싱 (캐싱 실패 시 오류 출력)
             try {
                 const response = await fetch(OFFLINE_PAGE, { cache: "reload" });
                 if (!response.ok) throw new Error(`❌ ${OFFLINE_PAGE} - ${response.status} 오류`);
-                await cache.put(OFFLINE_PAGE, response);
+                await cache.put(OFFLINE_PAGE, response.clone());
                 console.log("✅ `offline.html` 강제 캐싱 완료!");
             } catch (error) {
-                console.warn("⚠️ `offline.html` 캐싱 실패:", error);
+                console.error("❌ `offline.html` 캐싱 실패:", error);
             }
 
             // ✅ 다른 정적 파일도 캐싱
-            await cache.addAll(STATIC_ASSETS);
+            try {
+                await cache.addAll(STATIC_ASSETS);
+                console.log("✅ 정적 파일 캐싱 완료!");
+            } catch (error) {
+                console.error("❌ 정적 파일 캐싱 실패:", error);
+            }
         })().then(() => self.skipWaiting())
     );
 });
@@ -54,15 +58,7 @@ self.addEventListener("fetch", (event) => {
             return fetch(event.request).catch(async () => {
                 console.warn("🌐 네트워크 오류 발생! offline.html 반환");
                 const cache = await caches.open(CACHE_NAME);
-
-                // ✅ `navigate` 요청일 경우 `offline.html` 반환
-                if (event.request.mode === "navigate") {
-                    return await cache.match(OFFLINE_PAGE) || new Response("<h1>오프라인 상태입니다</h1>", {
-                        headers: { "Content-Type": "text/html" }
-                    });
-                }
-
-                return await cache.match(event.request) || new Response("<h1>오프라인 상태입니다</h1>", {
+                return (await cache.match(OFFLINE_PAGE)) || new Response("<h1>오프라인 상태입니다</h1>", {
                     headers: { "Content-Type": "text/html" }
                 });
             });
@@ -94,7 +90,7 @@ self.addEventListener("activate", (event) => {
                 try {
                     const response = await fetch(OFFLINE_PAGE);
                     if (response.ok) {
-                        await cache.put(OFFLINE_PAGE, response);
+                        await cache.put(OFFLINE_PAGE, response.clone());
                         console.log("✅ `offline.html`을 다시 캐싱 성공!");
                     } else {
                         console.error("❌ `offline.html`을 다시 캐싱하는 데 실패함");
