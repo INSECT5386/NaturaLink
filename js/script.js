@@ -43,13 +43,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // 🔹 설정 버튼 클릭 시 메뉴 표시/숨김
+    // 🔹 설정 버튼 클릭 시 메뉴 표시/숨김 (이 부분이 추가됨)
     const settingsButton = document.getElementById("settings-btn");
     const settingsMenu = document.getElementById("settings-menu");
     
     if (settingsButton && settingsMenu) {
         settingsButton.addEventListener("click", () => {
-            settingsMenu.classList.toggle("hidden");
+            if (settingsMenu.style.display === "none" || settingsMenu.style.display === "") {
+                settingsMenu.style.display = "block"; // 메뉴 표시
+            } else {
+                settingsMenu.style.display = "none"; // 메뉴 숨김
+            }
         });
     }
 
