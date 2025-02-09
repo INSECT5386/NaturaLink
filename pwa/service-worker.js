@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v55";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v56";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -19,10 +19,10 @@ const STATIC_ASSETS = [
     "/assets/icon/android-chrome-512x512.png"
 ];
 
-// ✅ IndexedDB에 `offline.html` 저장 (트랜잭션 오류 해결)
+// ✅ IndexedDB에 데이터 저장
 async function saveToIndexedDB(key, response) {
     try {
-        const blob = await response.blob();  // ✅ 비동기 작업 완료 후 트랜잭션 실행
+        const blob = await response.blob();
         const dbRequest = indexedDB.open("OfflineCache", 1);
 
         dbRequest.onupgradeneeded = () => {
@@ -32,9 +32,9 @@ async function saveToIndexedDB(key, response) {
 
         dbRequest.onsuccess = () => {
             const db = dbRequest.result;
-            const transaction = db.transaction("files", "readwrite");  // ✅ 트랜잭션 생성
+            const transaction = db.transaction("files", "readwrite");
             const store = transaction.objectStore("files");
-            store.put(blob, key);  // ✅ 트랜잭션이 닫히기 전에 실행
+            store.put(blob, key);
             console.log(`✅ IndexedDB에 저장 완료: ${key}`);
         };
 
@@ -46,7 +46,7 @@ async function saveToIndexedDB(key, response) {
     }
 }
 
-// ✅ IndexedDB에서 `offline.html` 불러오기
+// ✅ IndexedDB에서 데이터 가져오기
 async function getFromIndexedDB(key) {
     return new Promise((resolve, reject) => {
         const dbRequest = indexedDB.open("OfflineCache", 1);
