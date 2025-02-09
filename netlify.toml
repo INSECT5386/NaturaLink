@@ -16,30 +16,30 @@
   from = "/*"
   to = "/pwa/offline.html"
   status = 404
-  query = {path = "/pwa/offline.html"}
+  force = true
 
-# 🔹 정적 파일 (.png, .css, .js 등)은 `offline.html`로 리디렉트되지 않음
-[[redirects]]
-  from = "/assets/*"
-  to = "/assets/:splat"
-  status = 200
+# 🔹 정적 파일 보호 (Netlify가 삭제하지 않도록 설정)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
 
-[[redirects]]
-  from = "/css/*"
-  to = "/css/:splat"
-  status = 200
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
 
-[[redirects]]
-  from = "/js/*"
-  to = "/js/:splat"
-  status = 200
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
 
-[[redirects]]
-  from = "/favicons/*"
-  to = "/favicons/:splat"
-  status = 200
+[[headers]]
+  for = "/favicons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
 
-[[redirects]]
-  from = "/pwa/*"
-  to = "/pwa/:splat"
-  status = 200
+[[headers]]
+  for = "/pwa/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
