@@ -11,12 +11,7 @@
     Pragma = "no-cache"
     Expires = "0"
 
-# 🔹 정적 파일 보호 (CSS, JS, 이미지, 아이콘은 리디렉트되지 않음)
-[[redirects]]
-  from = "/index.html"
-  to = "/index.html"
-  status = 200
-
+# 🔹 정적 파일 보호 (CSS, JS, 이미지, 아이콘 등은 원래 경로 유지)
 [[redirects]]
   from = "/css/*"
   to = "/css/:splat"
@@ -42,9 +37,9 @@
   to = "/pwa/:splat"
   status = 200
 
-# 🔹 오프라인 페이지 지원 (모든 요청을 offline.html로 리디렉트)
+# 🔹 오프라인 페이지 지원 (오프라인 상태에서만 `offline.html` 표시)
 [[redirects]]
   from = "/*"
   to = "/pwa/offline.html"
   status = 200
-  force = true
+  conditions = { Country = ["XX"] } # ✅ 특정 국가가 아닌 경우 (오프라인 감지)
