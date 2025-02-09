@@ -1,10 +1,9 @@
-/* Global 스타일 */
 body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    font-family: 'Quicksand', sans-serif;
+    background: linear-gradient(135deg, #a8e6cf, #dcedc1, #ffd3b6);
     background-size: 400% 400%;
     animation: gradientAnimation 10s ease infinite;
-    color: #f0f0f0;
+    color: #3e2723;
     margin: 0;
     padding: 0;
     display: flex;
@@ -12,14 +11,28 @@ body {
     align-items: center;
 }
 
-/* 배경 애니메이션 */
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 
-/* 고급스러운 배경 패턴 */
+@keyframes floatingLeaves {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    50% { transform: translateY(-20px) rotate(10deg); opacity: 0.8; }
+    100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+}
+
+.leaf {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-image: url('https://www.transparenttextures.com/patterns/leaves.png');
+    background-size: cover;
+    opacity: 0.5;
+    animation: floatingLeaves 5s infinite ease-in-out;
+}
+
 body::after {
     content: "";
     position: fixed;
@@ -27,22 +40,21 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); /* 고급 패턴 */
-    opacity: 0.08;
+    background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+    opacity: 0.1;
     pointer-events: none;
 }
 
-/* 헤더 스타일 */
 header {
     text-align: center;
     padding: 4vh 0;
     font-size: 4vw;
-    color: #f0f0f0;
+    color: #4e342e;
     text-transform: uppercase;
     letter-spacing: 3px;
     font-weight: 700;
     margin-bottom: 20px;
-    text-shadow: 0 0 15px rgba(128, 179, 255, 0.9);
+    text-shadow: 0 0 10px rgba(139, 195, 74, 0.8);
 }
 
 h1 a {
@@ -50,7 +62,6 @@ h1 a {
     text-decoration: none;
 }
 
-/* 탭 메뉴 스타일 */
 .tabs {
     display: flex;
     justify-content: space-evenly;
@@ -64,20 +75,19 @@ h1 a {
     font-size: 16px;
     text-align: center;
     cursor: pointer;
-    background: rgba(68, 68, 68, 0.8);
-    color: #f0f0f0;
-    border-radius: 50px;
+    background: rgba(139, 195, 74, 0.8);
+    color: #fff;
+    border-radius: 30px;
     transition: background 0.3s, color 0.3s, box-shadow 0.3s;
 }
 
 .tab:hover, .tab.active {
-    background: linear-gradient(135deg, #80b3ff, #1e90ff);
+    background: linear-gradient(135deg, #8bc34a, #558b2f);
     color: #fff;
     font-weight: bold;
-    box-shadow: 0 0 15px rgba(128, 179, 255, 0.9);
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.9);
 }
 
-/* 컨텐츠 스타일 */
 .content {
     display: none;
     opacity: 0;
@@ -93,70 +103,56 @@ h1 a {
     transform: translateY(0);
 }
 
-/* 버튼 스타일 */
 button {
     padding: 12px 24px;
     font-size: 14px;
-    background: #444;
-    color: #f0f0f0;
+    background: #6d4c41;
+    color: #fff;
     border: none;
-    border-radius: 10px;
+    border-radius: 20px;
     cursor: pointer;
     transition: background 0.3s, box-shadow 0.3s;
 }
 
 button:hover {
-    background: linear-gradient(135deg, #80b3ff, #1e90ff);
-    color: #fff;
-    box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
+    background: linear-gradient(135deg, #8bc34a, #558b2f);
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
 }
 
-/* 채팅 박스 스타일 */
 #chatbox {
-    border: 1px solid #444;
+    border: 1px solid #4e342e;
     padding: 15px;
     border-radius: 12px;
     max-height: 400px;
     overflow-y: auto;
     width: 100%;
-    background-color: rgba(34, 34, 34, 0.9);
+    background-color: rgba(244, 243, 238, 0.9);
 }
 
-/* 채팅 로그 스타일 */
-#chatlogs {
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-}
-
-/* 말풍선 스타일 */
 .chat-bubble {
     padding: 12px;
     margin: 6px 0;
-    border-radius: 10px;
+    border-radius: 20px;
     max-width: 80%;
     word-wrap: break-word;
     font-size: 14px;
 }
 
-/* 사용자 메시지 */
 .user-message {
-    background: linear-gradient(135deg, #80b3ff, #1e90ff);
+    background: linear-gradient(135deg, #a5d6a7, #66bb6a);
     color: #fff;
     align-self: flex-end;
-    box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
-    border-radius: 15px 15px 0 15px;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+    border-radius: 20px 20px 0 20px;
 }
 
-/* AI 메시지 */
 .ai-message {
-    background: linear-gradient(135deg, #333, #444);
-    color: #80b3ff;
-    box-shadow: 0 0 10px rgba(128, 179, 255, 0.5);
-    border-radius: 15px 15px 15px 0;
+    background: linear-gradient(135deg, #d7ccc8, #a1887f);
+    color: #3e2723;
+    box-shadow: 0 0 10px rgba(121, 85, 72, 0.5);
+    border-radius: 20px 20px 20px 0;
 }
 
-/* 입력창 스타일 */
 #userInputContainer {
     display: flex;
     align-items: center;
@@ -167,42 +163,31 @@ button:hover {
 #userInput {
     flex: 1;
     padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #444;
-    background-color: rgba(34, 34, 34, 0.9);
-    color: #f0f0f0;
+    border-radius: 20px;
+    border: 1px solid #4e342e;
+    background-color: rgba(244, 243, 238, 0.9);
+    color: #3e2723;
     outline: none;
 }
 
-#chatbot button {
-    width: 15%;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #444;
-    color: #f0f0f0;
-    border: none;
-}
-
-/* 타이핑 인디케이터 */
 .typing-indicator {
     font-style: italic;
-    color: #999;
+    color: #6d4c41;
 }
 
-/* PWA 설치 버튼 */
 #install-button {
     display: none;
     padding: 12px 24px;
     font-size: 14px;
-    background: linear-gradient(135deg, #80b3ff, #1e90ff);
+    background: linear-gradient(135deg, #a5d6a7, #66bb6a);
     color: #fff;
     border: none;
-    border-radius: 10px;
+    border-radius: 20px;
     cursor: pointer;
     margin-top: 20px;
     transition: box-shadow 0.3s;
 }
 
 #install-button:hover {
-    box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
 }
