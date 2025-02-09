@@ -57,12 +57,31 @@
     </div>
 
     <!-- PWA 설치 버튼 -->
-    <button id="install-button">앱 설치</button>
-    
+    <button id="install-button" style="display: none;">앱 설치</button>
+
     <!-- JavaScript -->
     <script src="/js/chat.js"></script>  <!-- ✅ 챗봇 기능 -->
     <script src="/js/pwa.js"></script>   <!-- ✅ PWA 기능 -->
     <script src="/js/script.js"></script> <!-- ✅ UI 기능 (탭 전환, 버튼 등) -->
+
+    <!-- 서비스 워커 등록 -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/pwa/service-worker.js")
+                .then((registration) => {
+                    console.log("✅ 서비스 워커가 등록되었습니다.");
+                    if (registration.waiting) {
+                        registration.waiting.postMessage({ action: "skipWaiting" });
+                    }
+                })
+                .catch(error => console.error("❌ 서비스 워커 등록 실패:", error));
+
+            navigator.serviceWorker.addEventListener("message", (event) => {
+                if (event.data.action === "reload") {
+                    window.location.reload();
+                }
+            });
+        }
+    </script>
 </body>
 </html>
-
