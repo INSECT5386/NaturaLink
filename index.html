@@ -7,9 +7,15 @@
     <meta property="og:title" content="NaturaLink">
     <meta property="og:description" content="NaturaLink">
     <title>NaturaLink</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <!-- 파비콘 설정 -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- 스타일 및 폰트 -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">  <!-- CSS 파일 연결 -->
+    <link rel="stylesheet" href="styles.css">  
 </head>
 <body>
     <header>
@@ -20,15 +26,21 @@
         <div class="tab" data-tab="link">링크 복사</div>
         <div class="tab" data-tab="ai">AI</div>
     </div>
+    
+    <!-- 검색 탭 -->
     <div class="content show" id="search">
         <script async src="https://cse.google.com/cse.js?cx=00d831986d20a4627"></script>
         <div class="gcse-search"></div>
     </div>
+    
+    <!-- 링크 복사 탭 -->
     <div class="content" id="link">
         <h2>링크 복사</h2>
         <p>NaturaLink 링크를 복사하려면 아래 버튼을 클릭하세요.</p>
         <button id="copyBtn">링크 복사</button>
     </div>
+    
+    <!-- AI 챗봇 탭 -->
     <div class="content" id="ai">
         <h2>AI 챗봇</h2>
         <div id="chatbox">
@@ -40,10 +52,12 @@
             <div id="typingIndicator" class="typing-indicator" style="display: none;">AI가 입력 중...</div>
         </div>
     </div>
+    
+    <!-- PWA 앱 설치 버튼 -->
     <button id="install-button">앱 설치</button>
     
+    <!-- 스크립트 연결 -->
     <script src="script.js"></script>
-
     <script>
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/service-worker.js")
