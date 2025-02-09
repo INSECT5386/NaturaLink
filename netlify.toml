@@ -1,6 +1,6 @@
 # 🔹 Netlify가 정적 PWA를 자동 배포하도록 설정
 [build]
-  publish = "."  # 📁 index.html이 있는 폴더를 배포
+  publish = "."  # 📁 현재 디렉토리를 배포 (index.html 포함)
   command = ""   # 🛑 정적 사이트이므로 npm 빌드 명령어 없음
 
 # 🔹 최신 PWA 유지 (캐싱 비활성화)
@@ -16,9 +16,13 @@
   from = "/*"
   to = "/pwa/offline.html"
   status = 404
-  force = true
 
 # ✅ 정적 파일 보호 (CSS, JS, 이미지, 아이콘은 리디렉트되지 않음)
+[[redirects]]
+  from = "/index.html"
+  to = "/index.html"
+  status = 200
+
 [[redirects]]
   from = "/css/*"
   to = "/css/:splat"
@@ -43,3 +47,4 @@
   from = "/pwa/*"
   to = "/pwa/:splat"
   status = 200
+
