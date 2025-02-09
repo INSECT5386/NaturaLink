@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v51";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v53";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -19,56 +19,70 @@ const STATIC_ASSETS = [
     "/assets/icon/android-chrome-512x512.png"
 ];
 
-// ✅ IndexedDB를 활용하여 `offline.html` 백업
+// ✅ IndexedDB에 데이터 저장
 async function saveToIndexedDB(key, response) {
     const dbRequest = indexedDB.open("OfflineCache", 1);
+    
     dbRequest.onupgradeneeded = () => {
-        dbRequest.result.createObjectStore("files");
+        const db = dbRequest.result;
+        db.createObjectStore("files");
     };
+    
     dbRequest.onsuccess = async () => {
         const db = dbRequest.result;
+        const blob = await response.blob();
+        
         const transaction = db.transaction("files", "readwrite");
         const store = transaction.objectStore("files");
-        const blob = await response.blob();
         store.put(blob, key);
+        console.log(`✅ IndexedDB에 저장 완료: ${key}`);
+    };
+    
+    dbRequest.onerror = (event) => {
+        console.error("❌ IndexedDB 오류:", event.target.error);
     };
 }
 
-// ✅ IndexedDB에서 `offline.html` 불러오기
+// ✅ IndexedDB에서 데이터 가져오기
 async function getFromIndexedDB(key) {
     return new Promise((resolve, reject) => {
         const dbRequest = indexedDB.open("OfflineCache", 1);
+        
         dbRequest.onsuccess = () => {
             const db = dbRequest.result;
             const transaction = db.transaction("files", "readonly");
             const store = transaction.objectStore("files");
             const request = store.get(key);
+            
             request.onsuccess = () => {
                 resolve(request.result ? new Response(request.result) : null);
             };
+            
             request.onerror = () => reject(request.error);
         };
+        
         dbRequest.onerror = () => reject(dbRequest.error);
     });
 }
 
-// ✅ 서비스 워커 설치 시 `offline.html` 강제 캐싱 및 IndexedDB 저장
+// ✅ 서비스 워커 설치 및 `offline.html` 강제 캐싱
 self.addEventListener("install", (event) => {
     console.log("📦 서비스 워커 설치 중...");
+    
     event.waitUntil(
         (async () => {
             const cache = await caches.open(CACHE_NAME);
-
+            
             try {
                 const response = await fetch(OFFLINE_PAGE, { cache: "reload" });
                 if (!response.ok) throw new Error(`❌ ${OFFLINE_PAGE} - ${response.status} 오류`);
                 await cache.put(OFFLINE_PAGE, response.clone());
-                await saveToIndexedDB(OFFLINE_PAGE, response);  // ✅ IndexedDB에 저장
+                await saveToIndexedDB(OFFLINE_PAGE, response);
                 console.log("✅ `offline.html` 강제 캐싱 및 IndexedDB 저장 완료!");
             } catch (error) {
                 console.error("❌ `offline.html` 캐싱 실패:", error);
             }
-
+            
             try {
                 await cache.addAll(STATIC_ASSETS);
                 console.log("✅ 정적 파일 캐싱 완료!");
@@ -95,7 +109,6 @@ self.addEventListener("fetch", (event) => {
                     console.warn("🛑 `navigate` 요청 감지 - offline.html 반환 시도");
                     let response = await cache.match(OFFLINE_PAGE);
                     
-                    // ✅ 캐시에 없으면 IndexedDB에서 가져오기
                     if (!response) {
                         response = await getFromIndexedDB(OFFLINE_PAGE);
                         if (response) {
@@ -120,16 +133,14 @@ self.addEventListener("fetch", (event) => {
 // ✅ 기존 캐시 삭제하되, `offline.html`을 유지하도록 변경
 self.addEventListener("activate", (event) => {
     console.log("🚀 새로운 서비스 워커 활성화!");
-
+    
     event.waitUntil(
         (async () => {
             const cacheKeys = await caches.keys();
             const oldCaches = cacheKeys.filter((cache) => cache !== CACHE_NAME);
-
             const cache = await caches.open(CACHE_NAME);
-            let offlineResponse = await cache.match(OFFLINE_PAGE);
 
-            // ✅ 캐시에 없으면 IndexedDB에서 복구
+            let offlineResponse = await cache.match(OFFLINE_PAGE);
             if (!offlineResponse) {
                 console.warn("⚠️ `offline.html`이 캐시에서 사라짐! IndexedDB에서 복구 시도");
                 offlineResponse = await getFromIndexedDB(OFFLINE_PAGE);
