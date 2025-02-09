@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/pwa/*"
+  to = "/pwa/:splat"
+  status = 200
