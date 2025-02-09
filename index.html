@@ -1,114 +1,99 @@
-/* ✅ 채팅 박스 스타일 */
-#chatbox {
-    border: 1px solid #444;
-    padding: 15px;
-    border-radius: 12px;
-    max-height: 400px;
-    overflow-y: auto;
-    width: 100%;
-    background-color: rgba(34, 34, 34, 0.9);
-}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="NaturaLink">
+    <meta property="og:title" content="NaturaLink">
+    <meta property="og:description" content="NaturaLink">
+    <title>NaturaLink</title>
+    <link rel="icon" href="/favicons/favicon.ico" type="image/x-icon">
 
-/* ✅ 채팅 로그 스타일 */
-#chatlogs {
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-}
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
 
-/* ✅ 말풍선 스타일 */
-.chat-bubble {
-    padding: 12px;
-    margin: 6px 0;
-    border-radius: 10px;
-    max-width: 80%;
-    word-wrap: break-word;
-    font-size: 14px;
-}
+    <!-- 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 
-/* ✅ 사용자 메시지 */
-.user-message {
-    background: linear-gradient(135deg, #80b3ff, #1e90ff);
-    color: #fff;
-    align-self: flex-end;
-    box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
-    border-radius: 15px 15px 0 15px;
-}
+    <!-- CSS 파일 -->
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/chat.css">
+</head>
+<body>
+    <header>
+        <h1><a href="/">NaturaLink</a></h1>
 
-/* ✅ AI 메시지 */
-.ai-message {
-    background: linear-gradient(135deg, #333, #444);
-    color: #80b3ff;
-    box-shadow: 0 0 10px rgba(128, 179, 255, 0.5);
-    border-radius: 15px 15px 15px 0;
-}
+        <!-- ⚙️ 설정 버튼 -->
+        <div class="settings-container">
+            <button id="settings-btn">⚙️</button>
+            <div id="settings-menu" class="hidden">
+                <button id="fullscreen-btn">🖥️ 전체 화면</button>
+            </div>
+        </div>
+    </header>
 
-/* ✅ 입력창 스타일 */
-#userInputContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
-    width: 100%;
-}
+    <!-- 탭 메뉴 -->
+    <div class="tabs">
+        <div class="tab active" data-tab="search">검색</div>
+        <div class="tab" data-tab="link">링크 복사</div>
+        <div class="tab" data-tab="ai">AI</div>
+    </div>
 
-#userInput {
-    flex: 1;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #444;
-    background-color: rgba(34, 34, 34, 0.9);
-    color: #f0f0f0;
-    outline: none;
-    width: 90%;
-}
+    <!-- 검색 탭 -->
+    <div class="content show" id="search">
+        <script async src="https://cse.google.com/cse.js?cx=00d831986d20a4627"></script>
+        <div class="gcse-search"></div>
+    </div>
 
-#sendMessageBtn {
-    margin-top: 5px;
-    width: fit-content;
-    padding: 8px 16px;
-    border-radius: 5px;
-    background-color: #444;
-    color: #f0f0f0;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out;
-}
+    <!-- 링크 복사 탭 -->
+    <div class="content" id="link">
+        <h2>링크 복사</h2>
+        <p>NaturaLink 링크를 복사하려면 아래 버튼을 클릭하세요.</p>
+        <button id="copyBtn">🔗 링크 복사</button>
+    </div>
 
-#sendMessageBtn:hover {
-    background: linear-gradient(135deg, #80b3ff, #1e90ff);
-    color: #fff;
-    box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
-}
+    <!-- AI 챗봇 탭 -->
+    <div class="content" id="ai">
+        <h2>AI 챗봇</h2>
+        <div id="chatbox">
+            <div id="chatlogs"></div>
+            <div id="userInputContainer">
+                <input type="text" id="userInput" placeholder="질문을 입력하세요..." />
+                <button id="sendMessageBtn">보내기</button>
+            </div>
+            <div id="typingIndicator" class="typing-indicator" style="display: none;">AI가 입력 중...</div>
+        </div>
+        <button id="clearChatBtn">🗑️ 대화 지우기</button> <!-- ✅ 추가된 버튼 -->
+    </div>
 
-/* ✅ 타이핑 인디케이터 */
-.typing-indicator {
-    font-style: italic;
-    color: #999;
-}
+    <!-- PWA 설치 버튼 -->
+    <button id="install-button" style="display: none;">📲 앱 설치</button>
 
-/* ✅ 대화 지우기 버튼 스타일 */
-#clearChatBtn {
-    display: block;
-    margin-top: 8px;
-    padding: 6px 12px;
-    background: #555; /* 어두운 색상 적용 */
-    color: #ddd; /* 부드러운 대비 */
-    border: none;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out, color 0.3s;
-    width: fit-content;
-}
+    <!-- JavaScript -->
+    <script src="/js/chat.js"></script>  <!-- ✅ 챗봇 기능 -->
+    <script src="/js/pwa.js"></script>   <!-- ✅ PWA 기능 -->
+    <script src="/js/script.js"></script> <!-- ✅ UI 기능 (탭 전환, 버튼 등) -->
 
-/* ✅ 버튼 호버 효과 */
-#clearChatBtn:hover {
-    background: #777; /* 부드러운 hover 효과 */
-    color: white;
-}
+    <!-- 서비스 워커 등록 -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/pwa/service-worker.js")
+                .then((registration) => {
+                    console.log("✅ 서비스 워커가 등록되었습니다.");
+                    if (registration.waiting) {
+                        registration.waiting.postMessage({ action: "skipWaiting" });
+                    }
+                })
+                .catch(error => console.error("❌ 서비스 워커 등록 실패:", error));
 
-/* ✅ 버튼 위치 조정 */
-#clearChatBtn {
-    align-self: center;
-} 
+            navigator.serviceWorker.addEventListener("message", (event) => {
+                if (event.data.action === "reload") {
+                    window.location.reload();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
