@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v56";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v58";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -19,7 +19,15 @@ const STATIC_ASSETS = [
     "/assets/icon/android-chrome-512x512.png"
 ];
 
-// ✅ IndexedDB에 데이터 저장
+// ✅ Persistent Storage 요청 (IndexedDB가 삭제되지 않도록 설정)
+async function requestPersistentStorage() {
+    if (navigator.storage && navigator.storage.persist) {
+        const isPersistent = await navigator.storage.persist();
+        console.log(`📌 Persistent Storage 적용됨: ${isPersistent ? "✅ 성공" : "❌ 실패"}`);
+    }
+}
+
+// ✅ IndexedDB에 데이터 저장 (자동 백업)
 async function saveToIndexedDB(key, response) {
     try {
         const blob = await response.blob();
@@ -41,6 +49,9 @@ async function saveToIndexedDB(key, response) {
         dbRequest.onerror = (event) => {
             console.error("❌ IndexedDB 오류:", event.target.error);
         };
+
+        // ✅ IndexedDB에 저장 후 Cache Storage에도 백업
+        await backupOfflinePageToCache(response);
     } catch (error) {
         console.error("❌ IndexedDB 저장 실패:", error);
     }
@@ -68,14 +79,32 @@ async function getFromIndexedDB(key) {
     });
 }
 
+// ✅ Cache Storage에 `offline.html` 백업
+async function backupOfflinePageToCache(response) {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.put(OFFLINE_PAGE, response);
+    console.log("✅ `offline.html`을 Cache Storage에 백업 완료!");
+}
+
+// ✅ IndexedDB 삭제 시 `offline.html`을 Cache Storage에서 복구
+async function restoreOfflinePageFromCache() {
+    const cache = await caches.open(CACHE_NAME);
+    const cachedResponse = await cache.match(OFFLINE_PAGE);
+    if (cachedResponse) {
+        console.log("✅ Cache Storage에서 `offline.html` 복구!");
+        await saveToIndexedDB(OFFLINE_PAGE, cachedResponse);
+    }
+}
+
 // ✅ 서비스 워커 설치 및 `offline.html` 강제 캐싱
 self.addEventListener("install", (event) => {
     console.log("📦 서비스 워커 설치 중...");
 
     event.waitUntil(
         (async () => {
-            const cache = await caches.open(CACHE_NAME);
+            await requestPersistentStorage(); // ✅ Persistent Storage 설정
 
+            const cache = await caches.open(CACHE_NAME);
             try {
                 const response = await fetch(OFFLINE_PAGE, { cache: "reload" });
                 if (!response.ok) throw new Error(`❌ ${OFFLINE_PAGE} - ${response.status} 오류`);
@@ -134,33 +163,8 @@ self.addEventListener("fetch", (event) => {
     );
 });
 
-// ✅ 기존 캐시 삭제하되, `offline.html`을 유지하도록 변경
+// ✅ 기존 캐시 삭제하되, IndexedDB가 삭제되었을 경우 복구하도록 설정
 self.addEventListener("activate", (event) => {
     console.log("🚀 새로운 서비스 워커 활성화!");
-
-    event.waitUntil(
-        (async () => {
-            const cacheKeys = await caches.keys();
-            const oldCaches = cacheKeys.filter((cache) => cache !== CACHE_NAME);
-            const cache = await caches.open(CACHE_NAME);
-
-            let offlineResponse = await cache.match(OFFLINE_PAGE);
-            if (!offlineResponse) {
-                console.warn("⚠️ `offline.html`이 캐시에서 사라짐! IndexedDB에서 복구 시도");
-                try {
-                    offlineResponse = await getFromIndexedDB(OFFLINE_PAGE);
-                    if (offlineResponse) {
-                        await cache.put(OFFLINE_PAGE, offlineResponse);
-                        console.log("✅ IndexedDB에서 `offline.html` 복구 완료!");
-                    }
-                } catch (err) {
-                    console.error("❌ IndexedDB에서도 `offline.html`을 찾을 수 없음", err);
-                }
-            }
-
-            await Promise.all(oldCaches.map((cache) => caches.delete(cache)));
-
-            self.clients.claim();
-        })()
-    );
+    event.waitUntil(restoreOfflinePageFromCache());
 });
