@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // 탭 메뉴 기능
+    console.log("✅ UI 스크립트 로드 완료!");
+
+    // 🔹 탭 메뉴 기능
     const tabs = document.querySelectorAll(".tab");
     const contents = document.querySelectorAll(".content");
 
@@ -12,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // 링크 복사 기능
+    // 🔹 링크 복사 기능
     const copyBtn = document.getElementById("copyBtn");
     if (copyBtn) {
         copyBtn.addEventListener("click", () => {
@@ -21,4 +23,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch(err => console.error("❌ 링크 복사 실패:", err));
         });
     }
+
+    // 🔹 풀스크린 모드 활성화
+    function enableFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch((err) => {
+                console.warn(`⚠️ 풀스크린 모드 실패: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    // 🔹 F11 키로 전체 화면 전환
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "F11") {
+            event.preventDefault();
+            enableFullScreen();
+        }
+    });
+
+    // 🔹 버튼 클릭으로 풀스크린 모드 활성화 (선택 사항)
+    const fullScreenButton = document.getElementById("fullscreen-btn");
+    if (fullScreenButton) {
+        fullScreenButton.addEventListener("click", enableFullScreen);
+    }
 });
+
