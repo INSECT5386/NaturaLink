@@ -3,11 +3,11 @@
   publish = "."  # 📁 index.html이 있는 폴더를 배포
   command = ""   # 🛑 npm 빌드 명령어 실행 안 함 (정적 사이트이므로 불필요)
 
-# 🔹 PWA가 최신 버전을 유지하도록 캐싱 비활성화
+# 🔹 최신 PWA 유지 (캐싱 비활성화)
 [[headers]]
   for = "/*"
   [headers.values]
-    Cache-Control = "no-store, no-cache, must-revalidate, proxy-revalidate"
+    Cache-Control = "no-cache, no-store, must-revalidate"
     Pragma = "no-cache"
     Expires = "0"
 
