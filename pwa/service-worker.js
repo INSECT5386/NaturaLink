@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v32";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v33";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -8,7 +8,7 @@ const STATIC_ASSETS = [
     "/js/pwa.js",
     "/pwa/manifest.json",
     "/pwa/service-worker.js",
-    "/pwa/offline.html",  // ✅ 설치 시 강제 캐싱
+    "/pwa/offline.html",  // ✅ 반드시 캐싱
     "/css/base.css",
     "/css/layout.css",
     "/css/components.css",
@@ -20,14 +20,13 @@ const STATIC_ASSETS = [
     "/assets/icon/android-chrome-512x512.png"
 ];
 
-// ✅ 서비스 워커 설치 시 `offline.html`을 강제 캐싱
+// ✅ 서비스 워커 설치 시 `offline.html` 강제 캐싱
 self.addEventListener("install", (event) => {
     console.log("📦 서비스 워커 설치 중...");
     event.waitUntil(
         caches.open(CACHE_NAME).then(async (cache) => {
             try {
-                // ✅ offline.html을 반드시 캐싱
-                const response = await fetch(OFFLINE_PAGE, { cache: "reload" });
+                const response = await fetch(OFFLINE_PAGE);
                 if (!response.ok) throw new Error(`❌ ${OFFLINE_PAGE} - ${response.status} 오류`);
                 await cache.put(OFFLINE_PAGE, response);
                 console.log("✅ `offline.html` 강제 캐싱 완료!");
@@ -46,15 +45,21 @@ self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return;
 
     event.respondWith(
-        fetch(event.request)
-            .then((response) => response)
-            .catch(async () => {
+        caches.match(event.request).then((cachedResponse) => {
+            // ✅ 캐시에 있으면 캐시된 응답 반환
+            if (cachedResponse) {
+                return cachedResponse;
+            }
+
+            // ✅ 네트워크 요청 시도
+            return fetch(event.request).catch(async () => {
                 console.warn("🌐 네트워크 오류 발생! offline.html 반환");
                 const cache = await caches.open(CACHE_NAME);
                 return await cache.match(OFFLINE_PAGE) || new Response("<h1>오프라인 상태입니다</h1>", {
                     headers: { "Content-Type": "text/html" }
                 });
-            })
+            });
+        })
     );
 });
 
