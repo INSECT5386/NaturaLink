@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v71";
+const CACHE_NAME = "natura-link-cache-v72";
 const OFFLINE_PAGE = "/pwa/offline.html";
 
 // ✅ 캐싱할 정적 파일 목록
@@ -37,15 +37,26 @@ async function saveOfflinePageToMemory(response) {
     console.log("✅ `offline.html`을 메모리에 저장 완료!");
 }
 
-// ✅ `offline.html` 복구 (오프라인일 때만 실행)
+// ✅ `offline.html` 복구 (오프라인일 때 실행)
 async function restoreOfflinePage() {
-    if (!navigator.onLine) { // ✅ 오프라인일 때만 복구
+    if (!navigator.onLine) { // ✅ 오프라인 상태일 때만 복구
         if (offlinePageBlob) {
             console.log("✅ 메모리에서 `offline.html` 복구!");
             return new Response(offlinePageBlob, { headers: { "Content-Type": "text/html" } });
         }
     }
-    return null;
+
+    // ✅ 만약 메모리에 없으면 Cache Storage에서 다시 로드
+    const cache = await caches.open(CACHE_NAME);
+    let response = await cache.match(OFFLINE_PAGE);
+    if (response) {
+        console.log("✅ Cache Storage에서 `offline.html` 복구!");
+        return response;
+    }
+
+    return new Response("<h1>오프라인 상태입니다</h1>", {
+        headers: { "Content-Type": "text/html" }
+    });
 }
 
 // ✅ 서비스 워커 설치 및 정적 파일 캐싱
@@ -94,19 +105,36 @@ self.addEventListener("fetch", (event) => {
 
                 if (!response) {
                     console.warn("⚠️ 캐시에서 요청된 리소스를 찾을 수 없음. `offline.html` 제공...");
-                    response = await cache.match(OFFLINE_PAGE) || await restoreOfflinePage();
+                    response = await restoreOfflinePage();
                 }
 
-                return response || new Response("<h1>오프라인 상태입니다</h1>", {
-                    headers: { "Content-Type": "text/html" }
-                });
+                return response;
             }
         })()
     );
 });
 
-// ✅ 기존 캐시 유지 (불필요한 `offline.html` 복구 제거)
+// ✅ 서비스 워커 활성화 시 `offline.html`을 미리 로드하여 오프라인에서도 즉시 사용 가능하도록 변경
 self.addEventListener("activate", (event) => {
     console.log("🚀 서비스 워커 활성화!");
-    // ✅ `getOfflinePage()` 호출 제거 (이미 fetch 이벤트에서 `offline.html`을 복구)
+    event.waitUntil(
+        (async () => {
+            const cache = await caches.open(CACHE_NAME);
+            let response = await cache.match(OFFLINE_PAGE);
+
+            if (!response) {
+                console.warn("⚠️ `offline.html`이 Cache Storage에서 사라짐! 다시 다운로드...");
+                try {
+                    response = await fetch(OFFLINE_PAGE);
+                    if (response.ok) {
+                        await cache.put(OFFLINE_PAGE, response.clone());
+                        await saveOfflinePageToMemory(response.clone());
+                        console.log("✅ `offline.html` 복구 완료!");
+                    }
+                } catch (error) {
+                    console.error("❌ `offline.html` 복구 실패:", error);
+                }
+            }
+        })()
+    );
 });
