@@ -43,15 +43,17 @@
     border-radius: 15px 15px 15px 0;
 }
 
-/* ✅ 입력창 스타일 */
+/* ✅ 입력창 컨테이너 (수정됨) */
 #userInputContainer {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: space-between; /* 버튼 정렬 */
+    gap: 5px; /* 버튼 간 간격 */
     margin-top: 10px;
     width: 100%;
 }
 
+/* ✅ 입력창 */
 #userInput {
     flex: 1;
     padding: 10px;
@@ -60,19 +62,24 @@
     background-color: rgba(34, 34, 34, 0.9);
     color: #f0f0f0;
     outline: none;
-    width: 90%;
 }
 
-#sendMessageBtn {
-    margin-top: 5px;
-    width: fit-content;
-    padding: 8px 16px;
+/* ✅ 버튼 공통 스타일 */
+#sendMessageBtn,
+#clearChatBtn {
+    padding: 8px 14px;
     border-radius: 5px;
-    background-color: #444;
-    color: #f0f0f0;
     border: none;
     cursor: pointer;
     transition: background 0.3s ease-in-out;
+    font-size: 13px;
+    width: fit-content;
+}
+
+/* ✅ 보내기 버튼 */
+#sendMessageBtn {
+    background: #444;
+    color: #f0f0f0;
 }
 
 #sendMessageBtn:hover {
@@ -81,34 +88,13 @@
     box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
 }
 
-/* ✅ 타이핑 인디케이터 */
-.typing-indicator {
-    font-style: italic;
-    color: #999;
-}
-
-/* ✅ 대화 지우기 버튼 스타일 */
+/* ✅ 대화 지우기 버튼 (보내기 버튼 옆으로 배치) */
 #clearChatBtn {
-    display: block;
-    margin-top: 8px;
-    padding: 6px 12px;
-    background: #555; /* 어두운 색상 적용 */
-    color: #ddd; /* 부드러운 대비 */
-    border: none;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out, color 0.3s;
-    width: fit-content;
+    background: #555; /* 어두운 색상 */
+    color: #ddd;
 }
 
-/* ✅ 버튼 호버 효과 */
 #clearChatBtn:hover {
-    background: #777; /* 부드러운 hover 효과 */
+    background: #777;
     color: white;
-}
-
-/* ✅ 버튼 위치 조정 */
-#clearChatBtn {
-    align-self: center;
 }
