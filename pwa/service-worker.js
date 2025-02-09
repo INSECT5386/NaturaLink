@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v73";
+const CACHE_NAME = "natura-link-cache-v74";
 const OFFLINE_PAGE = "/pwa/offline.html";
 
 // ✅ `offline.html`을 메모리에 저장하기 위한 변수
@@ -20,14 +20,14 @@ async function saveOfflinePageToMemory(response) {
 
 // ✅ `offline.html` 복구 (오프라인일 때 실행)
 async function restoreOfflinePage() {
-    if (!navigator.onLine) { // ✅ 오프라인 상태일 때만 복구
+    if (!navigator.onLine) { 
         if (offlinePageBlob) {
             console.log("✅ 메모리에서 `offline.html` 복구!");
             return new Response(offlinePageBlob, { headers: { "Content-Type": "text/html" } });
         }
     }
 
-    // ✅ 만약 메모리에 없으면 Cache Storage에서 다시 로드
+    // ✅ Cache Storage에서 복구 시도
     const cache = await caches.open(CACHE_NAME);
     let response = await cache.match(OFFLINE_PAGE);
     if (response) {
@@ -46,7 +46,7 @@ self.addEventListener("install", (event) => {
 
     event.waitUntil(
         (async () => {
-            await requestPersistentStorage(); // ✅ Persistent Storage 설정
+            await requestPersistentStorage(); 
 
             const cache = await caches.open(CACHE_NAME);
             try {
@@ -54,30 +54,33 @@ self.addEventListener("install", (event) => {
                 if (!response.ok) throw new Error(`❌ ${OFFLINE_PAGE} - ${response.status} 오류`);
 
                 await cache.put(OFFLINE_PAGE, response.clone());
-                await saveOfflinePageToMemory(response.clone()); // ✅ 메모리에 저장
+                await saveOfflinePageToMemory(response.clone());
                 console.log("✅ `offline.html` 강제 캐싱 및 메모리 저장 완료!");
             } catch (error) {
                 console.error("❌ `offline.html` 캐싱 실패:", error);
             }
 
+            // ✅ 정적 파일 캐싱
+            const STATIC_ASSETS = [
+                "/index.html",
+                "/js/script.js",
+                "/js/chat.js",
+                "/js/pwa.js",
+                "/pwa/manifest.json",
+                "/pwa/service-worker.js",
+                "/css/base.css",
+                "/css/layout.css",
+                "/css/components.css",
+                "/css/chat.css",
+                "/favicons/favicon-16x16.png",
+                "/favicons/favicon-32x32.png",
+                "/favicons/favicon.ico",
+                "/assets/icon/android-chrome-192x192.png",
+                "/assets/icon/android-chrome-512x512.png"
+            ];
+
             try {
-                await cache.addAll([
-                    "/index.html",
-                    "/js/script.js",
-                    "/js/chat.js",
-                    "/js/pwa.js",
-                    "/pwa/manifest.json",
-                    "/pwa/service-worker.js",
-                    "/css/base.css",
-                    "/css/layout.css",
-                    "/css/components.css",
-                    "/css/chat.css",
-                    "/favicons/favicon-16x16.png",
-                    "/favicons/favicon-32x32.png",
-                    "/favicons/favicon.ico",
-                    "/assets/icon/android-chrome-192x192.png",
-                    "/assets/icon/android-chrome-512x512.png"
-                ]);
+                await cache.addAll(STATIC_ASSETS);
                 console.log("✅ 정적 파일 캐싱 완료!");
             } catch (error) {
                 console.error("❌ 정적 파일 캐싱 실패:", error);
@@ -86,7 +89,7 @@ self.addEventListener("install", (event) => {
     );
 });
 
-// ✅ 네트워크 요청 실패 시 `offline.html` 반환 (강제 복구)
+// ✅ 네트워크 요청 실패 시 `offline.html` 반환
 self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return;
 
@@ -116,7 +119,7 @@ self.addEventListener("fetch", (event) => {
     );
 });
 
-// ✅ 서비스 워커 활성화 시 `offline.html`을 미리 로드하여 오프라인에서도 즉시 사용 가능하도록 변경
+// ✅ 서비스 워커 활성화 시 이전 캐시 삭제 및 `offline.html` 유지
 self.addEventListener("activate", (event) => {
     console.log("🚀 서비스 워커 활성화!");
     event.waitUntil(
@@ -137,6 +140,19 @@ self.addEventListener("activate", (event) => {
                     console.error("❌ `offline.html` 복구 실패:", error);
                 }
             }
+
+            // ✅ 오래된 캐시 삭제
+            const cacheNames = await caches.keys();
+            await Promise.all(
+                cacheNames.map((name) => {
+                    if (name !== CACHE_NAME) {
+                        console.log(`🗑️ 오래된 캐시 삭제: ${name}`);
+                        return caches.delete(name);
+                    }
+                })
+            );
+
+            console.log("✅ 최신 캐시 유지 완료!");
         })()
     );
 });
