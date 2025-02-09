@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v3"; // 🔄 캐시 버전 업데이트
+const CACHE_NAME = "natura-link-cache-v4"; // 🔄 캐시 버전 업데이트
 const STATIC_ASSETS = [
     "/",
     "/index.html",
@@ -33,19 +33,19 @@ self.addEventListener("install", (event) => {
     );
 });
 
-// ✅ 네트워크 요청 처리 및 오프라인 대응
+// ✅ 오프라인 모드 강제 적용
 self.addEventListener("fetch", (event) => {
-    if (event.request.method !== "GET") return; // ✅ GET 요청만 캐시 처리
+    if (event.request.method !== "GET") return;
 
-    // Netlify API 요청은 캐시하지 않음
+    // ✅ Netlify API 요청은 캐시하지 않음
     if (event.request.url.includes("/.netlify/functions/huggingface")) {
         return fetch(event.request);
     }
 
     event.respondWith(
         fetch(event.request).catch(() => {
-            console.warn("🌐 오프라인 상태 - offline.html 로드");
-            return caches.match("/pwa/offline.html"); // ✅ 오프라인 시 강제 반환
+            console.warn("🌐 오프라인 상태 - offline.html 강제 반환");
+            return caches.match("/pwa/offline.html");
         })
     );
 });
@@ -56,11 +56,9 @@ self.addEventListener("activate", (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames
-                    .filter((cache) => cache !== CACHE_NAME)
+                cacheNames.filter((cache) => cache !== CACHE_NAME)
                     .map((cache) => caches.delete(cache))
             );
         }).then(() => self.clients.claim())
     );
 });
-
