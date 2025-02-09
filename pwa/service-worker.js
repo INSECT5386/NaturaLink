@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v35";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v36";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
