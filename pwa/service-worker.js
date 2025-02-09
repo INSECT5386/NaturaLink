@@ -1,9 +1,8 @@
-const CACHE_NAME = "natura-link-cache-v11";  // ✅ 캐시 버전 업데이트!
+const CACHE_NAME = "natura-link-cache-v12";  // ✅ 캐시 버전 업데이트!
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 확실한 경로 지정
 
 const STATIC_ASSETS = [
     "/index.html",
-    OFFLINE_PAGE,  // ✅ 반드시 포함
     "/js/script.js",
     "/js/chat.js",
     "/js/pwa.js",
@@ -26,11 +25,26 @@ self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then(async (cache) => {
             try {
-                await cache.addAll(STATIC_ASSETS);
+                // ✅ `addAll()` 대신 개별적으로 `fetch()` 사용 (CORS 오류 방지)
+                const offlineResponse = await fetch(OFFLINE_PAGE, { cache: "no-store" });
+                if (!offlineResponse.ok) throw new Error(`❌ ${OFFLINE_PAGE} - ${offlineResponse.status} 오류`);
+                await cache.put(OFFLINE_PAGE, offlineResponse);
                 console.log(`✅ 캐싱 성공: ${OFFLINE_PAGE}`);
             } catch (error) {
                 console.warn(`⚠️ 캐싱 실패: ${OFFLINE_PAGE}`, error);
             }
+
+            // ✅ 다른 정적 파일 캐싱
+            return Promise.all(STATIC_ASSETS.map(async (url) => {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`❌ ${url} - ${response.status} 오류`);
+                    await cache.put(url, response);
+                    console.log(`✅ 캐싱 성공: ${url}`);
+                } catch (error) {
+                    console.warn(`⚠️ 캐싱 실패: ${url}`, error);
+                }
+            }));
         }).then(() => self.skipWaiting())
     );
 });
