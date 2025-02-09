@@ -1,6 +1,6 @@
 # 🔹 Netlify가 정적 PWA를 자동 배포하도록 설정
 [build]
-  publish = "."  # 📁 현재 디렉토리를 배포 (index.html 포함)
+  publish = "."  # 📁 index.html이 있는 폴더를 배포
   command = ""   # 🛑 정적 사이트이므로 npm 빌드 명령어 없음
 
 # 🔹 최신 PWA 유지 (캐싱 비활성화)
@@ -11,30 +11,35 @@
     Pragma = "no-cache"
     Expires = "0"
 
-# 🔹 404 오류 발생 시 offline.html 반환 (정적 파일 제외)
+# 🔹 404 오류 발생 시 offline.html 반환 (BUT 정적 파일 제외!)
 [[redirects]]
   from = "/*"
   to = "/pwa/offline.html"
   status = 404
   force = true
 
-# 🔹 CSS, JS, 이미지 파일 보호 (삭제 방지)
-[[headers]]
-  for = "/css/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
+# ✅ 정적 파일 보호 (CSS, JS, 이미지, 아이콘은 리디렉트되지 않음)
+[[redirects]]
+  from = "/css/*"
+  to = "/css/:splat"
+  status = 200
 
-[[headers]]
-  for = "/js/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
+[[redirects]]
+  from = "/js/*"
+  to = "/js/:splat"
+  status = 200
 
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
+[[redirects]]
+  from = "/assets/*"
+  to = "/assets/:splat"
+  status = 200
 
-[[headers]]
-  for = "/favicons/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
+[[redirects]]
+  from = "/favicons/*"
+  to = "/favicons/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/pwa/*"
+  to = "/pwa/:splat"
+  status = 200
