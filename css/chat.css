@@ -1,4 +1,4 @@
-/* 채팅 박스 스타일 */
+/* ✅ 채팅 박스 스타일 */
 #chatbox {
     border: 1px solid #444;
     padding: 15px;
@@ -9,14 +9,14 @@
     background-color: rgba(34, 34, 34, 0.9);
 }
 
-/* 채팅 로그 */
+/* ✅ 채팅 로그 스타일 */
 #chatlogs {
     margin-bottom: 10px;
     display: flex;
     flex-direction: column;
 }
 
-/* 말풍선 스타일 */
+/* ✅ 말풍선 스타일 */
 .chat-bubble {
     padding: 12px;
     margin: 6px 0;
@@ -26,24 +26,24 @@
     font-size: 14px;
 }
 
-/* 사용자 메시지 */
+/* ✅ 사용자 메시지 */
 .user-message {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(135deg, #80b3ff, #1e90ff);
     color: #fff;
     align-self: flex-end;
     box-shadow: 0 0 10px rgba(128, 179, 255, 0.8);
     border-radius: 15px 15px 0 15px;
 }
 
-/* AI 메시지 */
+/* ✅ AI 메시지 */
 .ai-message {
     background: linear-gradient(135deg, #333, #444);
-    color: var(--primary-color);
+    color: #80b3ff;
     box-shadow: 0 0 10px rgba(128, 179, 255, 0.5);
     border-radius: 15px 15px 15px 0;
 }
 
-/* 입력창 스타일 */
+/* ✅ 입력창 스타일 */
 #userInputContainer {
     display: flex;
     align-items: center;
@@ -57,21 +57,38 @@
     border-radius: 5px;
     border: 1px solid #444;
     background-color: rgba(34, 34, 34, 0.9);
-    color: var(--text-color);
+    color: #f0f0f0;
     outline: none;
 }
 
-#chatbot button {
+#sendMessageBtn {
     width: 15%;
     padding: 10px;
     border-radius: 5px;
     background-color: #444;
-    color: var(--text-color);
+    color: #f0f0f0;
     border: none;
 }
 
-/* 타이핑 인디케이터 */
+/* ✅ 타이핑 인디케이터 */
 .typing-indicator {
     font-style: italic;
     color: #999;
+}
+
+/* ✅ 대화 지우기 버튼 스타일 */
+#clearChatBtn {
+    display: block;
+    margin: 10px auto;
+    padding: 8px 16px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+#clearChatBtn:hover {
+    background: #cc0000;
 }
