@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v2";
+const CACHE_NAME = "natura-link-cache-v3"; // 🔄 캐시 버전 업데이트
 const STATIC_ASSETS = [
     "/",
     "/index.html",
@@ -26,14 +26,14 @@ self.addEventListener("install", (event) => {
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(STATIC_ASSETS);
         }).then(() => {
-            self.skipWaiting();
+            self.skipWaiting(); // ✅ 즉시 새로운 서비스 워커 활성화
         }).catch((error) => {
             console.error("❌ 캐싱 중 오류 발생:", error);
         })
     );
 });
 
-// ✅ 네트워크 요청 처리
+// ✅ 네트워크 요청 처리 및 오프라인 대응
 self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return; // ✅ GET 요청만 캐시 처리
 
@@ -50,7 +50,10 @@ self.addEventListener("fetch", (event) => {
                     return response;
                 });
             });
-        }).catch(() => caches.match("/pwa/offline.html")) // ✅ 올바른 경로 사용
+        }).catch(() => {
+            console.warn("🌐 오프라인 상태 - offline.html 로드");
+            return caches.match("/pwa/offline.html"); // ✅ 오프라인 시 강제 반환
+        })
     );
 });
 
@@ -68,7 +71,7 @@ self.addEventListener("activate", (event) => {
     );
 });
 
-// ✅ 서비스 워커 업데이트 메시지 리스너
+// ✅ 서비스 워커 업데이트 자동 적용
 self.addEventListener("message", (event) => {
     if (event.data.action === "skipWaiting") {
         console.log("⚡ 새로운 서비스 워커가 활성화됩니다!");
