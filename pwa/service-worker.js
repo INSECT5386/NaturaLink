@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v33";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v35";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -20,7 +20,7 @@ const STATIC_ASSETS = [
     "/assets/icon/android-chrome-512x512.png"
 ];
 
-// ✅ 서비스 워커 설치 시 `offline.html` 강제 캐싱
+// ✅ 서비스 워커 설치 및 캐싱 (offline.html 포함)
 self.addEventListener("install", (event) => {
     console.log("📦 서비스 워커 설치 중...");
     event.waitUntil(
@@ -63,15 +63,37 @@ self.addEventListener("fetch", (event) => {
     );
 });
 
-// ✅ 오래된 캐시 삭제 및 새로운 서비스 워커 활성화
+// ✅ 기존 캐시 삭제하되, `offline.html`을 유지하도록 변경
 self.addEventListener("activate", (event) => {
     console.log("🚀 새로운 서비스 워커 활성화!");
+
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.filter((cache) => cache !== CACHE_NAME)
-                    .map((cache) => caches.delete(cache))
-            );
-        }).then(() => self.clients.claim())
+        (async () => {
+            const cacheKeys = await caches.keys();
+            const oldCaches = cacheKeys.filter((cache) => cache !== CACHE_NAME);
+
+            // ✅ `offline.html`을 유지하면서 기존 캐시 삭제
+            const cache = await caches.open(CACHE_NAME);
+            const offlineResponse = await cache.match(OFFLINE_PAGE);
+
+            await Promise.all(oldCaches.map((cache) => caches.delete(cache)));
+
+            // ✅ `offline.html`이 삭제되지 않도록 다시 저장
+            if (offlineResponse) {
+                await cache.put(OFFLINE_PAGE, offlineResponse);
+                console.log("✅ `offline.html` 유지 완료!");
+            } else {
+                console.warn("⚠️ `offline.html`이 사라짐! 다시 캐싱 시도");
+                const response = await fetch(OFFLINE_PAGE);
+                if (response.ok) {
+                    await cache.put(OFFLINE_PAGE, response);
+                    console.log("✅ `offline.html`을 다시 캐싱 성공!");
+                } else {
+                    console.error("❌ `offline.html`을 다시 캐싱하는 데 실패함");
+                }
+            }
+
+            self.clients.claim();
+        })()
     );
 });
