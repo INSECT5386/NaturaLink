@@ -1,23 +1,5 @@
-const CACHE_NAME = "natura-link-cache-v58";  // ✅ 최신 캐시 버전
-const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
-
-const STATIC_ASSETS = [
-    "/index.html",
-    "/js/script.js",
-    "/js/chat.js",
-    "/js/pwa.js",
-    "/pwa/manifest.json",
-    "/pwa/service-worker.js",
-    "/css/base.css",
-    "/css/layout.css",
-    "/css/components.css",
-    "/css/chat.css",
-    "/favicons/favicon-16x16.png",
-    "/favicons/favicon-32x32.png",
-    "/favicons/favicon.ico",
-    "/assets/icon/android-chrome-192x192.png",
-    "/assets/icon/android-chrome-512x512.png"
-];
+const CACHE_NAME = "natura-link-cache-v60";
+const OFFLINE_PAGE = "/pwa/offline.html";
 
 // ✅ Persistent Storage 요청 (IndexedDB가 삭제되지 않도록 설정)
 async function requestPersistentStorage() {
@@ -27,10 +9,14 @@ async function requestPersistentStorage() {
     }
 }
 
-// ✅ IndexedDB에 데이터 저장 (자동 백업)
+// ✅ IndexedDB에 데이터 저장 (Cache Storage 백업 포함)
 async function saveToIndexedDB(key, response) {
     try {
-        const blob = await response.blob();
+        const responseClone1 = response.clone();  // ✅ Clone for IndexedDB
+        const responseClone2 = response.clone();  // ✅ Clone for Cache Storage
+
+        // IndexedDB 저장
+        const blob = await responseClone1.blob();
         const dbRequest = indexedDB.open("OfflineCache", 1);
 
         dbRequest.onupgradeneeded = () => {
@@ -50,8 +36,8 @@ async function saveToIndexedDB(key, response) {
             console.error("❌ IndexedDB 오류:", event.target.error);
         };
 
-        // ✅ IndexedDB에 저장 후 Cache Storage에도 백업
-        await backupOfflinePageToCache(response);
+        // ✅ Cache Storage에도 백업 (Response 객체 사용 가능)
+        await backupOfflinePageToCache(responseClone2);
     } catch (error) {
         console.error("❌ IndexedDB 저장 실패:", error);
     }
@@ -108,18 +94,12 @@ self.addEventListener("install", (event) => {
             try {
                 const response = await fetch(OFFLINE_PAGE, { cache: "reload" });
                 if (!response.ok) throw new Error(`❌ ${OFFLINE_PAGE} - ${response.status} 오류`);
-                await cache.put(OFFLINE_PAGE, response.clone());
+
+                await cache.put(OFFLINE_PAGE, response.clone());  // ✅ Clone 사용
                 await saveToIndexedDB(OFFLINE_PAGE, response);
                 console.log("✅ `offline.html` 강제 캐싱 및 IndexedDB 저장 완료!");
             } catch (error) {
                 console.error("❌ `offline.html` 캐싱 실패:", error);
-            }
-
-            try {
-                await cache.addAll(STATIC_ASSETS);
-                console.log("✅ 정적 파일 캐싱 완료!");
-            } catch (error) {
-                console.error("❌ 정적 파일 캐싱 실패:", error);
             }
         })().then(() => self.skipWaiting())
     );
