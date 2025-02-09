@@ -1,5 +1,5 @@
-const CACHE_NAME = "natura-link-cache-v16";  // ✅ 캐시 버전 업데이트!
-const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 확실한 경로 지정
+const CACHE_NAME = "natura-link-cache-v18";  // ✅ 캐시 버전 업데이트!
+const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
     "/index.html",
@@ -67,18 +67,23 @@ self.addEventListener("install", (event) => {
     );
 });
 
-// ✅ 네트워크 요청 실패 시 `offline.html` 반환
+// ✅ 네트워크 요청이 실패할 경우에만 `offline.html` 반환
 self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return;
 
     event.respondWith(
-        fetch(event.request).catch(async () => {
-            console.warn("🌐 오프라인 상태 - 최신 offline.html 반환");
-            const cache = await caches.open(CACHE_NAME);
-            return (await cache.match(OFFLINE_PAGE)) || new Response("<h1>오프라인 상태입니다</h1>", {
-                headers: { "Content-Type": "text/html" }
-            });
-        })
+        fetch(event.request)
+            .then((response) => {
+                // ✅ 네트워크 요청이 성공하면 그대로 반환
+                return response;
+            })
+            .catch(async () => {
+                console.warn("🌐 네트워크 오류 발생! offline.html 반환");
+                const cache = await caches.open(CACHE_NAME);
+                return (await cache.match(OFFLINE_PAGE)) || new Response("<h1>오프라인 상태입니다</h1>", {
+                    headers: { "Content-Type": "text/html" }
+                });
+            })
     );
 });
 
@@ -94,4 +99,5 @@ self.addEventListener("activate", (event) => {
         }).then(() => self.clients.claim())
     );
 });
+
 
