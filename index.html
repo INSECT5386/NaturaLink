@@ -7,16 +7,16 @@
     <meta property="og:title" content="NaturaLink">
     <meta property="og:description" content="NaturaLink">
     <title>NaturaLink</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicons/favicon.ico" type="image/x-icon">
     
     <!-- 폰트 -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 
     <!-- 분리된 CSS 파일 -->
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/chat.css">
 </head>
 <body>
     <header>
@@ -60,15 +60,16 @@
     <button id="install-button">앱 설치</button>
     
     <!-- JavaScript -->
-    <script src="script.js"></script>
+    <script src="/js/script.js"></script>
 
     <!-- 서비스 워커 등록 -->
     <script>
         if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/service-worker.js")
+            navigator.serviceWorker.register("/pwa/service-worker.js")
                 .then(() => console.log("서비스 워커가 등록되었습니다."))
                 .catch(error => console.error("서비스 워커 등록 실패:", error));
         }
     </script>
 </body>
 </html>
+
