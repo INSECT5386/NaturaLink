@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v12";  // ✅ 캐시 버전 업데이트!
+const CACHE_NAME = "natura-link-cache-v16";  // ✅ 캐시 버전 업데이트!
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 확실한 경로 지정
 
 const STATIC_ASSETS = [
@@ -12,11 +12,15 @@ const STATIC_ASSETS = [
     "/css/layout.css",
     "/css/components.css",
     "/css/chat.css",
-    "/assets/icons/android-chrome-192x192.png",
-    "/assets/icons/android-chrome-512x512.png",
     "/favicons/favicon-16x16.png",
     "/favicons/favicon-32x32.png",
     "/favicons/favicon.ico"
+];
+
+// ✅ PNG 아이콘이 실제 존재하는지 확인 후 추가 (404 방지)
+const ICONS = [
+    "/assets/icons/android-chrome-192x192.png",
+    "/assets/icons/android-chrome-512x512.png"
 ];
 
 // ✅ 서비스 워커 설치 및 `offline.html` 강제 캐싱
@@ -25,8 +29,7 @@ self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then(async (cache) => {
             try {
-                // ✅ `addAll()` 대신 개별적으로 `fetch()` 사용 (CORS 오류 방지)
-                const offlineResponse = await fetch(OFFLINE_PAGE, { cache: "no-store" });
+                const offlineResponse = await fetch(OFFLINE_PAGE, { cache: "reload" });
                 if (!offlineResponse.ok) throw new Error(`❌ ${OFFLINE_PAGE} - ${offlineResponse.status} 오류`);
                 await cache.put(OFFLINE_PAGE, offlineResponse);
                 console.log(`✅ 캐싱 성공: ${OFFLINE_PAGE}`);
@@ -34,8 +37,7 @@ self.addEventListener("install", (event) => {
                 console.warn(`⚠️ 캐싱 실패: ${OFFLINE_PAGE}`, error);
             }
 
-            // ✅ 다른 정적 파일 캐싱
-            return Promise.all(STATIC_ASSETS.map(async (url) => {
+            await Promise.all(STATIC_ASSETS.map(async (url) => {
                 try {
                     const response = await fetch(url);
                     if (!response.ok) throw new Error(`❌ ${url} - ${response.status} 오류`);
@@ -45,6 +47,22 @@ self.addEventListener("install", (event) => {
                     console.warn(`⚠️ 캐싱 실패: ${url}`, error);
                 }
             }));
+
+            // ✅ 아이콘 파일이 존재하는 경우에만 캐싱
+            await Promise.all(ICONS.map(async (icon) => {
+                try {
+                    const response = await fetch(icon);
+                    if (response.ok) {
+                        await cache.put(icon, response);
+                        console.log(`✅ 아이콘 캐싱 성공: ${icon}`);
+                    } else {
+                        console.warn(`⚠️ 아이콘 없음 (건너뜀): ${icon}`);
+                    }
+                } catch (error) {
+                    console.warn(`⚠️ 아이콘 캐싱 실패 (건너뜀): ${icon}`, error);
+                }
+            }));
+
         }).then(() => self.skipWaiting())
     );
 });
@@ -76,3 +94,4 @@ self.addEventListener("activate", (event) => {
         }).then(() => self.clients.claim())
     );
 });
+
