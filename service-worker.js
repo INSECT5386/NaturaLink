@@ -10,7 +10,11 @@ const STATIC_ASSETS = [
     "/favicon-16x16.png",
     "/favicon.ico",
     "/service-worker.js",
-    "/offline.html"
+    "/offline.html",
+    "/bsae.css",
+    "/layout.css",
+    "/components.css",
+    "chat.css"
 ];
 
 // 서비스 워커 설치 및 정적 리소스 캐싱
