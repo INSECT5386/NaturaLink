@@ -1,13 +1,12 @@
-const CACHE_NAME = "natura-link-cache-v4"; // 🔄 캐시 버전 업데이트
+const CACHE_NAME = "natura-link-cache-v5";
 const STATIC_ASSETS = [
-    "/",
     "/index.html",
+    "/pwa/offline.html",  // ✅ 오프라인 페이지 포함
     "/js/script.js",
     "/js/chat.js",
     "/js/pwa.js",
     "/pwa/manifest.json",
     "/pwa/service-worker.js",
-    "/pwa/offline.html", // ✅ 오프라인 대체 페이지
     "/css/base.css",
     "/css/layout.css",
     "/css/components.css",
@@ -19,21 +18,28 @@ const STATIC_ASSETS = [
     "/favicons/favicon.ico"
 ];
 
-// ✅ 서비스 워커 설치 및 정적 리소스 캐싱
+// ✅ 서비스 워커 설치 및 개별 캐싱
 self.addEventListener("install", (event) => {
     console.log("📦 서비스 워커 설치 중...");
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(STATIC_ASSETS);
-        }).then(() => {
-            self.skipWaiting();
-        }).catch((error) => {
-            console.error("❌ 캐싱 중 오류 발생:", error);
-        })
+        caches.open(CACHE_NAME).then(async (cache) => {
+            const cachePromises = STATIC_ASSETS.map(async (url) => {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`❌ ${url} - ${response.status} 오류`);
+                    await cache.put(url, response);
+                    console.log(`✅ 캐싱 성공: ${url}`);
+                } catch (error) {
+                    console.warn(`⚠️ 캐싱 실패: ${url}`, error);
+                }
+            });
+
+            return Promise.all(cachePromises);
+        }).then(() => self.skipWaiting())
     );
 });
 
-// ✅ 오프라인 모드 강제 적용
+// ✅ 네트워크 요청 처리 (오프라인 시 `offline.html` 반환)
 self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return;
 
@@ -44,8 +50,10 @@ self.addEventListener("fetch", (event) => {
 
     event.respondWith(
         fetch(event.request).catch(() => {
-            console.warn("🌐 오프라인 상태 - offline.html 강제 반환");
-            return caches.match("/pwa/offline.html");
+            console.warn("🌐 오프라인 상태 - offline.html 반환");
+            return caches.match("/pwa/offline.html") || new Response("<h1>오프라인 상태입니다</h1>", {
+                headers: { "Content-Type": "text/html" }
+            });
         })
     );
 });
@@ -62,3 +70,4 @@ self.addEventListener("activate", (event) => {
         }).then(() => self.clients.claim())
     );
 });
+
