@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v37";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v38";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -48,14 +48,25 @@ self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return;
 
     event.respondWith(
-        fetch(event.request)
-            .catch(async () => {
+        caches.match(event.request).then((cachedResponse) => {
+            if (cachedResponse) return cachedResponse;
+
+            return fetch(event.request).catch(async () => {
                 console.warn("🌐 네트워크 오류 발생! offline.html 반환");
                 const cache = await caches.open(CACHE_NAME);
-                return (await cache.match(OFFLINE_PAGE)) || new Response("<h1>오프라인 상태입니다</h1>", {
+
+                // ✅ `navigate` 요청일 경우 `offline.html` 반환
+                if (event.request.mode === "navigate") {
+                    return await cache.match(OFFLINE_PAGE) || new Response("<h1>오프라인 상태입니다</h1>", {
+                        headers: { "Content-Type": "text/html" }
+                    });
+                }
+
+                return await cache.match(event.request) || new Response("<h1>오프라인 상태입니다</h1>", {
                     headers: { "Content-Type": "text/html" }
                 });
-            })
+            });
+        })
     );
 });
 
