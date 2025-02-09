@@ -2,12 +2,12 @@ const CACHE_NAME = "natura-link-cache-v2";
 const STATIC_ASSETS = [
     "/",
     "/index.html",
-    "/js/script.js",  // ✅ UI 관련 기능 (탭 전환, 버튼)
-    "/js/chat.js",    // ✅ 챗봇 기능 추가
-    "/js/pwa.js",     // ✅ PWA 기능 추가
+    "/js/script.js",
+    "/js/chat.js",
+    "/js/pwa.js",
     "/pwa/manifest.json",
     "/pwa/service-worker.js",
-    "/pwa/offline.html",
+    "/pwa/offline.html", // ✅ 오프라인 대체 페이지
     "/css/base.css",
     "/css/layout.css",
     "/css/components.css",
@@ -19,21 +19,21 @@ const STATIC_ASSETS = [
     "/favicons/favicon.ico"
 ];
 
-
-
-// 서비스 워커 설치 및 정적 리소스 캐싱
+// ✅ 서비스 워커 설치 및 정적 리소스 캐싱
 self.addEventListener("install", (event) => {
     console.log("📦 서비스 워커 설치 중...");
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(STATIC_ASSETS);
         }).then(() => {
-            self.skipWaiting(); // ✅ 서비스 워커 즉시 활성화
+            self.skipWaiting();
+        }).catch((error) => {
+            console.error("❌ 캐싱 중 오류 발생:", error);
         })
     );
 });
 
-// 네트워크 요청 처리
+// ✅ 네트워크 요청 처리
 self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return; // ✅ GET 요청만 캐시 처리
 
@@ -50,25 +50,25 @@ self.addEventListener("fetch", (event) => {
                     return response;
                 });
             });
-        }).catch(() => caches.match("/offline.html")) // ✅ 오프라인 시 대체 페이지 제공
+        }).catch(() => caches.match("/pwa/offline.html")) // ✅ 올바른 경로 사용
     );
 });
 
-// 오래된 캐시 정리 및 서비스 워커 활성화
+// ✅ 오래된 캐시 정리 및 서비스 워커 활성화
 self.addEventListener("activate", (event) => {
     console.log("🚀 새로운 서비스 워커 활성화!");
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames
-                    .filter((cache) => cache !== CACHE_NAME) // ✅ 새로운 캐시만 유지
+                    .filter((cache) => cache !== CACHE_NAME)
                     .map((cache) => caches.delete(cache))
             );
-        }).then(() => self.clients.claim()) // ✅ 모든 클라이언트에서 즉시 적용
+        }).then(() => self.clients.claim())
     );
 });
 
-// 서비스 워커 업데이트 메시지 리스너
+// ✅ 서비스 워커 업데이트 메시지 리스너
 self.addEventListener("message", (event) => {
     if (event.data.action === "skipWaiting") {
         console.log("⚡ 새로운 서비스 워커가 활성화됩니다!");
