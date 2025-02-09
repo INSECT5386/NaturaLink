@@ -11,7 +11,7 @@ const STATIC_ASSETS = [
     "/favicon.ico",
     "/service-worker.js",
     "/offline.html",
-    "/bsae.css",
+    "/base.css",
     "/layout.css",
     "/components.css",
     "chat.css"
