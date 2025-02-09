@@ -11,13 +11,35 @@
     Pragma = "no-cache"
     Expires = "0"
 
-# 🔹 오프라인 지원 설정 (404 에러 시 offline.html 반환)
-[[redirects]]
-  from = "/offline"
-  to = "/pwa/offline.html"
-  status = 200
-
+# 🔹 오프라인 지원 설정 (404 에러 시 offline.html 반환, BUT 정적 파일 제외)
 [[redirects]]
   from = "/*"
   to = "/pwa/offline.html"
-  status = 404  # 404 발생 시 offline.html 반환
+  status = 404
+  query = {path = "/pwa/offline.html"}
+
+# 🔹 정적 파일 (.png, .css, .js 등)은 `offline.html`로 리디렉트되지 않음
+[[redirects]]
+  from = "/assets/*"
+  to = "/assets/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/css/*"
+  to = "/css/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/js/*"
+  to = "/js/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/favicons/*"
+  to = "/favicons/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/pwa/*"
+  to = "/pwa/:splat"
+  status = 200
