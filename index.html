@@ -8,7 +8,10 @@
     <meta property="og:description" content="NaturaLink">
     <title>NaturaLink</title>
     <link rel="icon" href="/favicons/favicon.ico" type="image/x-icon">
-    
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+
     <!-- 폰트 -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 
@@ -40,7 +43,7 @@
     <div class="content" id="link">
         <h2>링크 복사</h2>
         <p>NaturaLink 링크를 복사하려면 아래 버튼을 클릭하세요.</p>
-        <button id="copyBtn">링크 복사</button>
+        <button id="copyBtn">🔗 링크 복사</button>
     </div>
 
     <!-- AI 챗봇 탭 -->
@@ -57,7 +60,10 @@
     </div>
 
     <!-- PWA 설치 버튼 -->
-    <button id="install-button" style="display: none;">앱 설치</button>
+    <button id="install-button" style="display: none;">📲 앱 설치</button>
+
+    <!-- 🔹 풀스크린 버튼 추가 -->
+    <button id="fullscreen-btn">🖥️ 전체 화면</button>
 
     <!-- JavaScript -->
     <script src="/js/chat.js"></script>  <!-- ✅ 챗봇 기능 -->
@@ -85,3 +91,4 @@
     </script>
 </body>
 </html>
+
