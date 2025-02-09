@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v41";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v43";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -19,7 +19,7 @@ const STATIC_ASSETS = [
     "/assets/icon/android-chrome-512x512.png"
 ];
 
-// ✅ 서비스 워커 설치 시 `offline.html` 강제 캐싱
+// ✅ 서비스 워커 설치 및 `offline.html` 강제 캐싱
 self.addEventListener("install", (event) => {
     console.log("📦 서비스 워커 설치 중...");
     event.waitUntil(
@@ -52,7 +52,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
         fetch(event.request)
             .catch(async () => {
-                console.warn("🌐 네트워크 오류 발생! offline.html 반환");
+                console.warn(`🌐 네트워크 오류 발생! 요청 URL: ${event.request.url}`);
                 const cache = await caches.open(CACHE_NAME);
 
                 if (event.request.mode === "navigate") {
