@@ -2,7 +2,9 @@ const CACHE_NAME = "natura-link-cache-v2";
 const STATIC_ASSETS = [
     "/",
     "/index.html",
-    "/js/script.js",
+    "/js/script.js",  // ✅ UI 관련 기능 (탭 전환, 버튼)
+    "/js/chat.js",    // ✅ 챗봇 기능 추가
+    "/js/pwa.js",     // ✅ PWA 기능 추가
     "/pwa/manifest.json",
     "/pwa/service-worker.js",
     "/pwa/offline.html",
@@ -16,6 +18,7 @@ const STATIC_ASSETS = [
     "/favicons/favicon-32x32.png",
     "/favicons/favicon.ico"
 ];
+
 
 
 // 서비스 워커 설치 및 정적 리소스 캐싱
