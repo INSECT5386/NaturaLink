@@ -1,26 +1,51 @@
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ 챗봇 스크립트 로드 완료!");
+
     const API_URL = "https://naturalink.netlify.app/.netlify/functions/huggingface";
     const chatlogs = document.getElementById("chatlogs");
     const userInput = document.getElementById("userInput");
     const sendMessageBtn = document.getElementById("sendMessageBtn");
     const typingIndicator = document.getElementById("typingIndicator");
+    const clearChatBtn = document.getElementById("clearChatBtn"); // ✅ 대화 삭제 버튼
 
     if (!sendMessageBtn) return;
 
-    sendMessageBtn.addEventListener("click", async () => {
+    // ✅ LocalStorage에서 대화 기록 불러오기
+    function loadChatHistory() {
+        const savedChat = JSON.parse(localStorage.getItem("chatCache")) || [];
+        savedChat.forEach(({ role, message }) => {
+            addMessage(role, message, false); // 기존 메시지를 표시 (애니메이션 없음)
+        });
+    }
+
+    // ✅ 메시지 추가 함수
+    function addMessage(role, message, animate = true) {
+        const msgDiv = document.createElement("div");
+        msgDiv.classList.add("chat-bubble", role === "user" ? "user-message" : "ai-message");
+        msgDiv.textContent = message;
+
+        if (animate) msgDiv.style.animation = "fadeIn 0.3s ease-in-out";
+        
+        chatlogs.appendChild(msgDiv);
+        chatlogs.scrollTop = chatlogs.scrollHeight;
+    }
+
+    // ✅ 사용자 메시지 & API 요청 처리
+    async function sendMessage() {
         const message = userInput.value.trim();
         if (!message) return;
 
-        addUserMessage(message);
+        addMessage("user", message);
+        saveChatHistory("user", message);
         userInput.value = "";
-        chatlogs.scrollTop = chatlogs.scrollHeight;
 
-        showTypingIndicator();
+        addMessage("ai", "🧠 생각 중...", false); // 타이핑 표시
 
         try {
             const cachedResponse = getCachedResponse(message);
             if (cachedResponse) {
-                addAIMessage(cachedResponse);
+                chatlogs.lastChild.remove();
+                addMessage("ai", cachedResponse);
             } else {
                 const response = await fetch(API_URL, {
                     method: "POST",
@@ -28,42 +53,52 @@ document.addEventListener("DOMContentLoaded", function () {
                     body: JSON.stringify({ text: message }),
                     credentials: "omit"
                 });
+
                 const data = await response.json();
-                addAIMessage(data[0].generated_text);
-                cacheResponse(message, data[0].generated_text);
+                chatlogs.lastChild.remove(); // "생각 중..." 삭제
+                addMessage("ai", data[0].generated_text);
+                saveChatHistory("ai", data[0].generated_text);
             }
         } catch (error) {
-            addAIMessage("⚠️ 네트워크 오류 발생! 다시 시도해주세요.");
+            chatlogs.lastChild.remove();
+            addMessage("ai", "⚠️ 네트워크 오류 발생! 다시 시도해주세요.");
         }
-
-        hideTypingIndicator();
-        chatlogs.scrollTop = chatlogs.scrollHeight;
-    });
-
-    function addUserMessage(message) {
-        chatlogs.innerHTML += `<div class="chat-bubble user-message">You: ${message}</div>`;
     }
 
-    function addAIMessage(message) {
-        chatlogs.innerHTML += `<div class="chat-bubble ai-message">AI: ${message}</div>`;
+    // ✅ 대화 기록 저장 (LocalStorage)
+    function saveChatHistory(role, message) {
+        const chatHistory = JSON.parse(localStorage.getItem("chatCache")) || [];
+        chatHistory.push({ role, message });
+
+        if (chatHistory.length > 50) chatHistory.shift(); // 오래된 메시지 삭제 (최대 50개)
+        
+        localStorage.setItem("chatCache", JSON.stringify(chatHistory));
     }
 
-    function showTypingIndicator() {
-        typingIndicator.style.display = "block";
-    }
-
-    function hideTypingIndicator() {
-        typingIndicator.style.display = "none";
-    }
-
-    function cacheResponse(input, response) {
-        const cache = JSON.parse(localStorage.getItem("chatCache")) || {};
-        cache[input] = response;
-        localStorage.setItem("chatCache", JSON.stringify(cache));
-    }
-
+    // ✅ 캐싱된 응답 불러오기
     function getCachedResponse(input) {
-        const cache = JSON.parse(localStorage.getItem("chatCache")) || {};
-        return cache[input] || null;
+        const cache = JSON.parse(localStorage.getItem("chatCache")) || [];
+        const cachedMessage = cache.find(entry => entry.role === "ai" && entry.message.includes(input));
+        return cachedMessage ? cachedMessage.message : null;
     }
+
+    // ✅ 대화 기록 초기화
+    function clearChatHistory() {
+        localStorage.removeItem("chatCache");
+        chatlogs.innerHTML = "";
+        console.log("🗑️ 대화 기록이 삭제되었습니다.");
+    }
+
+    // ✅ 이벤트 리스너 등록
+    sendMessageBtn.addEventListener("click", sendMessage);
+    userInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") sendMessage();
+    });
+    
+    if (clearChatBtn) {
+        clearChatBtn.addEventListener("click", clearChatHistory);
+    }
+
+    // ✅ 페이지 로드 시 대화 기록 불러오기
+    loadChatHistory();
 });
