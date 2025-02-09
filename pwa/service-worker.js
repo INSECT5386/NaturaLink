@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v29";  // ✅ 최신 캐시 버전
+const CACHE_NAME = "natura-link-cache-v30";  // ✅ 최신 캐시 버전
 const OFFLINE_PAGE = "/pwa/offline.html";  // ✅ 오프라인 페이지 경로
 
 const STATIC_ASSETS = [
@@ -18,10 +18,10 @@ const STATIC_ASSETS = [
     "/favicons/favicon.ico"
 ];
 
-// ✅ 아이콘 파일을 캐싱 대상에 포함 (실제 경로 확인!)
+// ✅ 아이콘 파일이 있는 올바른 경로 사용 (기존 "icons/" → "icon/")
 const ICONS = [
-    "/assets/icons/android-chrome-192x192.png",
-    "/assets/icons/android-chrome-512x512.png"
+    "/assets/icon/android-chrome-192x192.png",
+    "/assets/icon/android-chrome-512x512.png"
 ];
 
 // ✅ 서비스 워커 설치 및 캐싱
@@ -31,7 +31,7 @@ self.addEventListener("install", (event) => {
         (async () => {
             const cache = await caches.open(CACHE_NAME);
 
-            // ✅ 정적 파일 캐싱
+            // ✅ 정적 파일 및 아이콘 캐싱
             for (const asset of [...STATIC_ASSETS, ...ICONS]) {
                 try {
                     const response = await fetch(asset);
