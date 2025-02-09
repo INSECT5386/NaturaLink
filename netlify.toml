@@ -1,6 +1,6 @@
-# 🔹 Netlify가 정적 파일을 자동 배포하도록 설정
+# 🔹 Netlify가 정적 PWA를 자동 배포하도록 설정
 [build]
-  publish = "."  # 📁 현재 디렉터리(index.html이 있는 폴더)를 배포
+  publish = "."  # 📁 index.html이 있는 폴더를 배포
   command = ""   # 🛑 npm 빌드 명령어 실행 안 함 (정적 사이트이므로 불필요)
 
 # 🔹 PWA가 최신 버전을 유지하도록 캐싱 비활성화
@@ -11,13 +11,13 @@
     Pragma = "no-cache"
     Expires = "0"
 
-# 🔹 PWA 오프라인 지원 설정 (오프라인 시 `offline.html` 반환)
+# 🔹 오프라인 지원 설정 (404 에러 시 offline.html 반환)
 [[redirects]]
-  from = "/*"
+  from = "/offline"
   to = "/pwa/offline.html"
   status = 200
 
-# 🔹 Netlify 서버리스 함수 (`netlify/functions/` 폴더 사용)
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
+[[redirects]]
+  from = "/*"
+  to = "/pwa/offline.html"
+  status = 404  # 404 발생 시 offline.html 반환
