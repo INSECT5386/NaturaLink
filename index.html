@@ -22,16 +22,15 @@
     <link rel="stylesheet" href="/css/chat.css">
     <link rel="stylesheet" href="/css/setting.css">
 
+    <!-- 🔹 첫 번째 사용자 클릭 시 전체 화면 실행 -->
     <script>
-        // 페이지 로드 시 자동으로 전체 화면 실행
-        document.addEventListener("DOMContentLoaded", function () {
-            setTimeout(() => {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(err => {
-                        console.warn("⚠️ 전체 화면 실행 실패:", err.message);
-                    });
-                }
-            }, 500); // 약간의 딜레이 후 실행
+        document.addEventListener("pointerdown", function enableFullScreenOnce() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.warn("⚠️ 전체 화면 실행 실패:", err.message);
+                });
+            }
+            document.removeEventListener("pointerdown", enableFullScreenOnce); // ✅ 한 번 실행 후 제거
         });
     </script>
 </head>
