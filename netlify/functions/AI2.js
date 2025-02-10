@@ -1,10 +1,10 @@
 export async function handler(event, context) {
-    const API_KEY = process.env.HUGGINGFACE_API_KEY_2; // KoGPT2 전용 API 키
+    const API_KEY = process.env.HUGGINGFACE_API_KEY_2; // GPT-2 전용 API 키
 
     try {
         const user_input = JSON.parse(event.body).text;
 
-        const response = await fetch("https://api-inference.huggingface.co/models/kakaobrain/kogpt2-base-v2", {
+        const response = await fetch("https://api-inference.huggingface.co/models/gpt2", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${API_KEY}`,
@@ -13,10 +13,10 @@ export async function handler(event, context) {
             body: JSON.stringify({
                 inputs: user_input,
                 parameters: {
-                    max_tokens: 100,
-                    temperature: 0.6,
-                    top_p: 0.85,
-                    repetition_penalty: 1.1
+                    max_new_tokens: 100,
+                    temperature: 0.7,
+                    top_p: 0.9,
+                    repetition_penalty: 1.2
                 }
             })
         });
