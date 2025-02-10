@@ -20,8 +20,20 @@
     <link rel="stylesheet" href="/css/layout.css">
     <link rel="stylesheet" href="/css/components.css">
     <link rel="stylesheet" href="/css/chat.css">
-    <link rel="stylesheet" href="/css/setting.css">  <!-- ✅ 설정 관련 CSS 추가 -->
+    <link rel="stylesheet" href="/css/setting.css">
 
+    <script>
+        // 페이지 로드 시 자동으로 전체 화면 실행
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(() => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.warn("⚠️ 전체 화면 실행 실패:", err.message);
+                    });
+                }
+            }, 500); // 약간의 딜레이 후 실행
+        });
+    </script>
 </head>
 <body>
     <header>
@@ -75,7 +87,7 @@
             </div>
             <div id="typingIndicator" class="typing-indicator" style="display: none;">AI가 입력 중...</div>
         </div>
-        <button id="clearChatBtn">🗑️ 대화 지우기</button> <!-- ✅ 추가된 버튼 -->
+        <button id="clearChatBtn">🗑️ 대화 지우기</button>
     </div>
 
     <!-- PWA 설치 버튼 -->
