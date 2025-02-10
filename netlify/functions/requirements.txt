@@ -1,7 +1,0 @@
-torch
-transformers
-sentencepiece
-numpy
-scipy
-flask
-gunicorn
