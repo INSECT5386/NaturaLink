@@ -4,7 +4,7 @@ export async function handler(event, context) {
     try {
         const user_input = JSON.parse(event.body).text;
 
-        const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct", { // URL 변경
+        const response = await fetch("https://api-inference.huggingface.co/models/microsoft/Phi-3.5-mini-instruct", { // URL 변경
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${API_KEY}`,
