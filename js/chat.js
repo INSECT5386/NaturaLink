@@ -3,7 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const API_ENDPOINTS = {
         gemma: "https://naturalink.netlify.app/.netlify/functions/huggingface",
-        kogpt2: "https://naturalink.netlify.app/.netlify/functions/AI2",
+        blenderbot: "https://naturalink.netlify.app/.netlify/functions/AI2",
+        gpt2Medium: "https://naturalink.netlify.app/.netlify/functions/AI3", // GPT-2 Medium API 엔드포인트
     };
 
     const chatlogs = document.getElementById("chatlogs");
