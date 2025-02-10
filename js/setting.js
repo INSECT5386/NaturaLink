@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function enableFullScreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch((err) => {
-                console.warn(`⚠️ 전체 화면 모드 실패: ${err.message}`);
+                console.warn(`⚠️ 전체 화면 실행 실패: ${err.message}`);
             });
         } else {
             document.exitFullscreen();
@@ -25,18 +25,22 @@ document.addEventListener("DOMContentLoaded", function () {
     // 🔹 설정 메뉴에서 전체화면 모드 활성화 버튼
     const fullScreenButton = document.getElementById("fullscreen-btn");
     if (fullScreenButton) {
-        fullScreenButton.addEventListener("click", enableFullScreen);
+        fullScreenButton.addEventListener("click", enableFullScreen); // ✅ 반드시 클릭 이벤트 안에서 실행
     }
 
-    // 🔹 권한 확인 (Permissions API)
+    // 🔹 Permissions API 오류 방지 (지원하지 않는 경우 예외 처리)
     if ("permissions" in navigator) {
-        navigator.permissions.query({ name: "fullscreen" })
-            .then(permissionStatus => {
-                console.log("🔍 전체 화면 권한 상태:", permissionStatus.state);
-            })
-            .catch(error => {
-                console.warn("⚠️ Permissions API 지원되지 않음:", error);
-            });
+        try {
+            navigator.permissions.query({ name: "fullscreen" })
+                .then(permissionStatus => {
+                    console.log("🔍 전체 화면 권한 상태:", permissionStatus.state);
+                })
+                .catch(() => {
+                    console.warn("⚠️ Permissions API에서 전체 화면 권한을 확인할 수 없습니다.");
+                });
+        } catch (error) {
+            console.warn("⚠️ Permissions API가 이 브라우저에서 지원되지 않습니다.");
+        }
     } else {
         console.warn("⚠️ 이 브라우저는 Permissions API를 지원하지 않습니다.");
     }
