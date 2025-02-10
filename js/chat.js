@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const API_ENDPOINTS = {
         gemma: "https://naturalink.netlify.app/.netlify/functions/huggingface",
         kogpt2: "https://naturalink.netlify.app/.netlify/functions/AI2",
-        my_ai: "https://naturalink.netlify.app/.netlify/functions/my_ai"  // 🚀 사용자 AI 추가
     };
 
     const chatlogs = document.getElementById("chatlogs");
