@@ -1,10 +1,10 @@
 export async function handler(event, context) {
-    const API_KEY = process.env.HUGGINGFACE_API_KEY_2; // DistilGPT-2 전용 API 키
+    const API_KEY = process.env.HUGGINGFACE_API_KEY_2; // DialoGPT-medium 전용 API 키
 
     try {
         const user_input = JSON.parse(event.body).text;
 
-        const response = await fetch("https://api-inference.huggingface.co/models/distilgpt2", {
+        const response = await fetch("https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${API_KEY}`,
