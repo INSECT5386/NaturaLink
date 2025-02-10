@@ -7,17 +7,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (settingsButton && settingsMenu) {
         settingsButton.addEventListener("click", () => {
-            settingsMenu.classList.toggle("hidden"); // ✅ 클래스 기반 토글
+            settingsMenu.classList.toggle("hidden");
         });
     }
 
-    // 🔹 전체화면 모드 활성화 기능 (사용자 클릭 시에만 실행 가능)
+    // 🔹 전체화면 모드 활성화 기능 (클릭 이벤트 내에서 실행)
     function enableFullScreen(event) {
-        event.preventDefault(); // ✅ 기본 동작 방지 (일부 브라우저 대응)
-        
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen()
-                .then(() => console.log("✅ 전체 화면 모드 실행!"))
+                .then(() => console.log("✅ 전체 화면 모드 실행됨!"))
                 .catch((err) => {
                     console.warn(`⚠️ 전체 화면 실행 실패: ${err.message}`);
                 });
@@ -26,9 +24,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // 🔹 설정 메뉴에서 전체화면 모드 활성화 버튼
+    // 🔹 전체 화면 버튼에 클릭 이벤트 추가
     const fullScreenButton = document.getElementById("fullscreen-btn");
     if (fullScreenButton) {
-        fullScreenButton.addEventListener("click", enableFullScreen);
+        fullScreenButton.addEventListener("click", (event) => {
+            enableFullScreen(event); // ✅ 반드시 클릭 이벤트를 통해 실행
+        });
     }
 });
