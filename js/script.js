@@ -24,22 +24,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 🔹 풀스크린 모드 활성화
-    function enableFullScreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch((err) => {
-                console.warn(`⚠️ 풀스크린 모드 실패: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
-    }
-
-    // 🔹 F11 키로 전체 화면 전환
+    // 🔹 F11 키로 전체 화면 전환 (setting.js의 enableFullScreen() 호출)
     document.addEventListener("keydown", (event) => {
         if (event.key === "F11") {
             event.preventDefault();
-            enableFullScreen();
+            if (typeof window.enableFullScreen === "function") {
+                window.enableFullScreen();
+            } else {
+                console.warn("⚠️ 전체 화면 함수가 정의되지 않음.");
+            }
         }
     });
 });
