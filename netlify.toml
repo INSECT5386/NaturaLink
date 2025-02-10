@@ -6,9 +6,13 @@
       python -m venv /opt/build/cache/python_env
     fi
     source /opt/build/cache/python_env/bin/activate
+    if [ ! -d "/opt/build/cache/pip_cache" ]; then
+      echo '📂 pip 캐시 디렉터리 생성...'
+      mkdir -p /opt/build/cache/pip_cache
+    fi
     if [ ! -f "/opt/build/cache/pip_cache/wheelhouse.lock" ]; then
       echo '📦 라이브러리 캐시가 없습니다. 새로 설치합니다.'
-      pip install --cache-dir /opt/build/cache/pip_cache --wheel-dir /opt/build/cache/pip_cache/wheelhouse -r netlify/functions/my_ai/requirements.txt
+      pip install --cache-dir /opt/build/cache/pip_cache -r netlify/functions/my_ai/requirements.txt
       touch /opt/build/cache/pip_cache/wheelhouse.lock
     else
       echo '✅ 캐시된 라이브러리 사용 중!'
