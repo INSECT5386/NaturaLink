@@ -1,11 +1,13 @@
-const CACHE_NAME = "natura-link-cache-v76";
+const CACHE_NAME = "natura-link-cache-v77";
 
 // ✅ 정적 파일 캐싱 목록
 const STATIC_ASSETS = [
     "/index.html",
+    "/offline.html",  // ✅ 오프라인 페이지 추가
     "/js/script.js",
     "/js/chat.js",
     "/js/pwa.js",
+    "/js/setting.js",
     "/pwa/manifest.json",
     "/pwa/service-worker.js",
     "/css/base.css",
@@ -35,9 +37,16 @@ self.addEventListener("install", (event) => {
     );
 });
 
-// ✅ 네트워크 요청 처리 (캐시 우선, 네트워크 갱신)
+// ✅ 네트워크 요청 처리 (캐시 우선, API 요청 제외)
 self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return;
+
+    const url = new URL(event.request.url);
+
+    // ✅ Netlify Functions API 요청은 캐싱하지 않음
+    if (url.pathname.startsWith("/.netlify/functions/")) {
+        return;
+    }
 
     event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
@@ -52,6 +61,7 @@ self.addEventListener("fetch", (event) => {
             });
         }).catch(() => {
             console.warn(`🚨 요청 실패: ${event.request.url}`);
+            return caches.match("/offline.html"); // ✅ 오프라인 페이지 제공
         })
     );
 });
