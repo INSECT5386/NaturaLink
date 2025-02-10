@@ -116,18 +116,19 @@
     color: #aaa;
 }
 
-/* ✅ 모델 선택 버튼 스타일 */
+/* ✅ 모델 선택 버튼 스타일 (더 얇게 조정) */
 #modelSelector {
-    font-size: 16px;
-    padding: 8px 12px;
-    border: 2px solid #ccc;
+    font-size: 14px; /* 폰트 크기 줄임 */
+    padding: 6px 10px; /* 패딩 축소 */
+    border: 1px solid #aaa; /* 테두리 두께 줄임 */
     border-radius: 4px;
     background-color: rgba(34, 34, 34, 0.95);
     color: white;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
     width: 100%;
-    max-width: 200px; /* 드롭다운 메뉴의 최대 너비 */
+    max-width: 180px; /* 드롭다운 메뉴의 최대 너비 */
+    height: 32px; /* 버튼 높이 조정 */
 }
 
 #modelSelector:hover {
@@ -142,7 +143,7 @@
 #modelSelector option {
     background-color: #222;
     color: white;
-    padding: 8px;
+    padding: 6px;
 }
 
 #modelSelector option:hover {
