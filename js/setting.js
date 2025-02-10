@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 🔹 전체화면 모드 활성화 기능
+    // 🔹 전체화면 모드 활성화 기능 (사용자 클릭 시에만 실행 가능)
     function enableFullScreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch((err) => {
@@ -28,20 +28,5 @@ document.addEventListener("DOMContentLoaded", function () {
         fullScreenButton.addEventListener("click", enableFullScreen); // ✅ 반드시 클릭 이벤트 안에서 실행
     }
 
-    // 🔹 Permissions API 오류 방지 (지원하지 않는 경우 예외 처리)
-    if ("permissions" in navigator) {
-        try {
-            navigator.permissions.query({ name: "fullscreen" })
-                .then(permissionStatus => {
-                    console.log("🔍 전체 화면 권한 상태:", permissionStatus.state);
-                })
-                .catch(() => {
-                    console.warn("⚠️ Permissions API에서 전체 화면 권한을 확인할 수 없습니다.");
-                });
-        } catch (error) {
-            console.warn("⚠️ Permissions API가 이 브라우저에서 지원되지 않습니다.");
-        }
-    } else {
-        console.warn("⚠️ 이 브라우저는 Permissions API를 지원하지 않습니다.");
-    }
+    // 🔹 Permissions API 관련 코드 제거 (일부 브라우저에서 지원되지 않음)
 });
