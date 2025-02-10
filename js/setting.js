@@ -13,12 +13,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 🔹 전체화면 모드 활성화 기능 (사용자 클릭 시에만 실행 가능)
     function enableFullScreen(event) {
-        event.preventDefault(); // ✅ 기본 동작 방지
-
+        event.preventDefault(); // ✅ 기본 동작 방지 (일부 브라우저 대응)
+        
         if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch((err) => {
-                console.warn(`⚠️ 전체 화면 실행 실패: ${err.message}`);
-            });
+            document.documentElement.requestFullscreen()
+                .then(() => console.log("✅ 전체 화면 모드 실행!"))
+                .catch((err) => {
+                    console.warn(`⚠️ 전체 화면 실행 실패: ${err.message}`);
+                });
         } else {
             document.exitFullscreen();
         }
