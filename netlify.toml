@@ -1,13 +1,13 @@
 # 🔹 Netlify가 정적 PWA를 자동 배포하도록 설정
 [build]
-  publish = "."  # 📁 현재 디렉토리를 배포 (index.html 포함)
-  command = "pip install -r netlify/functions/my_ai/requirements.txt"  # Python 라이브러리 설치
+  publish = "."
+  command = "if [ -f netlify/functions/my_ai/requirements.txt ]; then pip install -r netlify/functions/my_ai/requirements.txt; fi"
 
 # 🔹 Netlify Functions 설정 추가
 [functions]
-  directory = "netlify/functions"  # 📁 Netlify Functions 디렉토리 설정
-  node_bundler = "esbuild"  # 📦 JS 함수 빌드 최적화
-  included_files = ["netlify/functions/my_ai/**"]  # 📂 Python AI 모델 포함
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  included_files = ["netlify/functions/my_ai/**"]
 
 # 🔹 최신 PWA 유지 (캐싱 비활성화)
 [[headers]]
@@ -21,12 +21,6 @@
 [[redirects]]
   from = "/pwa/*"
   to = "/pwa/:splat"
-  status = 200
-
-# 🔹 AI API가 Netlify Functions를 통해 실행되도록 설정
-[[redirects]]
-  from = "/.netlify/functions/my_ai"
-  to = "/.netlify/functions/my_ai"
   status = 200
 
 # 🔹 오프라인 페이지 서빙 (사용자가 없는 페이지 요청 시 `/offline.html` 제공)
