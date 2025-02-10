@@ -1,10 +1,10 @@
 export async function handler(event, context) {
-    const API_KEY = process.env.HUGGINGFACE_API_KEY_3; // GPT-2 Medium 전용 API 키
+    const API_KEY = process.env.HUGGINGFACE_API_KEY_3; // 새로운 모델의 API 키
 
     try {
         const user_input = JSON.parse(event.body).text;
 
-        const response = await fetch("https://api-inference.huggingface.co/models/gpt2-medium", {
+        const response = await fetch("https://api-inference.huggingface.co/models/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${API_KEY}`,
