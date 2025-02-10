@@ -16,3 +16,10 @@
   from = "/pwa/*"
   to = "/pwa/:splat"
   status = 200
+
+# 🔹 오프라인 페이지 서빙 (사용자가 없는 페이지 요청 시 `/offline.html` 제공)
+[[redirects]]
+  from = "/*"
+  to = "/offline.html"
+  status = 200
+  condition = {Country = ["XX"]} # Netlify Edge 기능 (선택 사항)
