@@ -1,20 +1,35 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ 챗봇 스크립트 로드 완료!");
 
-    const API_URL = "https://naturalink.netlify.app/.netlify/functions/huggingface";
+    const API_ENDPOINTS = {
+        gemma: "https://naturalink.netlify.app/.netlify/functions/huggingface",
+        kogpt2: "https://naturalink.netlify.app/.netlify/functions/AI2"
+    };
+
     const chatlogs = document.getElementById("chatlogs");
     const userInput = document.getElementById("userInput");
     const sendMessageBtn = document.getElementById("sendMessageBtn");
     const typingIndicator = document.getElementById("typingIndicator");
-    const clearChatBtn = document.getElementById("clearChatBtn"); // ✅ 대화 삭제 버튼
+    const clearChatBtn = document.getElementById("clearChatBtn");
+    const modelSelector = document.getElementById("modelSelector");
 
     if (!sendMessageBtn) return;
+
+    let selectedModel = "gemma"; // 기본 모델: Gemma
+
+    // ✅ 모델 선택 기능
+    if (modelSelector) {
+        modelSelector.addEventListener("change", function (event) {
+            selectedModel = event.target.value;
+            console.log(`🔄 선택된 모델: ${selectedModel}`);
+        });
+    }
 
     // ✅ LocalStorage에서 대화 기록 불러오기
     function loadChatHistory() {
         const savedChat = JSON.parse(localStorage.getItem("chatCache")) || [];
         savedChat.forEach(({ role, message }) => {
-            addMessage(role, message, false); // 기존 메시지를 표시 (애니메이션 없음)
+            addMessage(role, message, false);
         });
     }
 
@@ -39,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
         saveChatHistory("user", message);
         userInput.value = "";
 
-        addMessage("ai", "🧠 생각 중...", false); // 타이핑 표시
+        addMessage("ai", "🧠 생각 중...", false);
 
         try {
             const cachedResponse = getCachedResponse(message);
@@ -47,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 chatlogs.lastChild.remove();
                 addMessage("ai", cachedResponse);
             } else {
-                const response = await fetch(API_URL, {
+                const response = await fetch(API_ENDPOINTS[selectedModel], {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ text: message }),
@@ -70,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const chatHistory = JSON.parse(localStorage.getItem("chatCache")) || [];
         chatHistory.push({ role, message });
 
-        if (chatHistory.length > 50) chatHistory.shift(); // 오래된 메시지 삭제 (최대 50개)
+        if (chatHistory.length > 50) chatHistory.shift();
         
         localStorage.setItem("chatCache", JSON.stringify(chatHistory));
     }
