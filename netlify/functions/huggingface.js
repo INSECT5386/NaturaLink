@@ -14,7 +14,7 @@ export async function handler(event, context) {
                 inputs: user_input,
                 parameters: {
                     max_tokens: 100,
-                    temperature: 0.2,
+                    temperature: 0.1,
                     top_p: 0.9,
                     repetition_penalty: 1.2
                 }
