@@ -12,7 +12,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 🔹 전체화면 모드 활성화 기능 (사용자 클릭 시에만 실행 가능)
-    function enableFullScreen() {
+    function enableFullScreen(event) {
+        event.preventDefault(); // ✅ 기본 동작 방지
+
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch((err) => {
                 console.warn(`⚠️ 전체 화면 실행 실패: ${err.message}`);
@@ -25,8 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // 🔹 설정 메뉴에서 전체화면 모드 활성화 버튼
     const fullScreenButton = document.getElementById("fullscreen-btn");
     if (fullScreenButton) {
-        fullScreenButton.addEventListener("click", enableFullScreen); // ✅ 반드시 클릭 이벤트 안에서 실행
+        fullScreenButton.addEventListener("click", enableFullScreen);
     }
-
-    // 🔹 Permissions API 관련 코드 제거 (일부 브라우저에서 지원되지 않음)
 });
