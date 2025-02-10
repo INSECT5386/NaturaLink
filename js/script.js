@@ -24,12 +24,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 🔹 F11 키로 전체 화면 전환 (setting.js의 enableFullScreen() 호출)
+    // 🔹 F11 키로 전체 화면 전환 (클릭 이벤트 보장)
     document.addEventListener("keydown", (event) => {
         if (event.key === "F11") {
             event.preventDefault();
             if (typeof window.enableFullScreen === "function") {
-                window.enableFullScreen();
+                document.body.click(); // ✅ 클릭 이벤트 발생 후 실행 (일부 브라우저 대응)
+                setTimeout(() => {
+                    window.enableFullScreen();
+                }, 100);
             } else {
                 console.warn("⚠️ 전체 화면 함수가 정의되지 않음.");
             }
