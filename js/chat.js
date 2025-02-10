@@ -3,13 +3,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const API_ENDPOINTS = {
         gemma: "https://naturalink.netlify.app/.netlify/functions/huggingface",
-        kogpt2: "https://naturalink.netlify.app/.netlify/functions/AI2"
+        kogpt2: "https://naturalink.netlify.app/.netlify/functions/AI2",
+        my_ai: "https://naturalink.netlify.app/.netlify/functions/my_ai"  // 🚀 사용자 AI 추가
     };
 
     const chatlogs = document.getElementById("chatlogs");
     const userInput = document.getElementById("userInput");
     const sendMessageBtn = document.getElementById("sendMessageBtn");
-    const typingIndicator = document.getElementById("typingIndicator");
     const clearChatBtn = document.getElementById("clearChatBtn");
     const modelSelector = document.getElementById("modelSelector");
 
@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let selectedModel = "gemma"; // 기본 모델: Gemma
 
-    // ✅ 모델 선택 기능
     if (modelSelector) {
         modelSelector.addEventListener("change", function (event) {
             selectedModel = event.target.value;
@@ -25,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ✅ LocalStorage에서 대화 기록 불러오기
     function loadChatHistory() {
         const savedChat = JSON.parse(localStorage.getItem("chatCache")) || [];
         savedChat.forEach(({ role, message }) => {
@@ -33,7 +31,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ✅ 메시지 추가 함수
     function addMessage(role, message, animate = true) {
         const msgDiv = document.createElement("div");
         msgDiv.classList.add("chat-bubble", role === "user" ? "user-message" : "ai-message");
@@ -45,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
         chatlogs.scrollTop = chatlogs.scrollHeight;
     }
 
-    // ✅ 사용자 메시지 & API 요청 처리
     async function sendMessage() {
         const message = userInput.value.trim();
         if (!message) return;
@@ -70,9 +66,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
                 const data = await response.json();
-                chatlogs.lastChild.remove(); // "생각 중..." 삭제
-                addMessage("ai", data[0].generated_text);
-                saveChatHistory("ai", data[0].generated_text);
+                chatlogs.lastChild.remove();
+                const aiResponse = data.response || data[0]?.generated_text || "⚠️ 응답을 가져올 수 없습니다.";
+
+                addMessage("ai", aiResponse);
+                saveChatHistory("ai", aiResponse, message);
             }
         } catch (error) {
             chatlogs.lastChild.remove();
@@ -80,31 +78,27 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // ✅ 대화 기록 저장 (LocalStorage)
-    function saveChatHistory(role, message) {
+    function saveChatHistory(role, message, input = "") {
         const chatHistory = JSON.parse(localStorage.getItem("chatCache")) || [];
-        chatHistory.push({ role, message });
+        chatHistory.push({ role, message, input });
 
         if (chatHistory.length > 50) chatHistory.shift();
         
         localStorage.setItem("chatCache", JSON.stringify(chatHistory));
     }
 
-    // ✅ 캐싱된 응답 불러오기
     function getCachedResponse(input) {
         const cache = JSON.parse(localStorage.getItem("chatCache")) || [];
-        const cachedMessage = cache.find(entry => entry.role === "ai" && entry.message.includes(input));
-        return cachedMessage ? cachedMessage.message : null;
+        const cachedEntry = cache.find(entry => entry.role === "ai" && entry.input === input);
+        return cachedEntry ? cachedEntry.message : null;
     }
 
-    // ✅ 대화 기록 초기화
     function clearChatHistory() {
         localStorage.removeItem("chatCache");
         chatlogs.innerHTML = "";
         console.log("🗑️ 대화 기록이 삭제되었습니다.");
     }
 
-    // ✅ 이벤트 리스너 등록
     sendMessageBtn.addEventListener("click", sendMessage);
     userInput.addEventListener("keypress", (event) => {
         if (event.key === "Enter") sendMessage();
@@ -114,6 +108,5 @@ document.addEventListener("DOMContentLoaded", function () {
         clearChatBtn.addEventListener("click", clearChatHistory);
     }
 
-    // ✅ 페이지 로드 시 대화 기록 불러오기
     loadChatHistory();
 });
