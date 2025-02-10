@@ -115,3 +115,36 @@
     font-style: italic;
     color: #aaa;
 }
+
+/* ✅ 모델 선택 버튼 스타일 */
+#modelSelector {
+    font-size: 16px;
+    padding: 8px 12px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: rgba(34, 34, 34, 0.95);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    max-width: 200px; /* 드롭다운 메뉴의 최대 너비 */
+}
+
+#modelSelector:hover {
+    background-color: #444;
+}
+
+#modelSelector:focus {
+    outline: none;
+    border-color: #00aaff;
+}
+
+#modelSelector option {
+    background-color: #222;
+    color: white;
+    padding: 8px;
+}
+
+#modelSelector option:hover {
+    background-color: #444;
+}
