@@ -1,15 +1,25 @@
-# 🔹 Netlify가 정적 PWA를 자동 배포하도록 설정
 [build]
   publish = "."
-  command = "if [ -f netlify/functions/my_ai/requirements.txt ]; then pip install -r netlify/functions/my_ai/requirements.txt; fi"
+  command = """
+    if [ ! -d "/opt/build/cache/python_env" ]; then
+      echo '🐍 Python 가상 환경 생성...'
+      python -m venv /opt/build/cache/python_env
+    fi
+    source /opt/build/cache/python_env/bin/activate
+    if [ ! -f "/opt/build/cache/pip_cache/wheelhouse.lock" ]; then
+      echo '📦 라이브러리 캐시가 없습니다. 새로 설치합니다.'
+      pip install --cache-dir /opt/build/cache/pip_cache --wheel-dir /opt/build/cache/pip_cache/wheelhouse -r netlify/functions/my_ai/requirements.txt
+      touch /opt/build/cache/pip_cache/wheelhouse.lock
+    else
+      echo '✅ 캐시된 라이브러리 사용 중!'
+    fi
+  """
 
-# 🔹 Netlify Functions 설정 추가
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
   included_files = ["netlify/functions/my_ai/**"]
 
-# 🔹 최신 PWA 유지 (캐싱 비활성화)
 [[headers]]
   for = "/*"
   [headers.values]
@@ -17,15 +27,13 @@
     Pragma = "no-cache"
     Expires = "0"
 
-# 🔹 정적 파일 보호
 [[redirects]]
   from = "/pwa/*"
   to = "/pwa/:splat"
   status = 200
 
-# 🔹 오프라인 페이지 서빙 (사용자가 없는 페이지 요청 시 `/offline.html` 제공)
 [[redirects]]
   from = "/*"
   to = "/offline.html"
   status = 200
-  condition = {Country = ["XX"]} # Netlify Edge 기능 (선택 사항)
+  condition = {Country = ["XX"]}
