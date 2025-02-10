@@ -1,10 +1,10 @@
 export async function handler(event, context) {
-    const API_KEY = process.env.HUGGINGFACE_API_KEY_2; // DialoGPT-medium 전용 API 키
+    const API_KEY = process.env.HUGGINGFACE_API_KEY_2; // Llama-3.2-1B-Instruct 전용 API 키
 
     try {
         const user_input = JSON.parse(event.body).text;
 
-        const response = await fetch("https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium", {
+        const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${API_KEY}`,
@@ -13,8 +13,8 @@ export async function handler(event, context) {
             body: JSON.stringify({
                 inputs: user_input,
                 parameters: {
-                    max_new_tokens: 100,
-                    temperature: 0.5,  // 헛소리 방지를 위해 적절한 값 설정
+                    max_new_tokens: 70,
+                    temperature: 0.2,
                     top_p: 0.9,
                     repetition_penalty: 1.2
                 }
