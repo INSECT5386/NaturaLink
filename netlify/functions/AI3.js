@@ -4,7 +4,7 @@ export async function handler(event, context) {
     try {
         const user_input = JSON.parse(event.body).text;
 
-        const response = await fetch("https://api-inference.huggingface.co/models/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B", {
+        const response = await fetch("https://api-inference.huggingface.co/models/Qwen/Qwen2.5-1.5B-Instruct", { // URL 변경
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${API_KEY}`,
