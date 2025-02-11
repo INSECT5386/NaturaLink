@@ -1,23 +1,24 @@
 export async function handler(event, context) {
-    try {
-        // 클라이언트에서 전달된 'text' 입력을 파싱
-        const { text } = JSON.parse(event.body);
-        
-        if (!text) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ error: "No text provided" })
-            };
-        }
+    const API_KEY = process.env.HUGGINGFACE_API_KEY_3; // BlenderBot 전용 API 키
 
-        // 정확한 Space API URL로 변경
-        const response = await fetch("https://yuchan5386-naturaai-space.hf.space/run/predict", {
+    try {
+        const user_input = JSON.parse(event.body).text;
+
+        const response = await fetch("https://api-inference.huggingface.co/models/openai-community/gpt2-large
+", {
             method: "POST",
             headers: {
+                "Authorization": `Bearer ${API_KEY}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                data: [text] // 입력 데이터를 'data' 배열로 전달
+                inputs: user_input,
+                parameters: {
+                    max_new_tokens: 70,
+                    temperature: 0.3,
+                    top_p: 0.9,
+                    repetition_penalty: 1.2
+                }
             })
         });
 
@@ -25,13 +26,10 @@ export async function handler(event, context) {
             throw new Error(`API 요청 실패: ${response.status} ${response.statusText}`);
         }
 
-        const result = await response.json();
-
-        const generated_text = result.data ? result.data[0] : "Model response was empty";
-
+        const data = await response.json();
         return {
             statusCode: 200,
-            body: JSON.stringify({ response: generated_text })
+            body: JSON.stringify(data)
         };
     } catch (error) {
         return {
@@ -39,4 +37,4 @@ export async function handler(event, context) {
             body: JSON.stringify({ error: error.message })
         };
     }
-}
+} 
