@@ -1,23 +1,15 @@
 export async function handler(event, context) {
-    const API_KEY = process.env.HUGGINGFACE_API_KEY_3; // 새로운 모델의 API 키
-
     try {
         const user_input = JSON.parse(event.body).text;
 
-        const response = await fetch("https://api-inference.huggingface.co/models/microsoft/Phi-3.5-mini-instruct", { // URL 변경
+        // Hugging Face Space API 호출
+        const response = await fetch("https://Yuchan5386-NaturaAI-space.hf.space/run/predict", { // Space API URL
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${API_KEY}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                inputs: user_input,
-                parameters: {
-                    max_new_tokens: 50,
-                    temperature: 0.4,
-                    top_p: 0.9,
-                    repetition_penalty: 1.5
-                }
+                data: [user_input] // Gradio API는 "data" 배열 형식으로 입력을 받음
             })
         });
 
@@ -25,10 +17,12 @@ export async function handler(event, context) {
             throw new Error(`API 요청 실패: ${response.status} ${response.statusText}`);
         }
 
-        const data = await response.json();
+        const result = await response.json();
+        const generated_text = result.data[0]; // Gradio 응답에서 생성된 텍스트 가져오기
+
         return {
             statusCode: 200,
-            body: JSON.stringify(data)
+            body: JSON.stringify({ response: generated_text })
         };
     } catch (error) {
         return {
