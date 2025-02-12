@@ -101,22 +101,22 @@
 
     <!-- 서비스 워커 등록 -->
     <script>
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/service-worker.js")
-                .then((registration) => {
-                    console.log("✅ 서비스 워커가 등록되었습니다.");
-                    if (registration.waiting) {
-                        registration.waiting.postMessage({ action: "skipWaiting" });
-                    }
-                })
-                .catch(error => console.error("❌ 서비스 워커 등록 실패:", error));
-
-            navigator.serviceWorker.addEventListener("message", (event) => {
-                if (event.data.action === "reload") {
-                    window.location.reload();
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/NaturaLink/service-worker.js", { scope: "/NaturaLink/" })
+            .then((registration) => {
+                console.log("✅ 서비스 워커가 등록되었습니다.");
+                if (registration.waiting) {
+                    registration.waiting.postMessage({ action: "skipWaiting" });
                 }
-            });
-        }
-    </script>
+            })
+            .catch(error => console.error("❌ 서비스 워커 등록 실패:", error));
+
+        navigator.serviceWorker.addEventListener("message", (event) => {
+            if (event.data.action === "reload") {
+                window.location.reload();
+            }
+        });
+    }
+</script>
 </body>
 </html>
