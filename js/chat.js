@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ 챗봇 스크립트 로드 완료!");
 
     const API_ENDPOINTS = {
-        gemma: "https://beamish-melba-ba4300.netlify.app/api/huggingface"
+        gemma: "https://beamish-melba-ba4300/.netlify/functions/huggingface"
     };
 
     const chatlogs = document.getElementById("chatlogs");
