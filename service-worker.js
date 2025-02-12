@@ -8,8 +8,8 @@ const STATIC_ASSETS = [
     "/js/chat.js",   // js 폴더 내의 chat.js
     "/js/pwa.js",    // js 폴더 내의 pwa.js
     "/js/setting.js",// js 폴더 내의 setting.js
-    "/pwa/manifest.json", // pwa 폴더 내의 manifest.json
-    "/pwa/service-worker.js", // pwa 폴더 내의 service-worker.js
+    "/manifest.json", // pwa 폴더 내의 manifest.json
+    "/service-worker.js", // pwa 폴더 내의 service-worker.js
     "/css/base.css", // css 폴더 내의 base.css
     "/css/layout.css", // css 폴더 내의 layout.css
     "/css/components.css", // css 폴더 내의 components.css
