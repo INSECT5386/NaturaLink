@@ -28,7 +28,7 @@ window.addEventListener("beforeinstallprompt", (event) => {
 
 // 서비스 워커 등록 및 업데이트 감지
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/service-worker.js")
+    navigator.serviceWorker.register("/NaturaLink/service-worker.js")
         .then((registration) => {
             console.log("✅ 서비스 워커 등록 완료");
             registration.onupdatefound = () => {
