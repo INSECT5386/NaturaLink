@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ 챗봇 스크립트 로드 완료!");
 
-    const API_ENDPOINT = "https://beamish-melba-ba4300.netlify.app/api/huggingface"; // Netlify Functions URL
+    const API_ENDPOINT = "https://naturalink.netlify.app/.netlify/functions/huggingface"; // Netlify Functions URL
 
     const chatlogs = document.getElementById("chatlogs");
     const userInput = document.getElementById("userInput");
@@ -49,7 +49,12 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 const response = await fetch(API_ENDPOINT, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin": "*", // CORS 헤더 추가
+                        "Access-Control-Allow-Methods": "POST, OPTIONS", 
+                        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+                    },
                     body: JSON.stringify({ text: message }),
                     credentials: "omit"
                 });
