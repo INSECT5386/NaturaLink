@@ -4,7 +4,10 @@ export async function handler(event, context) {
     if (!API_KEY) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: "API 키가 설정되지 않았습니다." })
+            body: JSON.stringify({ error: "API 키가 설정되지 않았습니다." }),
+            headers: {
+                "Access-Control-Allow-Origin": "*"  // CORS 허용
+            }
         };
     }
 
@@ -35,13 +38,21 @@ export async function handler(event, context) {
         const data = await response.json();
         return {
             statusCode: 200,
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            headers: {
+                "Access-Control-Allow-Origin": "*",  // CORS 허용
+                "Access-Control-Allow-Methods": "GET, POST",  // 허용할 HTTP 메서드
+                "Access-Control-Allow-Headers": "Content-Type"  // 허용할 헤더
+            }
         };
     } catch (error) {
         console.error("Error:", error);  // 추가된 디버깅 로그
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: error.message })
+            body: JSON.stringify({ error: error.message }),
+            headers: {
+                "Access-Control-Allow-Origin": "*"  // CORS 허용
+            }
         };
     }
 }
