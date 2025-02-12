@@ -71,25 +71,20 @@
     <div class="content" id="ai">
         <h2>AI 챗봇</h2>
 
-        <div id="chatbox">
-            <div id="chatlogs"></div>
-            <div id="userInputContainer">
-                <input type="text" id="userInput" placeholder="질문을 입력하세요..." />
-                <button id="sendMessageBtn">보내기</button>
-            </div>
-            <div id="typingIndicator" class="typing-indicator" style="display: none;">AI가 입력 중...</div>
-        </div>
-        <button id="clearChatBtn">🗑️ 대화 지우기</button>
-
-        <!-- Gradio 앱을 삽입할 영역 -->
-        <div id="gradio-container"></div>
+        <!-- Gradio 앱을 iframe으로 삽입 -->
+        <iframe
+            src="https://yuchan5386-naturaai-space.hf.space"
+            frameborder="0"
+            width="850"
+            height="450"
+            style="width: 100%; height: 500px;">
+        </iframe>
     </div>
 
     <!-- PWA 설치 버튼 -->
     <button id="install-button" style="display: none;">📲 앱 설치</button>
 
     <!-- JavaScript -->
-    <script src="js/chat.js"></script>  <!-- ✅ 챗봇 기능 -->
     <script src="js/pwa.js"></script>   <!-- ✅ PWA 기능 -->
     <script src="js/script.js"></script> <!-- ✅ UI 기능 (탭 전환, 버튼 등) -->
     <script src="js/setting.js"></script> <!-- ✅ 설정 관련 JS 추가 -->
@@ -114,38 +109,5 @@
     }
 </script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // AI 탭 클릭 시 Gradio 앱 로드
-        const aiTab = document.querySelector('.tab[data-tab="ai"]');
-        aiTab.addEventListener("click", function() {
-            // 이미 Gradio 앱이 로드된 경우 로드하지 않음
-            if (!document.getElementById("gradio-container").hasChildNodes()) {
-                loadGradioApp();
-            }
-        });
-
-        // Gradio 앱 로드 함수
-        function loadGradioApp() {
-            // script를 비동기적으로 로드
-            const script = document.createElement("script");
-            script.type = "module";
-            script.src = "https://gradio.s3-us-west-2.amazonaws.com/5.15.0/gradio.js";
-
-            // script 로드 완료 후 gradio-app을 삽입
-            script.onload = function() {
-                const gradioApp = document.createElement("gradio-app");
-                gradioApp.setAttribute("src", "https://yuchan5386-naturaai-space.hf.space");
-                gradioApp.setAttribute("id", "gradio-app");
-
-                // Gradio 앱을 gradio-container에 삽입
-                document.getElementById("gradio-container").appendChild(gradioApp);
-            };
-
-            // script를 head에 추가
-            document.head.appendChild(script);
-        }
-    });
-</script>
 </body>
 </html>
