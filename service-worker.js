@@ -17,7 +17,8 @@ const STATIC_ASSETS = [
     "/favicons/favicon-32x32.png",// favicons 폴더 내의 favicon-32x32.png
     "/favicons/favicon.ico",      // favicons 폴더 내의 favicon.ico
     "/assets/icon/android-chrome-192x192.png", // assets 폴더 내의 android-chrome-192x192.png
-    "/assets/icon/android-chrome-512x512.png"  // assets 폴더 내의 android-chrome-512x512.png
+    "/assets/icon/android-chrome-512x512.png",
+    "/css/setting.css"// assets 폴더 내의 android-chrome-512x512.png
 ];
 
 
