@@ -1,6 +1,13 @@
 export async function handler(event, context) {
     const API_KEY = process.env.HUGGINGFACE_API_KEY;
 
+    if (!API_KEY) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "API 키가 설정되지 않았습니다." })
+        };
+    }
+
     try {
         const user_input = JSON.parse(event.body).text;
 
@@ -31,6 +38,7 @@ export async function handler(event, context) {
             body: JSON.stringify(data)
         };
     } catch (error) {
+        console.error("Error:", error);  // 추가된 디버깅 로그
         return {
             statusCode: 500,
             body: JSON.stringify({ error: error.message })
