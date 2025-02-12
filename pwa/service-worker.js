@@ -1,25 +1,26 @@
-const CACHE_NAME = "natura-link-cache-v77";
+const CACHE_NAME = "natura-link-cache-v78";
 
 // ✅ 정적 파일 캐싱 목록
 const STATIC_ASSETS = [
-    "/index.html",
-    "/offline.html",  // ✅ 오프라인 페이지 추가
-    "/js/script.js",
-    "/js/chat.js",
-    "/js/pwa.js",
-    "/js/setting.js",
-    "/pwa/manifest.json",
-    "/pwa/service-worker.js",
-    "/css/base.css",
-    "/css/layout.css",
-    "/css/components.css",
-    "/css/chat.css",
-    "/favicons/favicon-16x16.png",
-    "/favicons/favicon-32x32.png",
-    "/favicons/favicon.ico",
-    "/assets/icon/android-chrome-192x192.png",
-    "/assets/icon/android-chrome-512x512.png"
+    "./index.html",   // 현재 디렉터리에서 index.html
+    "./offline.html", // offline.html
+    "./js/script.js", // js 폴더 내의 script.js
+    "./js/chat.js",   // js 폴더 내의 chat.js
+    "./js/pwa.js",    // js 폴더 내의 pwa.js
+    "./js/setting.js",// js 폴더 내의 setting.js
+    "./pwa/manifest.json", // pwa 폴더 내의 manifest.json
+    "./pwa/service-worker.js", // pwa 폴더 내의 service-worker.js
+    "./css/base.css", // css 폴더 내의 base.css
+    "./css/layout.css", // css 폴더 내의 layout.css
+    "./css/components.css", // css 폴더 내의 components.css
+    "./css/chat.css", // css 폴더 내의 chat.css
+    "./favicons/favicon-16x16.png", // favicons 폴더 내의 favicon-16x16.png
+    "./favicons/favicon-32x32.png", // favicons 폴더 내의 favicon-32x32.png
+    "./favicons/favicon.ico", // favicons 폴더 내의 favicon.ico
+    "./assets/icon/android-chrome-192x192.png", // assets 폴더 내의 android-chrome-192x192.png
+    "./assets/icon/android-chrome-512x512.png" // assets 폴더 내의 android-chrome-512x512.png
 ];
+
 
 // ✅ 서비스 워커 설치 및 정적 파일 캐싱
 self.addEventListener("install", (event) => {
