@@ -2,26 +2,22 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ 챗봇 스크립트 로드 완료!");
 
     const API_ENDPOINTS = {
-        gemma: "https://naturalink.netlify.app/.netlify/functions/huggingface",
-        blenderbot: "https://naturalink.netlify.app/.netlify/functions/AI2",
-        gpt2Medium: "https://naturalink.netlify.app/.netlify/functions/AI3", // GPT-2 Medium API 엔드포인트
+        gemma: "https://beamish-melba-ba4300.netlify.app/api/huggingface"
     };
 
     const chatlogs = document.getElementById("chatlogs");
     const userInput = document.getElementById("userInput");
     const sendMessageBtn = document.getElementById("sendMessageBtn");
     const clearChatBtn = document.getElementById("clearChatBtn");
-    const modelSelector = document.getElementById("modelSelector");
 
     if (!sendMessageBtn) return;
 
     let selectedModel = "gemma"; // 기본 모델: Gemma
 
+    // 모델 선택 UI 요소 제거
+    const modelSelector = document.getElementById("modelSelector");
     if (modelSelector) {
-        modelSelector.addEventListener("change", function (event) {
-            selectedModel = event.target.value;
-            console.log(`🔄 선택된 모델: ${selectedModel}`);
-        });
+        modelSelector.remove(); // 모델 선택 UI 제거
     }
 
     function loadChatHistory() {
