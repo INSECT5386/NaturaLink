@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ 챗봇 스크립트 로드 완료!");
 
-    const API_ENDPOINTS = {
-        gemma: "https://beamish-melba-ba4300/.netlify/functions/huggingface"
-    };
+    const API_ENDPOINT = "https://naturalink.netlify.app/.netlify/functions/huggingface"; // Netlify Functions URL
 
     const chatlogs = document.getElementById("chatlogs");
     const userInput = document.getElementById("userInput");
@@ -12,14 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!sendMessageBtn) return;
 
-    let selectedModel = "gemma"; // 기본 모델: Gemma
-
-    // 모델 선택 UI 요소 제거
-    const modelSelector = document.getElementById("modelSelector");
-    if (modelSelector) {
-        modelSelector.remove(); // 모델 선택 UI 제거
-    }
-
+    // 로컬 저장된 대화 기록 로드
     function loadChatHistory() {
         const savedChat = JSON.parse(localStorage.getItem("chatCache")) || [];
         savedChat.forEach(({ role, message }) => {
@@ -27,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // 채팅 메시지 추가
     function addMessage(role, message, animate = true) {
         const msgDiv = document.createElement("div");
         msgDiv.classList.add("chat-bubble", role === "user" ? "user-message" : "ai-message");
@@ -38,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
         chatlogs.scrollTop = chatlogs.scrollHeight;
     }
 
+    // 메시지 전송
     async function sendMessage() {
         const message = userInput.value.trim();
         if (!message) return;
@@ -54,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 chatlogs.lastChild.remove();
                 addMessage("ai", cachedResponse);
             } else {
-                const response = await fetch(API_ENDPOINTS[selectedModel], {
+                const response = await fetch(API_ENDPOINT, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ text: message }),
@@ -63,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const data = await response.json();
                 chatlogs.lastChild.remove();
-                const aiResponse = data.response || data[0]?.generated_text || "⚠️ 응답을 가져올 수 없습니다.";
+                const aiResponse = data.generated_text || "⚠️ 응답을 가져올 수 없습니다.";
 
                 addMessage("ai", aiResponse);
                 saveChatHistory("ai", aiResponse, message);
@@ -74,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // 대화 기록 저장
     function saveChatHistory(role, message, input = "") {
         const chatHistory = JSON.parse(localStorage.getItem("chatCache")) || [];
         chatHistory.push({ role, message, input });
@@ -83,12 +77,14 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("chatCache", JSON.stringify(chatHistory));
     }
 
+    // 캐시된 응답 가져오기
     function getCachedResponse(input) {
         const cache = JSON.parse(localStorage.getItem("chatCache")) || [];
         const cachedEntry = cache.find(entry => entry.role === "ai" && entry.input === input);
         return cachedEntry ? cachedEntry.message : null;
     }
 
+    // 대화 기록 지우기
     function clearChatHistory() {
         localStorage.removeItem("chatCache");
         chatlogs.innerHTML = "";
