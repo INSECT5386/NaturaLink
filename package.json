@@ -1,0 +1,14 @@
+{
+  "name": "NaturaLink",
+  "version": "1.0.0",
+  "description": "A serverless function using node-fetch and Hugging Face API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  },
+  "author": "",
+  "license": "ISC"
+}
