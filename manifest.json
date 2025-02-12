@@ -2,7 +2,7 @@
   "name": "NaturaLink",
   "short_name": "NaturaLink",
   "description": "Your search assistant",
-  "start_url": "/NaturaLink/index.html",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#1a1a2e",
