@@ -9,7 +9,7 @@ const STATIC_ASSETS = [
     "/js/pwa.js",    // js 폴더 내의 pwa.js
     "/js/setting.js",// js 폴더 내의 setting.js
     "/manifest.json", // 루트 경로 내의 manifest.json
-    "/service-worker.js", // 루트 경 내의 service-worker.js
+    "service-worker.js", // 루트 경 내의 service-worker.js
     "/css/base.css", // css 폴더 내의 base.css
     "/css/layout.css", // css 폴더 내의 layout.css
     "/css/components.css", // css 폴더 내의 components.css
