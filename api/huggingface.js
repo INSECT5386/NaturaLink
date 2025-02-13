@@ -1,29 +1,30 @@
-const fetch = require('node-fetch');
+const { fetch } = require('undici'); // undici에서 fetch 사용
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      const { text } = req.body; // 클라이언트에서 보낸 데이터
+      const { text } = req.body;
 
       const response = await fetch('https://api-inference.huggingface.co/models/gpt2', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.HUGGINGFACE_API_TOKEN}`,
+          'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ inputs: text }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`Hugging Face API 호출 실패: ${response.statusText}`);
+      }
 
-      // Hugging Face API의 응답을 클라이언트로 전달
+      const data = await response.json();
       res.status(200).json(data);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Error occurred:', error);
+      res.status(500).json({ error: 'Internal Server Error', details: error.message });
     }
   } else {
     res.status(405).json({ error: 'Method Not Allowed' });
   }
 }
-
