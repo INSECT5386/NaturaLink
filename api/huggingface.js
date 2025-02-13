@@ -4,23 +4,23 @@ export default async function handler(req, res) {
   // 요청 메서드가 POST인지 확인
   if (req.method === 'POST') {
     try {
-      const { text } = req.body;
+      const { text } = req.body;  // 클라이언트에서 보낸 텍스트
 
       const response = await fetch('https://api-inference.huggingface.co/models/gpt2', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+          'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,  // 환경 변수에서 API 키 가져오기
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ inputs: text }),
+        body: JSON.stringify({ inputs: text }),  // Hugging Face API에 보낼 데이터
       });
 
       if (!response.ok) {
         throw new Error(`Hugging Face API 호출 실패: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      res.status(200).json(data);  // 정상적인 응답 처리
+      const data = await response.json();  // 응답 데이터를 JSON으로 변환
+      res.status(200).json(data);  // 클라이언트에 응답 전송
     } catch (error) {
       console.error('Error occurred:', error);
       res.status(500).json({ error: 'Internal Server Error', details: error.message });
