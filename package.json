@@ -4,7 +4,7 @@
   "description": "A project using Hugging Face API",
   "main": "index.js",
   "dependencies": {
-    "node-fetch": "^3.2.0"
+    "undici": "^4.0.0"
   },
   "devDependencies": {},
   "scripts": {
