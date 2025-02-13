@@ -1,6 +1,7 @@
-import { fetch } from 'undici';  // undici에서 fetch 가져오기
+import { fetch } from 'undici';
 
 export default async function handler(req, res) {
+  // 요청 메서드가 POST인지 확인
   if (req.method === 'POST') {
     try {
       const { text } = req.body;
@@ -19,12 +20,13 @@ export default async function handler(req, res) {
       }
 
       const data = await response.json();
-      res.status(200).json(data);
+      res.status(200).json(data);  // 정상적인 응답 처리
     } catch (error) {
       console.error('Error occurred:', error);
       res.status(500).json({ error: 'Internal Server Error', details: error.message });
     }
   } else {
-    res.status(405).json({ error: 'Method Not Allowed' });
+    // POST가 아닌 요청은 405로 응답
+    res.status(405).json({ error: '허용되지 않는 메서드' });
   }
 }
