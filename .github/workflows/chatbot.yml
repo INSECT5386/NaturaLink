@@ -27,13 +27,20 @@ jobs:
 
     - name: Commit API response to GitHub Pages folder
       run: |
+        # Delete the existing chatbot-response.json file if it exists
+        rm -f ./chatbot-response.json
+        
+        # Move the new response to the chatbot-response.json file
         mv response.json ./chatbot-response.json
+        
+        # Set Git user details
         git config --global user.name "insect5386"
         git config --global user.email "shinnara.yuchan@gmail.com"
+        
+        # Add and commit the new chatbot-response.json file
         git add ./chatbot-response.json
         git commit -m "Update chatbot response from Hugging Face"
-
+      
     - name: Push changes
       run: |
-        # Push changes using MY_CUSTOM_PAT for authentication
         git push https://x-access-token:${{ secrets.MY_CUSTOM_PAT }}@github.com/${{ github.repository }}.git HEAD:main
