@@ -1,6 +1,5 @@
 // /api/huggingface.js
-
-const { fetch } = require('undici'); // undici에서 fetch 사용
+const fetch = require('node-fetch'); // node-fetch 사용
 
 export default async function handler(req, res) {
   // POST 요청만 처리
