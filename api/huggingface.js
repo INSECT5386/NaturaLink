@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';  // undici에서 fetch 가져오기
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -28,4 +28,3 @@ export default async function handler(req, res) {
     res.status(405).json({ error: 'Method Not Allowed' });
   }
 }
-
