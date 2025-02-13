@@ -27,9 +27,9 @@ jobs:
 
     - name: Commit API response to GitHub Pages folder
       run: |
-        mv response.json ./your-github-pages-directory/chatbot-response.json
-        git config --global user.name "github-actions"
-        git config --global user.email "actions@github.com"
-        git add ./your-github-pages-directory/chatbot-response.json
+        mv response.json ./chatbot-response.json
+        git config --global user.name "insect5386"
+        git config --global user.email "shinnara.yuchan@gmail.com"
+        git add ./chatbot-response.json
         git commit -m "Update chatbot response from Hugging Face"
         git push
