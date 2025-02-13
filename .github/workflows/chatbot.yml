@@ -1,0 +1,35 @@
+name: Call Hugging Face API and Update Chatbot
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  call_api:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Call Hugging Face API
+      run: |
+        # Set the Hugging Face API Key
+        HUGGINGFACE_API_KEY="${{ secrets.HUGGINGFACE_API_KEY }}"
+        
+        # Call the Hugging Face model endpoint with your message
+        curl -X POST "https://api-inference.huggingface.co/models/gpt2" \
+          -H "Authorization: Bearer $HUGGINGFACE_API_KEY" \
+          -H "Content-Type: application/json" \
+          -d '{"inputs": "Hello, how can I help you today?"}' > response.json
+
+    - name: Commit API response to GitHub Pages folder
+      run: |
+        mv response.json ./your-github-pages-directory/chatbot-response.json
+        git config --global user.name "github-actions"
+        git config --global user.email "actions@github.com"
+        git add ./your-github-pages-directory/chatbot-response.json
+        git commit -m "Update chatbot response from Hugging Face"
+        git push
