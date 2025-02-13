@@ -1,14 +1,23 @@
 // 챗봇 응답을 처리하는 함수
 async function fetchChatbotResponse() {
     try {
-        const response = await fetch('https://insect5386.github.io/NaturaLink/chatbot-response.json');  // 수정된 URL
+        const response = await fetch('https://insect5386.github.io/NaturaLink/chatbot-response.json'); // 수정된 URL
         const data = await response.json();
         
+        // 로그 추가: 받은 데이터 확인
+        console.log('Chatbot Response:', data);
+        
+        // 받은 텍스트 길이 체크 (예시: 1000자 이상이면 일부만 보여주기)
+        let aiText = data[0].generated_text;
+        if (aiText.length > 1000) {
+            aiText = aiText.substring(0, 1000) + '...'; // 1000자까지만 표시
+        }
+
         // 챗봇의 응답을 화면에 추가
         const chatLogs = document.getElementById('chatlogs');
         const aiMessage = document.createElement('div');
         aiMessage.classList.add('chat-bubble', 'ai-message');
-        aiMessage.textContent = data.generated_text; // 예시로 "generated_text" 필드를 가져옴
+        aiMessage.textContent = aiText;
         chatLogs.appendChild(aiMessage);
     } catch (error) {
         console.error('Error fetching chatbot response:', error);
@@ -49,4 +58,3 @@ document.getElementById('clearChatBtn').addEventListener('click', () => {
     const chatLogs = document.getElementById('chatlogs');
     chatLogs.innerHTML = ''; // 대화 로그 초기화
 });
-
