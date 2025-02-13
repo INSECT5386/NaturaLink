@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=\"device-width\", initial-scale=1.0, user-scalable=no">
     <meta name="description" content="NaturaLink">
     <meta property="og:title" content="NaturaLink">
     <meta property="og:description" content="NaturaLink">
@@ -70,21 +70,22 @@
     <!-- AI 챗봇 탭 -->
     <div class="content" id="ai">
         <h2>AI 챗봇</h2>
-
-        <!-- Gradio 앱을 iframe으로 삽입 -->
-        <iframe
-            src="https://yuchan5386-naturaai-space.hf.space"
-            frameborder="0"
-            width="850"
-            height="450"
-            style="width: 100%; height: 500px;">
-        </iframe>
+        <div id="chatbox">
+            <div id="chatlogs"></div>
+            <div id="userInputContainer">
+                <input type="text" id="userInput" placeholder="질문을 입력하세요..." />
+                <button id="sendMessageBtn">보내기</button>
+            </div>
+            <div id="typingIndicator" class="typing-indicator" style="display: none;">AI가 입력 중...</div>
+        </div>
+        <button id="clearChatBtn">🗑️ 대화 지우기</button>
     </div>
 
     <!-- PWA 설치 버튼 -->
     <button id="install-button" style="display: none;">📲 앱 설치</button>
 
     <!-- JavaScript -->
+    <script src="js/chat.js"></script>  <!-- ✅ 챗봇 기능 -->
     <script src="js/pwa.js"></script>   <!-- ✅ PWA 기능 -->
     <script src="js/script.js"></script> <!-- ✅ UI 기능 (탭 전환, 버튼 등) -->
     <script src="js/setting.js"></script> <!-- ✅ 설정 관련 JS 추가 -->
