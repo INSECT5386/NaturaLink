@@ -1,3 +1,4 @@
+// /api/huggingface.js
 import { fetch } from 'undici';
 
 export default async function handler(req, res) {
@@ -6,6 +7,7 @@ export default async function handler(req, res) {
     try {
       const { text } = req.body;  // 클라이언트에서 보낸 텍스트
 
+      // Hugging Face API 호출
       const response = await fetch('https://api-inference.huggingface.co/models/gpt2', {
         method: 'POST',
         headers: {
