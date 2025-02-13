@@ -11,5 +11,6 @@
     "start": "vercel dev"
   },
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "type": "module"
 }
