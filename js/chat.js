@@ -1,54 +1,61 @@
-document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
-document.getElementById('clearChatBtn').addEventListener('click', clearChat);
+const sendMessageBtn = document.getElementById('sendMessageBtn');
+const userInput = document.getElementById('userInput');
+const chatlogs = document.getElementById('chatlogs');
+const typingIndicator = document.getElementById('typingIndicator');
+const clearChatBtn = document.getElementById('clearChatBtn');
+
+sendMessageBtn.addEventListener('click', sendMessage);
+userInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') sendMessage();
+});
+clearChatBtn.addEventListener('click', clearChat);
 
 function sendMessage() {
-    const userInput = document.getElementById('userInput').value;
-    
-    if (userInput.trim() === "") {
-        return;
-    }
-    
-    // 사용자 메시지 출력
-    appendMessage(userInput, 'user');
-    
-    // 입력 필드 초기화
-    document.getElementById('userInput').value = '';
-    
-    // AI 입력 중 표시
-    document.getElementById('typingIndicator').style.display = 'block';
+    const userText = userInput.value.trim();
+    if (userText === '') return;
 
-    // AI 응답 가져오기
-    fetch('http://127.0.0.1:5000/api/chat', {
+    appendMessage(userText, 'user-message');
+    userInput.value = '';
+    scrollToBottom();
+
+    typingIndicator.style.display = 'block'; // 타이핑 인디케이터 표시
+
+    fetchChatbotResponse(userText);
+}
+
+function appendMessage(message, type) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('chat-bubble', type);
+    messageElement.innerText = message;
+    chatlogs.appendChild(messageElement);
+}
+
+function scrollToBottom() {
+    chatlogs.scrollTop = chatlogs.scrollHeight;
+}
+
+function fetchChatbotResponse(userText) {
+    fetch('https://127.0.0.1:5000/api/chat', { // 여기에 실제 API URL을 입력하세요
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ input: userInput })
+        body: JSON.stringify({ input: userText }),
     })
     .then(response => response.json())
     .then(data => {
-        // AI 응답 출력
-        const aiResponse = data.generated_text || "응답을 받을 수 없습니다.";
-        appendMessage(aiResponse, 'ai');
+        typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
+        const aiText = data.response || 'AI의 응답을 받을 수 없습니다.';
+        appendMessage(aiText, 'ai-message');
+        scrollToBottom();
     })
     .catch(error => {
-        console.error('Error:', error);
-        appendMessage('AI 응답 오류. 다시 시도해주세요.', 'ai');
-    })
-    .finally(() => {
-        // 입력 중 표시 숨기기
-        document.getElementById('typingIndicator').style.display = 'none';
+        typingIndicator.style.display = 'none';
+        appendMessage('에러가 발생했습니다. 다시 시도해주세요.', 'ai-message');
+        scrollToBottom();
     });
 }
 
-function appendMessage(message, sender) {
-    const chatlogs = document.getElementById('chatlogs');
-    const messageElement = document.createElement('div');
-    messageElement.classList.add(sender);
-    messageElement.textContent = message;
-    chatlogs.appendChild(messageElement);
-}
-
 function clearChat() {
-    document.getElementById('chatlogs').innerHTML = '';
+    chatlogs.innerHTML = '';
 }
