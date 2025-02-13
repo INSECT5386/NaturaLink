@@ -32,4 +32,7 @@ jobs:
         git config --global user.email "shinnara.yuchan@gmail.com"
         git add ./chatbot-response.json
         git commit -m "Update chatbot response from Hugging Face"
-        git push
+      
+    - name: Push changes
+      run: |
+        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
