@@ -1,7 +1,7 @@
 // 챗봇 응답을 처리하는 함수
 async function fetchChatbotResponse() {
     try {
-        const response = await fetch('/chatbot-response.json');
+        const response = await fetch('https://insect5386.github.io/NaturaLink/chatbot-response.json');  // 수정된 URL
         const data = await response.json();
         
         // 챗봇의 응답을 화면에 추가
