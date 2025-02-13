@@ -33,13 +33,14 @@ jobs:
         # Move the new response to the chatbot-response.json file
         mv response.json ./chatbot-response.json
         
-        # Set Git user details
+        # Check if there are any changes to commit
+        git diff --exit-code || echo "Changes detected"
+        
+        # If changes are detected, commit and push
         git config --global user.name "insect5386"
         git config --global user.email "shinnara.yuchan@gmail.com"
-        
-        # Add and commit the new chatbot-response.json file
         git add ./chatbot-response.json
-        git commit -m "Update chatbot response from Hugging Face"
+        git commit -m "Update chatbot response from Hugging Face" || echo "No changes to commit"
       
     - name: Push changes
       run: |
