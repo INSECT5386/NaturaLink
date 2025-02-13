@@ -22,7 +22,6 @@ jobs:
 
       - name: Use Hugging Face API Key and Send Request
         run: |
-          # JavaScript 파일 실행
           node index.js
         env:
           HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
