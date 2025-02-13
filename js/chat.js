@@ -1,13 +1,22 @@
+// 환경 변수에서 API 키를 가져옴
+const apiKey = process.env.HUGGINGFACE_API_KEY; // GitHub Secrets에서 가져온 API 키
+
 // 챗봇 응답을 처리하는 함수
 async function fetchChatbotResponse() {
     try {
-        const response = await fetch('https://insect5386.github.io/NaturaLink/chatbot-response.json'); // 수정된 URL
-        const data = await response.json();
-        
-        // 로그 추가: 받은 데이터 확인
-        console.log('Chatbot Response:', data);
-        
-        // 받은 텍스트 길이 체크 (예시: 1000자 이상이면 일부만 보여주기)
+        const response = await fetch('https://api-inference.huggingface.co/models/gpt2', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,  // Authorization 헤더에 API 키 포함
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ inputs: 'Hello, how can I help you today?' }) // 사용자가 보낸 입력을 전송
+        });
+
+        const data = await response.json(); // 응답 데이터 처리
+        console.log('Chatbot Response:', data); // 콘솔에 응답 데이터 출력
+
+        // 받은 텍스트 길이 체크 (예시: 1000자 이상이면 일부만 표시)
         let aiText = data[0].generated_text;
         if (aiText.length > 1000) {
             aiText = aiText.substring(0, 1000) + '...'; // 1000자까지만 표시
