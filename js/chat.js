@@ -53,11 +53,12 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             clearTimeout(timeoutId); // 응답이 오면 타임아웃 취소
-            console.log(data); // 응답 확인을 위한 로그
+            console.log('AI Response Data:', data); // 응답 확인을 위한 로그
 
             typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
 
-            const aiText = data.generated_text || 'AI의 응답을 받을 수 없습니다.'; // 응답 확인
+            // 응답 구조가 다를 수 있으므로 데이터 확인 후 출력
+            const aiText = data.generated_text || data[0]?.generated_text || 'AI의 응답을 받을 수 없습니다.'; 
 
             // 응답을 화면에 출력
             appendMessage(aiText, 'ai-message');
