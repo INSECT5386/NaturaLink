@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch('https://orange-bar-f327.myageu4.workers.dev/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ input: userText }),
+            body: JSON.stringify({ inputs: userText }), // 'inputs'로 수정
             signal: controller.signal // AbortController의 signal을 추가
         })
         .then(response => response.json())
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
 
-            const aiText = data[0]?.generated_text || 'AI의 응답을 받을 수 없습니다.'; // 응답 확인
+            const aiText = data.generated_text || 'AI의 응답을 받을 수 없습니다.'; // 응답 확인
 
             // 응답을 화면에 출력
             appendMessage(aiText, 'ai-message');
