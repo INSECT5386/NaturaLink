@@ -41,20 +41,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function fetchChatbotResponse(userText) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30초 타임아웃 설정
+
         fetch('https://orange-bar-f327.myageu4.workers.dev/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ input: userText }),
-            timeout: 30000 // 30초 타임아웃 설정
+            signal: controller.signal // AbortController의 signal을 추가
         })
         .then(response => response.json())
         .then(data => {
+            clearTimeout(timeoutId); // 응답이 오면 타임아웃 취소
             console.log(data); // 응답 확인을 위한 로그
             typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
             const aiText = data.response || 'AI의 응답을 받을 수 없습니다.';
             appendMessage(aiText, 'ai-message');
         })
         .catch(error => {
+            clearTimeout(timeoutId); // 에러가 발생해도 타임아웃 취소
             console.error('에러:', error);
             typingIndicator.style.display = 'none';
             appendMessage('에러가 발생했습니다. 다시 시도해주세요.', 'ai-message');
