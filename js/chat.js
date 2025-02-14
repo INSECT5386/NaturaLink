@@ -54,8 +54,12 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             clearTimeout(timeoutId); // 응답이 오면 타임아웃 취소
             console.log(data); // 응답 확인을 위한 로그
+
             typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
-            const aiText = data[0]?.generated_text || 'AI의 응답을 받을 수 없습니다.'; // 배열에서 첫 번째 요소의 generated_text 가져오기
+
+            const aiText = data[0]?.generated_text || 'AI의 응답을 받을 수 없습니다.'; // 응답 확인
+
+            // 응답을 화면에 출력
             appendMessage(aiText, 'ai-message');
         })
         .catch(error => {
