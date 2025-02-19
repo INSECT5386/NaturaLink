@@ -14,7 +14,30 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     clearChatBtn.addEventListener('click', clearChat);
 
-    function sendMessage() {
+    async function loadModel() {
+        const model = await tf.loadGraphModel('https://insect5386.github.io/NaturaLink/model/model.json');
+        console.log('모델 로드 완료!');
+        return model;
+    }
+
+    async function loadTokenizer() {
+        // tokenizer는 모델에 맞는 방식으로 로드해야 합니다.
+        // 예시로는 TensorFlow.js에서 로드할 수 있는 tokenizer가 필요합니다.
+        // 이 부분은 별도의 토크나이저 로드 방식이 필요할 수 있습니다.
+        return {
+            encode: function(text) {
+                // 입력 텍스트를 모델에 맞게 인코딩
+                // 예시로 단어들을 고유한 토큰 ID로 변환
+                return text.split(' ').map(word => word.charCodeAt(0));  // 단순한 예시
+            },
+            decode: function(ids) {
+                // 토큰 ID를 텍스트로 디코딩
+                return ids.map(id => String.fromCharCode(id)).join(' ');
+            }
+        };
+    }
+
+    async function sendMessage() {
         const userText = userInput.value.trim();
         if (userText === '') return;
 
@@ -25,7 +48,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         typingIndicator.style.display = 'block'; // 타이핑 인디케이터 표시
 
-        fetchChatbotResponse(userText);
+        // 텍스트를 모델로 전달하여 응답을 받아옴
+        await fetchChatbotResponse(userText);
     }
 
     function appendMessage(message, type) {
@@ -40,35 +64,19 @@ document.addEventListener('DOMContentLoaded', function () {
         chatlogs.scrollTop = chatlogs.scrollHeight;
     }
 
-    function fetchChatbotResponse(userText) {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30초 타임아웃 설정
+    async function fetchChatbotResponse(userText) {
+        const model = await loadModel(); // 모델 로드
+        const tokenizer = await loadTokenizer(); // 토크나이저 로드
 
-        fetch('https://orange-bar-f327.myageu4.workers.dev/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ inputs: userText }), // 'inputs'로 수정
-            signal: controller.signal // AbortController의 signal을 추가
-        })
-        .then(response => response.json())
-        .then(data => {
-            clearTimeout(timeoutId); // 응답이 오면 타임아웃 취소
-            console.log('AI Response Data:', data); // 응답 확인을 위한 로그
+        const inputIds = tokenizer.encode(userText); // 입력 텍스트를 모델이 처리할 수 있는 형식으로 인코딩
+        const inputTensor = tf.tensor([inputIds]);
 
-            typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
+        const outputTensor = model.predict(inputTensor); // 모델을 사용하여 예측
 
-            // 응답 구조가 다를 수 있으므로 데이터 확인 후 출력
-            const aiText = data.generated_text || data[0]?.generated_text || 'AI의 응답을 받을 수 없습니다.'; 
+        const response = tokenizer.decode(outputTensor.dataSync()); // 예측 결과를 디코딩
+        appendMessage(response, 'ai-message'); // 응답을 화면에 표시
 
-            // 응답을 화면에 출력
-            appendMessage(aiText, 'ai-message');
-        })
-        .catch(error => {
-            clearTimeout(timeoutId); // 에러가 발생해도 타임아웃 취소
-            console.error('에러:', error);
-            typingIndicator.style.display = 'none';
-            appendMessage('에러가 발생했습니다. 다시 시도해주세요.', 'ai-message');
-        });
+        typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
     }
 
     function clearChat() {
