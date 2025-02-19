@@ -14,38 +14,18 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     clearChatBtn.addEventListener('click', clearChat);
 
-    async function loadModel() {
-        const session = new onnx.InferenceSession();
-        await session.loadModel('https://insect5386.github.io/NaturaLink/model_int8.onnx');
-        console.log('ONNX 모델 로드 완료!');
-        return session;
-    }
-
-    async function loadTokenizer() {
-        // tokenizer는 모델에 맞는 방식으로 로드해야 합니다.
-        return {
-            encode: function(text) {
-                return text.split(' ').map(word => word.charCodeAt(0));  // 각 문자에 대해 charCodeAt 사용
-            },
-            decode: function(ids) {
-                return ids.map(id => String.fromCharCode(id)).join(' ');  // 문자로 복원
-            }
-        };
-    }
-
-    async function sendMessage() {
+    function sendMessage() {
         const userText = userInput.value.trim();
         if (userText === '') return;
 
         appendMessage(userText, 'user-message');
         userInput.value = '';
-        userInput.focus();
+        userInput.focus(); // 입력창 포커스 유지
         scrollToBottom();
 
-        typingIndicator.style.display = 'block';
+        typingIndicator.style.display = 'block'; // 타이핑 인디케이터 표시
 
-        // 챗봇 응답 처리
-        await fetchChatbotResponse(userText);
+        fetchChatbotResponse(userText);
     }
 
     function appendMessage(message, type) {
@@ -60,32 +40,35 @@ document.addEventListener('DOMContentLoaded', function () {
         chatlogs.scrollTop = chatlogs.scrollHeight;
     }
 
-    async function fetchChatbotResponse(userText) {
-        const session = await loadModel(); // ONNX 모델 로드
-        const tokenizer = await loadTokenizer(); // 토크나이저 로드
+    function fetchChatbotResponse(userText) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30초 타임아웃 설정
 
-        const inputIds = tokenizer.encode(userText); // 텍스트 인코딩
-        console.log('Encoded Input:', inputIds); // 인코딩된 입력 출력
+        fetch('https://orange-bar-f327.myageu4.workers.dev/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ inputs: userText }), // 'inputs'로 수정
+            signal: controller.signal // AbortController의 signal을 추가
+        })
+        .then(response => response.json())
+        .then(data => {
+            clearTimeout(timeoutId); // 응답이 오면 타임아웃 취소
+            console.log('AI Response Data:', data); // 응답 확인을 위한 로그
 
-        // 텍스트 길이에 맞는 텐서 생성
-        const inputTensor = new onnx.Tensor(new Int8Array(inputIds), 'int8', [1, inputIds.length]);
-        console.log('Input Tensor Shape:', inputTensor.shape);
+            typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
 
-        try {
-            // 모델 예측 실행
-            const output = await session.run([inputTensor]);
-            const outputTensor = output.values().next().value; // 결과 텐서 가져오기
-            console.log('Output Tensor:', outputTensor.data); // 출력 텐서 로그 출력
+            // 응답 구조가 다를 수 있으므로 데이터 확인 후 출력
+            const aiText = data.generated_text || data[0]?.generated_text || 'AI의 응답을 받을 수 없습니다.'; 
 
-            // 예측 결과 디코딩
-            const response = tokenizer.decode(outputTensor.data);
-            appendMessage(response, 'ai-message'); // 챗봇 응답 표시
-
-        } catch (error) {
-            console.error("모델 예측 중 오류 발생:", error);
-        }
-
-        typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
+            // 응답을 화면에 출력
+            appendMessage(aiText, 'ai-message');
+        })
+        .catch(error => {
+            clearTimeout(timeoutId); // 에러가 발생해도 타임아웃 취소
+            console.error('에러:', error);
+            typingIndicator.style.display = 'none';
+            appendMessage('에러가 발생했습니다. 다시 시도해주세요.', 'ai-message');
+        });
     }
 
     function clearChat() {
