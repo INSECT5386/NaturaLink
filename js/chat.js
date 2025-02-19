@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function loadTokenizer() {
         // tokenizer는 모델에 맞는 방식으로 로드해야 합니다.
-        // 예시로는 단어들을 고유한 토큰 ID로 변환
         return {
             encode: function(text) {
                 return text.split(' ').map(word => word.charCodeAt(0));  // 각 문자에 대해 charCodeAt 사용
