@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // 예시로는 단어들을 고유한 토큰 ID로 변환
         return {
             encode: function(text) {
-                return text.split(' ').map(word => word.charCodeAt(0)); // 간단한 인코딩 예시
+                return text.split(' ').map(word => word.charCodeAt(0));  // 각 문자에 대해 charCodeAt 사용
             },
             decode: function(ids) {
-                return ids.map(id => String.fromCharCode(id)).join(' '); // 디코딩 예시
+                return ids.map(id => String.fromCharCode(id)).join(' ');  // 문자로 복원
             }
         };
     }
@@ -70,15 +70,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 텍스트 길이에 맞는 텐서 생성
         const inputTensor = new onnx.Tensor(new Int8Array(inputIds), 'int8', [1, inputIds.length]);
+        console.log('Input Tensor Shape:', inputTensor.shape);
 
-        // 모델 예측 실행
-        const output = await session.run([inputTensor]);
-        const outputTensor = output.values().next().value; // 결과 텐서 가져오기
-        console.log('Output Tensor:', outputTensor.data); // 출력 텐서 로그 출력
+        try {
+            // 모델 예측 실행
+            const output = await session.run([inputTensor]);
+            const outputTensor = output.values().next().value; // 결과 텐서 가져오기
+            console.log('Output Tensor:', outputTensor.data); // 출력 텐서 로그 출력
 
-        // 예측 결과 디코딩
-        const response = tokenizer.decode(outputTensor.data);
-        appendMessage(response, 'ai-message'); // 챗봇 응답 표시
+            // 예측 결과 디코딩
+            const response = tokenizer.decode(outputTensor.data);
+            appendMessage(response, 'ai-message'); // 챗봇 응답 표시
+
+        } catch (error) {
+            console.error("모델 예측 중 오류 발생:", error);
+        }
 
         typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
     }
