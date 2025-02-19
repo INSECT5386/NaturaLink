@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const tokenizer = await loadTokenizer(); // 토크나이저 로드
 
         const inputIds = tokenizer.encode(userText); // 텍스트 인코딩
-        const inputTensor = new onnx.Tensor(new Int32Array(inputIds), 'int32', [1, inputIds.length]);
+        const inputTensor = new onnx.Tensor(new Int8Array(inputIds), 'int8', [1, inputIds.length]);
 
         const output = await session.run([inputTensor]); // 모델 예측
         const outputTensor = output.values().next().value; // 결과 텐서 가져오기
