@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=\"device-width\", initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="description" content="NaturaLink">
     <meta property="og:title" content="NaturaLink">
     <meta property="og:description" content="NaturaLink">
@@ -33,6 +33,9 @@
             document.removeEventListener("pointerdown", enableFullScreenOnce); // ✅ 한 번 실행 후 제거
         });
     </script>
+
+    <!-- TensorFlow.js CDN 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script> <!-- TensorFlow.js 추가 -->
 </head>
 <body>
     <header>
