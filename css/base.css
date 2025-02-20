@@ -18,8 +18,10 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-x: hidden;
 }
 
+/* 그라디언트 애니메이션 */
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -37,4 +39,84 @@ body::after {
     background-image: url('https://www.transparenttextures.com/patterns/wood-light.png'); /* 자연적인 나무 텍스처 */
     opacity: 0.1;
     pointer-events: none;
+}
+
+/* 기본적인 링크 스타일 */
+a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--primary-color);
+}
+
+/* 텍스트 강조 스타일 */
+h1, h2, h3 {
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+p {
+    font-weight: 400;
+    color: var(--text-color);
+}
+
+/* 버튼 스타일 */
+button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* 입력창 스타일 */
+input[type="text"], textarea {
+    background-color: rgba(50, 50, 50, 0.8);
+    color: var(--text-color);
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+input[type="text"]:focus, textarea:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+}
+
+/* 반응형 디자인 (모바일 및 작은 화면에 대응) */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px 18px;
+    }
 }
