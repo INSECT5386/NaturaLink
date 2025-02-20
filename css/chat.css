@@ -1,3 +1,4 @@
+
 /* ✅ 채팅 박스 스타일 */
 #chatbox {
     border: 1px solid #555;
@@ -58,25 +59,23 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px; /* 간격을 10px로 설정해 더 여유 있게 배치 */
+    gap: 8px;
     margin-top: 15px;
     width: 100%;
     max-width: 600px;
-    box-sizing: border-box; /* 부모 요소의 크기를 고려하도록 설정 */
 }
 
 /* ✅ 입력창 */
 #userInput {
-    flex-grow: 1;
+    flex: 1;
+    min-width: 50px;
     padding: 12px;
-    font-size: 16px;
-    min-width: 0; /* 입력창이 옆으로 늘어나지 않도록 설정 */
-    width: auto; /* 입력창의 크기를 부모에 맞게 자동으로 설정 */
     border-radius: 10px;
     border: 1px solid #777;
     background-color: rgba(50, 50, 50, 0.9);
     color: #f0f0f0;
     outline: none;
+    font-size: 16px;
     transition: all 0.3s ease;
 }
 
@@ -86,15 +85,16 @@
 
 /* ✅ 전송 버튼 */
 #sendMessageBtn {
+    flex-shrink: 0;
     padding: 12px 16px;
-    font-size: 16px;
-    width: 100px;
-    transition: background 0.3s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
-    flex-shrink: 0; /* 버튼이 줄어들지 않도록 설정 */
+    border-radius: 8px;
     background: linear-gradient(135deg, #444, #666);
     color: #f0f0f0;
     border: none;
     cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 16px;
+    width: 100px;
 }
 
 #sendMessageBtn:hover {
@@ -104,7 +104,7 @@
     transform: scale(1.05);
 }
 
-/* ✅ 대화 삭제 버튼 디자인 개선 */
+/* ✅ 채팅 초기화 버튼 */
 #clearChatBtn {
     position: absolute;
     top: 10px;  /* 상단에 배치 */
@@ -120,6 +120,8 @@
     justify-content: center;
     align-items: center;
     transition: background 0.3s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
+    width: 48px;  /* 고정된 크기 설정 */
+    height: 48px; /* 고정된 크기 설정 */
 }
 
 #clearChatBtn:hover {
@@ -137,9 +139,13 @@
         right: 8px;  /* 모바일에서 좀 더 오른쪽에 배치 */
         font-size: 18px; /* 버튼 크기 줄임 */
         padding: 6px 12px; /* 패딩을 조금 줄임 */
+        width: 40px;  /* 모바일에서는 버튼 크기 조금 더 줄임 */
+        height: 40px; /* 모바일에서도 고정 크기 설정 */
     }
+}
 
-    /* 모바일 최적화 */
+/* ✅ 모바일 최적화 */
+@media (max-width: 600px) {
     #chatbox {
         max-height: 350px;
         padding: 12px;
