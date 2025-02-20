@@ -16,13 +16,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // TensorFlow.js 모델 로드
     async function loadToxicityModel() {
-        const toxicityModel = await tf.automl.loadTextClassification('https://cdn.jsdelivr.net/npm/@tensorflow-models/toxicity');
-        return toxicityModel;
+        try {
+            const toxicityModel = await toxicity.load(); // 모델 로드
+            console.log("모델 로드 성공!");
+            return toxicityModel;
+        } catch (error) {
+            console.error('모델 로드 중 오류 발생:', error);
+        }
     }
 
     // Toxicity 분석 함수
     async function analyzeToxicity(text, toxicityModel) {
-        const predictions = await toxicityModel.classify(text);
+        const predictions = await toxicityModel.classify([text]); // 텍스트 배열로 감싸기
 
         // 유해한 텍스트인지 여부를 확인
         const toxic = predictions.some(p => p.label === 'toxicity' && p.results[0].match);
