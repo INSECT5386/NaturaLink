@@ -1,7 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/toxicity"></script>
-
-<script>
 document.addEventListener('DOMContentLoaded', function () {
     const sendMessageBtn = document.getElementById('sendMessageBtn');
     const userInput = document.getElementById('userInput');
@@ -18,11 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     clearChatBtn.addEventListener('click', clearChat);
 
-    let toxicityModel;
-    toxicity.load().then(model => {
-        toxicityModel = model;
-    });
-
     function sendMessage() {
         const userText = userInput.value.trim();
         if (userText === '') return;
@@ -34,21 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         typingIndicator.style.display = 'block'; // 타이핑 인디케이터 표시
 
-        // Toxicity 분석
-        analyzeToxicity(userText)
-            .then(isToxic => {
-                if (isToxic) {
-                    appendMessage("부드럽게 대화해 주세요.", 'ai-message'); // 공격적인 내용 감지시 메시지 출력
-                    typingIndicator.style.display = 'none';
-                } else {
-                    fetchChatbotResponse(userText); // 비토xic 메시지라면 챗봇 응답 호출
-                }
-            })
-            .catch(error => {
-                console.error('Toxicity 분석 오류:', error);
-                typingIndicator.style.display = 'none';
-                appendMessage('에러가 발생했습니다. 다시 시도해주세요.', 'ai-message');
-            });
+        fetchChatbotResponse(userText);
     }
 
     function appendMessage(message, type) {
@@ -61,21 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function scrollToBottom() {
         chatlogs.scrollTop = chatlogs.scrollHeight;
-    }
-
-    // 사용자의 메시지에 대한 toxicity 분석
-    function analyzeToxicity(text) {
-        return new Promise((resolve, reject) => {
-            if (!toxicityModel) {
-                reject('모델이 로드되지 않았습니다');
-                return;
-            }
-
-            toxicityModel.classify(text).then(predictions => {
-                const toxicPredictions = predictions.filter(p => p.label === 'toxicity' && p.results[0].match);
-                resolve(toxicPredictions.length > 0); // toxicity가 감지되면 true 반환
-            }).catch(reject);
-        });
     }
 
     function fetchChatbotResponse(userText) {
@@ -146,4 +108,3 @@ document.addEventListener('DOMContentLoaded', function () {
             .replace(/\bcan' t\b/g, "can't"); // can' t -> can't
     }
 });
-</script>
