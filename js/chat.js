@@ -14,6 +14,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     clearChatBtn.addEventListener('click', clearChat);
 
+    // TensorFlow.js 모델 로드
+    async function loadToxicityModel() {
+        const toxicityModel = await tf.automl.loadTextClassification('https://cdn.jsdelivr.net/npm/@tensorflow-models/toxicity');
+        return toxicityModel;
+    }
+
+    // Toxicity 분석 함수
+    async function analyzeToxicity(text, toxicityModel) {
+        const predictions = await toxicityModel.classify(text);
+
+        // 유해한 텍스트인지 여부를 확인
+        const toxic = predictions.some(p => p.label === 'toxicity' && p.results[0].match);
+        return toxic;
+    }
+
     function sendMessage() {
         const userText = userInput.value.trim();
         if (userText === '') return;
@@ -25,7 +40,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         typingIndicator.style.display = 'block'; // 타이핑 인디케이터 표시
 
-        fetchChatbotResponse(userText);
+        // TensorFlow.js 모델 로드 후 Toxicity 분석
+        loadToxicityModel().then(toxicityModel => {
+            analyzeToxicity(userText, toxicityModel).then(toxic => {
+                if (toxic) {
+                    appendMessage("이 메시지는 부적절한 내용이 포함되어 있습니다. 다시 입력해 주세요. 😞", 'ai-message');
+                    typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
+                } else {
+                    fetchChatbotResponse(userText);
+                }
+            });
+        });
     }
 
     function appendMessage(message, type) {
