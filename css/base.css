@@ -3,13 +3,13 @@
 :root {
     --primary-color: #80b3ff;
     --secondary-color: #1e90ff;
-    --background-color: #1a1a2e;
+    --background-color: #2e8b57; /* 자연적인 녹색으로 변경 */
     --text-color: #f0f0f0;
 }
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, var(--background-color), #16213e, #0f3460);
+    background: linear-gradient(135deg, var(--background-color), #3cb371, #006400);
     background-size: 400% 400%;
     animation: gradientAnimation 10s ease infinite;
     color: var(--text-color);
@@ -26,7 +26,7 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* 배경 패턴 */
+/* 자연적이고 부드러운 배경 패턴 */
 body::after {
     content: "";
     position: fixed;
@@ -34,7 +34,7 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-    opacity: 0.08;
+    background-image: url('https://www.transparenttextures.com/patterns/wood-light.png'); /* 자연적인 나무 텍스처 */
+    opacity: 0.1;
     pointer-events: none;
 }
