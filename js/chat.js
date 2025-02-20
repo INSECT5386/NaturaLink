@@ -50,7 +50,18 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify({ inputs: userText }), // 'inputs'로 수정
             signal: controller.signal // AbortController의 signal을 추가
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('서버 응답이 정상적이지 않습니다');
+            }
+
+            const contentType = response.headers.get('Content-Type');
+            if (contentType && contentType.includes('application/json')) {
+                return response.json();
+            } else {
+                throw new Error('응답 형식이 JSON이 아닙니다');
+            }
+        })
         .then(data => {
             clearTimeout(timeoutId); // 응답이 오면 타임아웃 취소
             console.log('AI Response Data:', data); // 응답 확인을 위한 로그
