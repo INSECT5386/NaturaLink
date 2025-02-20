@@ -150,7 +150,7 @@ body::after {
 
 /* ✅ 채팅 초기화 버튼 */
 #clearChatBtn {
-    position: absolute;
+    position: fixed; /* 절대 위치에서 고정 위치로 변경 */
     top: 12px;
     right: 12px;
     padding: 6px 10px;
@@ -161,6 +161,7 @@ body::after {
     cursor: pointer;
     transition: background 0.3s ease-in-out, transform 0.2s ease;
     font-size: clamp(10px, 2.5vw, 12px);
+    z-index: 9999; /* 다른 요소들이 덮어쓰지 않도록 z-index 추가 */
 }
 
 #clearChatBtn:hover {
