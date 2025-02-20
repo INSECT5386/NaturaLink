@@ -27,6 +27,7 @@
     word-wrap: break-word;
     font-size: 14px;
     line-height: 1.4;
+    transition: all 0.3s ease; /* 부드러운 애니메이션 추가 */
 }
 
 .user-message {
@@ -61,6 +62,7 @@
     background-color: rgba(34, 34, 34, 0.95);
     color: #f0f0f0;
     outline: none;
+    transition: all 0.3s ease; /* 부드러운 애니메이션 추가 */
 }
 
 #sendMessageBtn {
@@ -70,7 +72,7 @@
     color: #f0f0f0;
     border: none;
     cursor: pointer;
-    transition: background 0.3s ease-in-out, transform 0.2s ease;
+    transition: background 0.3s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 #sendMessageBtn:hover {
@@ -114,5 +116,11 @@
 .typing-indicator {
     font-style: italic;
     color: #aaa;
+    animation: typingEffect 1.5s infinite ease-in-out; /* 타이핑 애니메이션 추가 */
 }
 
+@keyframes typingEffect {
+    0% { content: ''; }
+    50% { content: '.'; }
+    100% { content: '..'; }
+}
