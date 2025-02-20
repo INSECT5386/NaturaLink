@@ -154,13 +154,18 @@ body::after {
     top: 12px;
     right: 12px;
     padding: 6px 10px;
-    border-radius: 8px;
+    width: 40px; /* 고정된 너비 */
+    height: 40px; /* 고정된 높이 */
+    border-radius: 50%; /* 정사각형 버튼을 원형으로 만들기 위해 */
     background: linear-gradient(135deg, #555, #777);
     color: #f0f0f0;
     border: none;
     cursor: pointer;
     transition: background 0.3s ease-in-out, transform 0.2s ease;
-    font-size: clamp(10px, 2.5vw, 12px);
+    font-size: 16px; /* 텍스트 크기 */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 버튼 내 텍스트나 아이콘을 중앙에 배치 */
     z-index: 9999; /* 다른 요소들이 덮어쓰지 않도록 z-index 추가 */
 }
 
@@ -188,5 +193,10 @@ body::after {
         font-size: 14px;
         width: 80px;
         padding: 10px 12px;
+    }
+
+    #clearChatBtn {
+        width: 40px;  /* 모바일에서도 고정된 너비 */
+        height: 40px; /* 모바일에서도 고정된 높이 */
     }
 }
