@@ -150,23 +150,20 @@ body::after {
 
 /* ✅ 채팅 초기화 버튼 */
 #clearChatBtn {
-    position: fixed; /* 절대 위치에서 고정 위치로 변경 */
-    top: 12px;
-    right: 12px;
-    padding: 6px 10px;
-    width: 40px; /* 고정된 너비 */
-    height: 40px; /* 고정된 높이 */
-    border-radius: 50%; /* 정사각형 버튼을 원형으로 만들기 위해 */
+    position: absolute;
+    top: 10px;  /* 상단에 배치 */
+    right: 10px;  /* 오른쪽에 배치 */
+    padding: 6px 12px;
     background: linear-gradient(135deg, #555, #777);
     color: #f0f0f0;
     border: none;
+    border-radius: 50%;
     cursor: pointer;
-    transition: background 0.3s ease-in-out, transform 0.2s ease;
-    font-size: 16px; /* 텍스트 크기 */
+    font-size: 18px;
     display: flex;
     justify-content: center;
-    align-items: center; /* 버튼 내 텍스트나 아이콘을 중앙에 배치 */
-    z-index: 9999; /* 다른 요소들이 덮어쓰지 않도록 z-index 추가 */
+    align-items: center;
+    transition: background 0.3s ease-in-out, transform 0.2s ease;
 }
 
 #clearChatBtn:hover {
@@ -195,8 +192,10 @@ body::after {
         padding: 10px 12px;
     }
 
+    /* 모바일에서 대화 삭제 버튼 크기 조정 */
     #clearChatBtn {
-        width: 40px;  /* 모바일에서도 고정된 너비 */
-        height: 40px; /* 모바일에서도 고정된 높이 */
+        top: 8px;  /* 모바일에서는 좀 더 상단에 배치 */
+        right: 8px;  /* 모바일에서는 좀 더 오른쪽에 배치 */
+        font-size: 16px;
     }
 }
