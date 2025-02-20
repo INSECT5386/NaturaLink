@@ -7,7 +7,7 @@ header {
     letter-spacing: 3px;
     font-weight: 700;
     margin-bottom: 20px;
-    text-shadow: 0 0 15px rgba(128, 179, 255, 0.9);
+    text-shadow: 0 0 15px rgba(128, 179, 255, 0.7), 0 0 30px rgba(0, 191, 255, 0.6); /* 자연적인 빛 효과 */
 }
 
 h1 a {
@@ -23,6 +23,9 @@ h1 a {
     padding: 20px;
     width: 90%;
     max-width: 800px;
+    background: rgba(20, 20, 40, 0.7); /* 부드러운 어두운 배경 추가 */
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 자연스러운 그림자 효과 */
 }
 
 .content.show {
