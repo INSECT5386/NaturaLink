@@ -150,7 +150,6 @@ body::after {
     transform: scale(0.98);
 }
 
-/* ✅ 대화 지우기 버튼 */
 #clearChatBtn {
     position: absolute;
     top: 12px;
@@ -162,7 +161,7 @@ body::after {
     border: none;
     cursor: pointer;
     transition: background 0.3s ease-in-out, transform 0.2s ease;
-    font-size: 14px;
+    font-size: clamp(12px, 3vw, 14px); /* 📌 반응형 크기 조정 */
 }
 
 #clearChatBtn:hover {
@@ -174,6 +173,16 @@ body::after {
 
 #clearChatBtn:active {
     transform: scale(0.98);
+}
+
+/* 📱 모바일에서 크기 줄이기 */
+@media (max-width: 768px) {
+    #clearChatBtn {
+        font-size: 12px; /* 모바일에서 작게 */
+        padding: 6px 10px; /* 모바일에서 패딩 줄이기 */
+        top: 6px;
+        right: 6px;
+    }
 }
 
 /* ✅ 타이핑 인디케이터 */
