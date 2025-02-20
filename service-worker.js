@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v37";
+const CACHE_NAME = "natura-link-cache-v38";
 
 const STATIC_ASSETS = [
     "/NaturaLink/index.html",
@@ -18,7 +18,8 @@ const STATIC_ASSETS = [
     "/NaturaLink/favicons/favicon.ico",
     "/NaturaLink/assets/icon/android-chrome-192x192.png",
     "/NaturaLink/assets/icon/android-chrome-512x512.png",
-    "/NaturaLink/css/setting.css"
+    "/NaturaLink/css/setting.css",
+    "/NaturaLink/assets/icon/xv.png"
 ];
 
 // 🔥 서비스 워커 설치 및 캐시 저장
