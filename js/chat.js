@@ -90,21 +90,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function fixBlenderBotResponse(text) {
-        return text
-            .replace(/\b(i)\b/g, 'I') // 단독 소문자 i -> 대문자 I
-            .replace(/\b(i'm)\b/g, "I'm") // i'm -> I'm
-            .replace(/\b(i've)\b/g, "I've") // i've -> I've
-            .replace(/\b(i'll)\b/g, "I'll") // i'll -> I'll
-            .replace(/\b(i'd)\b/g, "I'd") // i'd -> I'd
-            .replace(/\bdon' t\b/g, "don't") // 공백 있는 don't -> 정상적인 don't
-            .replace(/\bdoesn' t\b/g, "doesn't") // doesn' t -> doesn't
-            .replace(/\bdidn' t\b/g, "didn't") // didn' t -> didn't
-            .replace(/\bwasn' t\b/g, "wasn't") // wasn' t -> wasn't
-            .replace(/\bweren' t\b/g, "weren't") // weren' t -> weren't
-            .replace(/\bhasn' t\b/g, "hasn't") // hasn' t -> hasn't
-            .replace(/\bhaven' t\b/g, "haven't") // haven' t -> haven't
-            .replace(/\bhadn' t\b/g, "hadn't") // hadn' t -> hadn't
-            .replace(/\bwon' t\b/g, "won't") // won' t -> won't
-            .replace(/\bcan' t\b/g, "can't"); // can' t -> can't
+    return text
+        .replace(/\b(i)\b/g, 'I') // 단독 소문자 i -> 대문자 I
+        .replace(/\b(i'm)\b/g, "I'm") // i'm -> I'm
+        .replace(/\b(i've)\b/g, "I've") // i've -> I've
+        .replace(/\b(i'll)\b/g, "I'll") // i'll -> I'll
+        .replace(/\b(i'd)\b/g, "I'd") // i'd -> I'd
+        .replace(/\bdon' t\b/g, "don't") // 공백 있는 don't -> 정상적인 don't
+        .replace(/\bdoesn' t\b/g, "doesn't") // doesn' t -> doesn't
+        .replace(/\bdidn' t\b/g, "didn't") // didn' t -> didn't
+        .replace(/\bwasn' t\b/g, "wasn't") // wasn' t -> wasn't
+        .replace(/\bweren' t\b/g, "weren't") // weren' t -> weren't
+        .replace(/\bhasn' t\b/g, "hasn't") // hasn' t -> hasn't
+        .replace(/\bhaven' t\b/g, "haven't") // haven' t -> haven't
+        .replace(/\bhadn' t\b/g, "hadn't") // hadn' t -> hadn't
+        .replace(/\bwon' t\b/g, "won't") // won' t -> won't
+        .replace(/\bcan' t\b/g, "can't") // can' t -> can't
+        .replace(/\b\w+’\w+\b/g, match => match.replace('’', "'")) // 스마트 따옴표 -> 일반 따옴표
+        .replace(/(\s)(\d+)/g, '$1$2') // 숫자 앞 뒤 공백 제거
+        .replace(/(\w+)\s{2,}(\w+)/g, '$1 $2'); // 두 개 이상의 공백 -> 한 개의 공백
     }
 });
