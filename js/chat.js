@@ -14,7 +14,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     clearChatBtn.addEventListener('click', clearChat);
 
-    function sendMessage() {
+    // toxicity 모델 로딩
+    let model;
+    toxicity.load().then((loadedModel) => {
+        model = loadedModel;
+    });
+
+    // 유해한 언어 검증 함수
+    async function isToxic(message) {
+        if (!model) return false; // 모델이 로딩되지 않으면 기본적으로 안전하다고 판단
+        const predictions = await model.classify([message]);
+        return predictions[0].results[0].match; // 'toxicity' 레이블 검사
+    }
+
+    // 메시지 전송 함수
+    async function sendMessage() {
         const userText = userInput.value.trim();
         if (userText === '') return;
 
@@ -25,9 +39,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         typingIndicator.style.display = 'block'; // 타이핑 인디케이터 표시
 
+        // 메시지가 유해한지 검사
+        const isToxicMessage = await isToxic(userText);
+        if (isToxicMessage) {
+            appendMessage("불쾌한 언어를 사용할 수 없습니다.", 'ai-message');
+            typingIndicator.style.display = 'none';
+            return;
+        }
+
         fetchChatbotResponse(userText);
     }
 
+    // 메시지를 채팅창에 추가
     function appendMessage(message, type) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('chat-bubble', type);
@@ -36,10 +59,12 @@ document.addEventListener('DOMContentLoaded', function () {
         scrollToBottom();
     }
 
+    // 채팅창 스크롤 하단으로 이동
     function scrollToBottom() {
         chatlogs.scrollTop = chatlogs.scrollHeight;
     }
 
+    // 챗봇 응답 함수
     function fetchChatbotResponse(userText) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000); // 30초 타임아웃 설정
@@ -82,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // 채팅 기록 지우기
     function clearChat() {
         chatlogs.innerHTML = '';
     }
