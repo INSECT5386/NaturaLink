@@ -4,19 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const chatlogs = document.getElementById('chatlogs');
     const typingIndicator = document.getElementById('typingIndicator');
     const clearChatBtn = document.getElementById('clearChatBtn');
-    const loadingIndicator = document.getElementById('loadingIndicator'); // 로딩 인디케이터
-
-    let toxicityModel;
-
-    // 모델 로딩 시작
-    loadingIndicator.style.display = 'block'; // 로딩 화면 표시
-    toxicity.load().then(model => {
-        toxicityModel = model;
-        loadingIndicator.style.display = 'none'; // 로딩 완료 후 화면 숨기기
-    }).catch(error => {
-        console.error('Toxicity 모델 로드 실패:', error);
-        loadingIndicator.style.display = 'none'; // 실패 시 로딩 화면 숨기기
-    });
 
     sendMessageBtn.addEventListener('click', sendMessage);
     userInput.addEventListener('keypress', function(e) {
@@ -38,24 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         typingIndicator.style.display = 'block'; // 타이핑 인디케이터 표시
 
-        // toxicity 모델이 로드되었는지 확인
-        if (toxicityModel) {
-            isToxic(userText); // 유해성 검사
-        } else {
-            fetchChatbotResponse(userText); // 모델이 로드되지 않았다면 바로 챗봇 응답
-        }
-    }
-
-    function isToxic(message) {
-        toxicityModel.classify([message]).then(predictions => {
-            const toxicPredictions = predictions.filter(prediction => prediction.results[0].match);
-            if (toxicPredictions.length > 0) {
-                appendMessage('이 메시지는 부적절합니다.', 'ai-message');
-                typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
-            } else {
-                fetchChatbotResponse(message); // 유해하지 않으면 챗봇 응답
-            }
-        });
+        fetchChatbotResponse(userText);
     }
 
     function appendMessage(message, type) {
@@ -77,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch('https://orange-bar-f327.myageu4.workers.dev/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ inputs: userText }),
+            body: JSON.stringify({ inputs: userText }), // 'inputs'로 수정
             signal: controller.signal // AbortController의 signal을 추가
         })
         .then(response => {
@@ -94,11 +64,14 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             clearTimeout(timeoutId); // 응답이 오면 타임아웃 취소
-            console.log('AI Response Data:', data);
+            console.log('AI Response Data:', data); // 응답 확인을 위한 로그
 
             typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
 
+            // 응답 구조가 다를 수 있으므로 데이터 확인 후 출력
             const aiText = data.generated_text || data[0]?.generated_text || 'AI의 응답을 받을 수 없습니다.'; 
+
+            // 응답을 화면에 출력
             appendMessage(aiText, 'ai-message');
         })
         .catch(error => {
