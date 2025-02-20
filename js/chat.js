@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
         loadToxicityModel().then(toxicityModel => {
             analyzeToxicity(userText, toxicityModel).then(toxic => {
                 if (toxic) {
-                    appendMessage("이 메시지는 부적절한 내용이 포함되어 있습니다. 다시 입력해 주세요. 😞", 'ai-message');
+                    appendMessage("This message contains inappropriate content. Please enter again. 😞", 'ai-message');
                     typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
                 } else {
                     fetchChatbotResponse(userText);
