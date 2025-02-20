@@ -69,7 +69,10 @@ document.addEventListener('DOMContentLoaded', function () {
             typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
 
             // 응답 구조가 다를 수 있으므로 데이터 확인 후 출력
-            const aiText = data.generated_text || data[0]?.generated_text || 'AI의 응답을 받을 수 없습니다.'; 
+            let aiText = data.generated_text || data[0]?.generated_text || 'AI의 응답을 받을 수 없습니다.'; 
+            
+            // **여기에 문법 수정 함수 적용!**
+            aiText = fixBlenderBotResponse(aiText);
 
             // 응답을 화면에 출력
             appendMessage(aiText, 'ai-message');
@@ -84,5 +87,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function clearChat() {
         chatlogs.innerHTML = '';
+    }
+
+    function fixBlenderBotResponse(text) {
+        return text
+            .replace(/\b(i)\b/g, 'I') // 단독 소문자 i -> 대문자 I
+            .replace(/\b(i'm)\b/g, "I'm") // i'm -> I'm
+            .replace(/\b(i've)\b/g, "I've") // i've -> I've
+            .replace(/\b(i'll)\b/g, "I'll") // i'll -> I'll
+            .replace(/\b(i'd)\b/g, "I'd") // i'd -> I'd
+            .replace(/\bdon' t\b/g, "don't") // 공백 있는 don't -> 정상적인 don't
+            .replace(/\bdoesn' t\b/g, "doesn't") // doesn' t -> doesn't
+            .replace(/\bdidn' t\b/g, "didn't") // didn' t -> didn't
+            .replace(/\bwasn' t\b/g, "wasn't") // wasn' t -> wasn't
+            .replace(/\bweren' t\b/g, "weren't") // weren' t -> weren't
+            .replace(/\bhasn' t\b/g, "hasn't") // hasn' t -> hasn't
+            .replace(/\bhaven' t\b/g, "haven't") // haven' t -> haven't
+            .replace(/\bhadn' t\b/g, "hadn't") // hadn' t -> hadn't
+            .replace(/\bwon' t\b/g, "won't") // won' t -> won't
+            .replace(/\bcan' t\b/g, "can't"); // can' t -> can't
     }
 });
