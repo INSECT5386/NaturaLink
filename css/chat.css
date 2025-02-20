@@ -1,6 +1,7 @@
-/* ✅ 기본 폰트와 색상 설정 */
+/* ✅ Google Font 가져오기 */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 
+/* ✅ 색상 변수 설정 */
 :root {
     --primary-color: #80b3ff;
     --secondary-color: #1e90ff;
@@ -8,6 +9,7 @@
     --text-color: #f0f0f0;
 }
 
+/* ✅ 기본 스타일 */
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, var(--background-color), #3cb371, #006400);
@@ -146,22 +148,19 @@ body::after {
     transform: scale(1.05);
 }
 
-#sendMessageBtn:active {
-    transform: scale(0.98);
-}
-
+/* ✅ 채팅 초기화 버튼 */
 #clearChatBtn {
     position: absolute;
     top: 12px;
     right: 12px;
-    padding: 8px 14px;
+    padding: 6px 10px;
     border-radius: 8px;
     background: linear-gradient(135deg, #555, #777);
     color: #f0f0f0;
     border: none;
     cursor: pointer;
     transition: background 0.3s ease-in-out, transform 0.2s ease;
-    font-size: clamp(12px, 3vw, 14px); /* 📌 반응형 크기 조정 */
+    font-size: clamp(10px, 2.5vw, 12px);
 }
 
 #clearChatBtn:hover {
@@ -171,57 +170,22 @@ body::after {
     transform: scale(1.05);
 }
 
-#clearChatBtn:active {
-    transform: scale(0.98);
-}
-
-/* 📱 모바일에서 크기 줄이기 */
-@media (max-width: 768px) {
-    #clearChatBtn {
-        font-size: 12px; /* 모바일에서 작게 */
-        padding: 6px 10px; /* 모바일에서 패딩 줄이기 */
-        top: 6px;
-        right: 6px;
-    }
-}
-
-/* ✅ 타이핑 인디케이터 */
-.typing-indicator::before {
-    content: '...';
-    animation: typingEffect 2s infinite ease-in-out;
-}
-
-@keyframes typingEffect {
-    0% { content: ''; }
-    33% { content: '.'; }
-    66% { content: '..'; }
-    100% { content: '...'; }
-}
-
 /* ✅ 모바일 최적화 */
 @media (max-width: 600px) {
     #chatbox {
         max-height: 350px;
         padding: 12px;
     }
-
     .chat-bubble {
         font-size: 14px;
     }
-
-    #userInputContainer {
-        flex-direction: row;
-        width: 95%;
-    }
-
     #userInput {
         font-size: 14px;
         padding: 10px;
     }
-
     #sendMessageBtn {
-        padding: 10px 12px;
         font-size: 14px;
         width: 80px;
+        padding: 10px 12px;
     }
 }
