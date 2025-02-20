@@ -59,11 +59,13 @@ a:hover {
 h1, h2, h3 {
     color: var(--text-color);
     font-weight: 700;
+    margin: 0;
 }
 
 p {
     font-weight: 400;
     color: var(--text-color);
+    line-height: 1.6;
 }
 
 /* 🔘 버튼 스타일 */
@@ -91,12 +93,13 @@ button:active {
 input[type="text"], textarea {
     background-color: rgba(50, 50, 50, 0.8);
     color: var(--text-color);
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #555;
     border-radius: 8px;
     font-size: 16px;
     transition: all 0.3s ease;
     width: 100%;
+    box-sizing: border-box;
 }
 
 input[type="text"]:focus, textarea:focus {
@@ -112,14 +115,22 @@ input[type="text"]:focus, textarea:focus {
 
     h1 {
         font-size: 24px;
+        margin-bottom: 12px;
     }
 
     p {
         font-size: 14px;
+        line-height: 1.4;
     }
 
     button {
         width: 100%;
         padding: 12px 18px;
+        font-size: 14px;
+    }
+
+    input[type="text"], textarea {
+        font-size: 14px;
+        padding: 10px;
     }
 }
