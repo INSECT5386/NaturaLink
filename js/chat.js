@@ -55,17 +55,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 챗봇 응답 받기
     async function fetchChatbotResponse(userText) {
-        const inputTensor = tf.tensor([userText]); // 텍스트를 텐서로 변환
+        // 예시: 두 개의 입력을 동일한 텍스트로 설정
+        const inputTensor1 = tf.tensor([userText]); // 첫 번째 입력 텐서
+        const inputTensor2 = tf.tensor([userText]); // 두 번째 입력 텐서
 
         try {
-            const response = await model.predict(inputTensor); // 모델 예측 실행
+            // 모델에 두 개의 입력 텐서를 전달
+            const response = await model.predict([inputTensor1, inputTensor2]);
+
             typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
 
-            // 모델의 출력 처리 (예시로, 출력 텍스트를 바로 사용)
-            const aiText = response.dataSync()[0]; // 응답을 텍스트로 변환
-
-            // 응답을 화면에 출력
-            appendMessage(aiText, 'ai-message');
+            const aiText = response.dataSync()[0]; // 응답 텍스트 처리
+            appendMessage(aiText, 'ai-message'); // 응답을 화면에 추가
         } catch (error) {
             typingIndicator.style.display = 'none';
             console.error('에러:', error);
