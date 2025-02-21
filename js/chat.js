@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const typingIndicator = document.getElementById('typingIndicator');
     const clearChatBtn = document.getElementById('clearChatBtn');
 
+    let toxicityModel = null; // 모델을 전역으로 선언
+
     sendMessageBtn.addEventListener('click', sendMessage);
     userInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -14,19 +16,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     clearChatBtn.addEventListener('click', clearChat);
 
-    // TensorFlow.js 모델 로드
+    // TensorFlow.js 모델 로드 (한 번만 로드)
     async function loadToxicityModel() {
-        try {
-            const toxicityModel = await toxicity.load(); // 모델 로드
-            console.log("모델 로드 성공!");
-            return toxicityModel;
-        } catch (error) {
-            console.error('모델 로드 중 오류 발생:', error);
+        if (!toxicityModel) { // 모델이 아직 로드되지 않았다면 로드
+            try {
+                toxicityModel = await toxicity.load(); // 모델 로드
+                console.log("모델 로드 성공!");
+            } catch (error) {
+                console.error('모델 로드 중 오류 발생:', error);
+            }
         }
     }
 
     // Toxicity 분석 함수
-    async function analyzeToxicity(text, toxicityModel) {
+    async function analyzeToxicity(text) {
+        if (!toxicityModel) return false; // 모델이 로드되지 않았으면 false 반환
         const predictions = await toxicityModel.classify([text]); // 텍스트 배열로 감싸기
 
         // 유해한 텍스트인지 여부를 확인
@@ -46,8 +50,8 @@ document.addEventListener('DOMContentLoaded', function () {
         typingIndicator.style.display = 'block'; // 타이핑 인디케이터 표시
 
         // TensorFlow.js 모델 로드 후 Toxicity 분석
-        loadToxicityModel().then(toxicityModel => {
-            analyzeToxicity(userText, toxicityModel).then(toxic => {
+        loadToxicityModel().then(() => {
+            analyzeToxicity(userText).then(toxic => {
                 if (toxic) {
                     appendMessage("This message contains inappropriate content. Please enter again. 😞", 'ai-message');
                     typingIndicator.style.display = 'none'; // 타이핑 인디케이터 숨기기
