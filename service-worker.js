@@ -1,4 +1,4 @@
-const CACHE_NAME = "natura-link-cache-v57";
+const CACHE_NAME = "natura-link-cache-v58";
 
 const STATIC_ASSETS = [
     "/NaturaLink/index.html",
